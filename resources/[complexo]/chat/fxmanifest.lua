@@ -1,24 +1,24 @@
-fx_version "bodacious"
+fx_version "cerulean"
 game "gta5"
 lua54 "yes"
 
-ui_page "web-side/index.html"
+ui_page "html/index.html"
+
+shared_scripts {
+	"@vrp/lib/Utils.lua",
+	"@vrp/lib/Tunnel.lua",
+	"@vrp/lib/Proxy.lua",
+}
 
 client_scripts {
-	"@vrp/lib/Utils.lua",
-	"client-side/*"
+	"suggestions.lua",
+	"cl_chat.lua"
 }
 
 server_scripts {
-	"@vrp/lib/Utils.lua",
-	"server-side/*"
+	"sv_chat.lua"
 }
 
 files {
-	"web-side/*",
-	"web-side/**/*"
-}
-
-shared_scripts {
-	"shared-side/*"
+	"html/**/*",
 }

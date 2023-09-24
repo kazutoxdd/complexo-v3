@@ -6,7 +6,7 @@ Whitelisted = true
 CombatLogMinutes = 3
 SalarySeconds = 1800
 BannedText = "Banido"
-ServerName = "Bahamas"
+ServerName = "Complexo - Ato 2"
 ReleaseText = "Envie esse 'ID RANDÔMICO' na sala liberação, lembre-se de que esse 'ID' não é o 'ID' do seu personagem."
 SpawnCoords = vec3(-1192.2,-1513.12,4.36)
 BackPrison = vec3(1841.62,2585.94,46.02)
@@ -32,11 +32,7 @@ CooldownHungerThrist = 90000
 Maintenance = false
 MaintenanceText = "O servidor está em modo manutenção, só pessoas autorizadas tem acesso ao servidor."
 MaintenanceLicenses = {
-	["11000013f315825"] = true,
-	["11000010bec93e4"] = true,
-	["110000108dce899"] = true,
-	["11000015b3921ee"] = true,
-	["110000115845abb"] = true
+	["SUA STEAM HEX"] = true
 }
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- CHARACTERITENS
@@ -107,10 +103,10 @@ StartClothes = {
 -- LANG
 -----------------------------------------------------------------------------------------------------------------------------------------
 Lang = {
-	["Join"] = "Entrando no Bahamas...",
-	["Connecting"] = "Conectando no Bahamas...",
-	["Position"] = "Você é o %d/%d da fila, aguarde sua conexão com o Bahamas",
-	["Error"] = 'Conexão perdida com o Bahamas, você precisa estar com a "STEAM" aberta para efetuar sua conexão com o Bahamas, feche seu "FIVEM" e abra sua "STEAM".'
+	["Join"] = "Entrando no Complexo...",
+	["Connecting"] = "Conectando no Complexo...",
+	["Position"] = "Você é o %d/%d da fila, aguarde sua conexão com o Complexo",
+	["Error"] = 'Conexão perdida com o Complexo, você precisa estar com a "STEAM" aberta para efetuar sua conexão com o Complexo, feche seu "FIVEM" e abra sua "STEAM".'
 }
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- QUEUE

@@ -615,7 +615,7 @@ function CloseInventory()
     if trunking then
         trunking = false
         vSERVER.trunkChestClose()
-        vRP.Destroy()
+        vRP.removeObjects()
     end
     if housing then
         housing = false
@@ -1047,7 +1047,7 @@ AddEventHandler("utils:GetVehiclePedIsIn", function(veh, isDriver)
         end
         Wait(500)
     end
-    vRP.Destroy("one")
+    vRP.removeObjects("one")
 end)
 function Creative.dropFunctions()
     local coords = GetEntityCoords(ply)

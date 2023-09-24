@@ -26,6 +26,32 @@ local Checkpoint = 0
 -----------------------------------------------------------------------------------------------------------------------------------------
 GlobalState["Quake"] = false
 -----------------------------------------------------------------------------------------------------------------------------------------
+-- ADDCAR
+-----------------------------------------------------------------------------------------------------------------------------------------
+RegisterCommand("addcar",function(source,Message)
+	local source = source
+	local Passport = vRP.Passport(source)
+	if vRP.HasGroup(Passport,"Admin",1 or 2) then
+		if Passport and Message[1] and Message[2] then
+			vRP.Query("vehicles/addVehicles",{ Passport = parseInt(Message[1]), vehicle = Message[2], plate = vRP.GeneratePlate(), work = tostring(false) })
+			TriggerClientEvent("Notify",source,"verde","Adicionado o veiculo <b>"..Message[2].."</b> na garagem de ID <b>"..Message[1].."</b>.",10000)
+		end
+	end
+end)
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- REMCAR
+-----------------------------------------------------------------------------------------------------------------------------------------
+RegisterCommand("remcar",function(source,Message)
+	local source = source
+	local Passport = vRP.Passport(source)
+	if vRP.HasGroup(Passport,"Admin",1 or 2) then
+		if Passport and Message[1] and Message[2] then
+			vRP.Query("vehicles/removeVehicles",{ Passport = parseInt(Message[1]), vehicle = Message[2]})
+			TriggerClientEvent("Notify",source,"verde","Retirado o veiculo <b>"..Message[2].."</b> da garagem de ID <b>"..Message[1].."</b>.",10000)
+		end
+	end
+end)
+-----------------------------------------------------------------------------------------------------------------------------------------
 -- SAVEAUTO
 -----------------------------------------------------------------------------------------------------------------------------------------
 local LastSave = os.time() + 300

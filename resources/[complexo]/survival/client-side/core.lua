@@ -41,7 +41,7 @@ CreateThread(function()
 
 						TriggerEvent("hud:RemoveHood")
 						TriggerEvent("hud:ScubaRemove")
-						TriggerEvent("hudActived",true)
+						TriggerEvent("hudActived",false)
 						TriggerEvent("radio:RadioClean")
 						TriggerEvent("inventory:Cancel")
 						TriggerEvent("inventory:CleanWeapons")

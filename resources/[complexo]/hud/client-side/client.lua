@@ -27,7 +27,6 @@ local numberBlips = 0
 local clientHunger = 75
 local clientThirst = 75
 local updateFoods = GetGameTimer()
-local deathThread = false
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- SEATBELT
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -586,7 +585,7 @@ local notifyStyles = {
 
 RegisterNetEvent("Notify")
 AddEventHandler("Notify", function(style, message, title, timer)
-    if LocalPlayer.state.Hud == "Complexo" then return end
+    if LocalPlayer.state.Hud == "America" then return end
     if not timer then timer = 5000 end
     notifyId = notifyId + 1
     EmitNuiMessage("HUD:NOTIFY", {
@@ -600,137 +599,6 @@ AddEventHandler("Notify", function(style, message, title, timer)
         }
     })
 end)
-
---[[ AddEventHandler("utils:Survival", function(isDead, deadTimer)
-    TriggerEvent("hudActived", not isDead)
-    
-    if not isDead and IsNuiFocused() then
-        SetNuiFocus(false, false)
-        SetNuiFocusKeepInput(false)
-    end
-
-    EmitNuiMessage("HUD:SET_DEATHSCREEN_VISIBLE", {
-        show = isDead,
-        timer = deadTimer or 600
-    })
-
-    if isDead and not deathThread then
-        deathThread = true
-        CreateThread(function()
-            while deathThread do
-                if not IsNuiFocused() or not IsNuiFocusKeepingInput() then
-                    SetNuiFocus(true, true)
-                    SetNuiFocusKeepInput(true)
-                end
-                Wait(500)
-            end
-        end)
-    elseif not isDead and deathThread then
-        deathThread = false
-        if IsNuiFocused() or IsNuiFocusKeepingInput() then
-            SetNuiFocus(false, false)
-            SetNuiFocusKeepInput(false)
-        end
-    end
-end)
-RegisterNUICallback("allowSurrender", function(_, cb)
-    local isDead = GetEntityHealth(ply) < 102
-    SetNuiFocus(isDead, isDead)
-    SetNuiFocusKeepInput(isDead)
-    cb("ok")
-end)
-RegisterNUICallback("confirmSurrender", function(_, cb)
-    _TRE("vRP:Surrender")
-    SetNuiFocus(false, false)
-    SetNuiFocusKeepInput(false)
-    cb("ok")
-end)
-RegisterNUICallback("sendSignal", function(_, cb)
-    TriggerServerEvent('tencode:sendCode', 4) -- QRT Code
-    cb("ok")
-end) ]]
---[[ -----------------------------------------------------------------------------------------------------------------------------------------
--- NOTIFY
------------------------------------------------------------------------------------------------------------------------------------------
-local rafaelSpamDelay = GetGameTimer()
-RegisterCommand("cpx_notifycall", function(source, args)
-    if rafaelSpamDelay <= GetGameTimer() then
-        rafaelSpamDelay = GetGameTimer() + 1000
-        EmitNuiMessage("HUD:ONLY_POLICIES_NOTIFY", true)
-        SetNuiFocus(true, true)
-    end
-end, false)
------------------------------------------------------------------------------------------------------------------------------------------
--- NOTIFY
------------------------------------------------------------------------------------------------------------------------------------------
-RegisterKeyMapping("cpx_notifycall", "Abrir as notificações", "keyboard", "F3")
------------------------------------------------------------------------------------------------------------------------------------------
--- NOTIFYPUSH
------------------------------------------------------------------------------------------------------------------------------------------
-local blipMethod = {
-    ["radius"] = function(data)
-        local blip = AddBlipForRadius(data["x"], data["y"], data["z"], 150.0)
-        SetBlipColour(blip, data["blipColor"] or 0)
-        SetBlipAlpha(blip, 150)
-        return blip
-    end,
-    ["coord"] = function(data)
-        local blip = AddBlipForCoord(data.x, data.y, data.z)
-        SetBlipSprite(blip, data.blipSprite or 1)
-        SetBlipScale(blip, data.blipScale or 0.5)
-        SetBlipColour(blip, data.blipColor or 0)
-        BeginTextCommandSetBlipName("STRING")
-        AddTextComponentString(data.title or "")
-        EndTextCommandSetBlipName(blip)
-        return blip
-    end
-}
-RegisterNetEvent("NotifyPush")
-AddEventHandler("NotifyPush", function(data)
-    if LocalPlayer.state.Hud == "Complexo" then return end
-    notifyId = notifyId + 1
-
-    local streetName = GetStreetNameAtCoord(data.coords.x, data.coords.y, data.coords.z)
-    streetName = GetStreetNameFromHashKey(streetName) or "Desconhecido"
-
-    local notify = {
-        id = notifyId,
-        type = "police",
-        code = data.code,
-        title = data.title,
-        x = data.coords.x,
-        y = data.coords.y,
-        z = data.coords.z,
-        show = true,
-        police = {
-            reporter = data.police.reporter,
-            location = streetName,
-            hour = data.police.hour,
-            isUrgent = data.police.isUrgent or false,
-            isAPlayerCall = data.police.isAPlayerCall or false,
-            playerPhone = data.police.playerPhone or "",
-            description = data.police.description or "",
-        },
-        duration = data.duration or 5000,
-
-        blipColor = data.blipColor,
-        blipMethod = data.blipMethod or "radius",
-        blipSprite = data.blipSprite or 1,
-        blipScale = data.blipScale or 0.5,
-    }
-
-    EmitNuiMessage("HUD:NOTIFY", { notify = notify })
-
-    if blipMethod[notify.blipMethod] then
-        numberBlips = numberBlips + 1
-        timeBlips[numberBlips] = 60
-        showBlips[numberBlips] = blipMethod[notify.blipMethod](notify)
-    end
-
-    if data["code"] == "QRT" then
-        TriggerEvent("sounds:source", "deathcop", 0.7)
-    end
-end) ]]
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- EMITNUI
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -740,33 +608,6 @@ function EmitNuiMessage(type, payload)
         payload = { payload } or {}
     })
 end
---[[ RegisterNUICallback("CELLPHONE:PHONE_CALL", function(data, cb)
-    if data and data.playerPhone then
-        exports["smartphone"]:callPlayer(data.playerPhone)
-    end
-
-    EmitNuiMessage("HUD:ONLY_POLICIES_NOTIFY", false)
-    SetNuiFocus(false, false)
-
-    cb("ok")
-end)
------------------------------------------------------------------------------------------------------------------------------------------
--- SETWAY
------------------------------------------------------------------------------------------------------------------------------------------
-RegisterNUICallback("HUD:MARK_WAYPOINT", function(data, cb)
-    SetNewWaypoint(data["x"] + 0.0001, data["y"] + 0.0001)
-    EmitNuiMessage("HUD:ONLY_POLICIES_NOTIFY", false)
-    SetNuiFocus(false, false)
-    cb("ok")
-end)
------------------------------------------------------------------------------------------------------------------------------------------
--- SETWAY
------------------------------------------------------------------------------------------------------------------------------------------
-RegisterNUICallback("phoneCall", function(data, cb)
-    exports["smartphone"]:callPlayer(data["phone"])
-    SendNUIMessage({ action = "hideAll" })
-    cb("ok")
-end) ]]
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- RADAR
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -850,6 +691,12 @@ RegisterCommand("toggleFreeze", function(source, args)
         policeFreeze = not policeFreeze
     end
 end, false)
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- UPDATESERVICE
+-----------------------------------------------------------------------------------------------------------------------------------------
+RegisterNetEvent("police:updateService", function(status)
+    policeService = status
+end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- REGISTERKEYMAPPING
 -----------------------------------------------------------------------------------------------------------------------------------------

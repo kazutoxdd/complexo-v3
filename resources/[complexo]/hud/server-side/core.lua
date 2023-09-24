@@ -17,11 +17,6 @@ GlobalState["Work"] = 0
 GlobalState["Hours"] = 12
 GlobalState["Minutes"] = 0
 GlobalState["Weather"] = "EXTRASUNNY"
-GlobalState["Blackout"] = false
------------------------------------------------------------------------------------------------------------------------------------------
--- WEATHERLIST
------------------------------------------------------------------------------------------------------------------------------------------
-local WeatherList = { "CLEAR", "EXTRASUNNY", "SMOG", "OVERCAST", "CLOUDS", "CLEARING" }
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- THREADSYNC
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -36,12 +31,6 @@ CreateThread(function()
 
 			if GlobalState["Hours"] >= 24 then
 				GlobalState["Hours"] = 0
-
-				repeat
-					RandWeather = math.random(#WeatherList)
-				until GlobalState["Weather"] ~= WeatherList[RandWeather]
-
-				GlobalState["Weather"] = WeatherList[RandWeather]
 			end
 		end
 

@@ -369,7 +369,7 @@ Citizen.CreateThread(function()
 										pumpGunInHand = true
 										pumpGunInCar = false
 										gameTimer = GetGameTimer() + 3000
-										vRP.Destroy()
+										vRP.removeObjects()
 										LoadModel(`prop_cs_fuel_nozle`)
 										currentPumpEntity = CreateObjectNoOffset(`prop_cs_fuel_nozle`, coords.x, coords
 											.y, coords.z, true, true, false)

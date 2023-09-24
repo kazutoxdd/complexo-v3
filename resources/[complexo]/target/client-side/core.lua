@@ -235,20 +235,6 @@ CreateThread(function()
 	RegisterCommand("-entityTarget", TargetDisable)
 	RegisterKeyMapping("+entityTarget", "Interação auricular.", "keyboard", "LMENU")
 
-
-	AddTargetModel({ 1711856655, -1672689514, -1951226014 }, {
-		options = {
-			{
-				event = "inventory:ObjectsVerify",
-				label = "Vasculhar",
-				tunnel = "shop",
-				service = "Bricks"
-			}
-		},
-		Distance = 1.0
-	})
-
-
 	AddCircleZone("Electricity", vec3(2101.75, 2322.74, 94.53), 0.5, {
 		name = "Electricity",
 		heading = 0.0
@@ -262,167 +248,6 @@ CreateThread(function()
 			}
 		}
 	})
-
-	AddBoxZone("WorkBus", vec3(453.47, -602.34, 28.59), 0.5, 0.5, {
-		name = "WorkBus",
-		heading = 266.46,
-		minZ = 28.59 - 0.75,
-		maxZ = 28.59 + 0.75
-	}, {
-		Distance = 1.0,
-		options = {
-			{
-				event = "bus:Init",
-				label = "Trabalhar",
-				tunnel = "client"
-			}
-		}
-	})
-
-	AddCircleZone("BurgershotJuice", vec3(-1199.88, -896.28, 14.02), 0.2, {
-		name = "BurgershotJuice",
-		heading = 0.0,
-		useZ = true
-	}, {
-		Distance = 1.25,
-		options = {
-			{
-				event = "inventory:MakeProducts",
-				label = "Encher Copo",
-				tunnel = "products",
-				service = "foodjuice"
-			}
-		}
-	})
-
-	AddCircleZone("BurgershotBurger", vec3(-1195.73, -897.23, 13.91), 0.2, {
-		name = "BurgershotBurger",
-		heading = 0.0,
-		useZ = true
-	}, {
-		Distance = 1.0,
-		options = {
-			{
-				event = "inventory:MakeProducts",
-				label = "Montar Lanche",
-				tunnel = "products",
-				service = "foodburger"
-			}
-		}
-	})
-
-	AddCircleZone("BurgershotBox", vec3(-1195.79, -895.99, 14.13), 0.2, {
-		name = "BurgershotBox",
-		heading = 0.0,
-		useZ = true
-	}, {
-		Distance = 1.25,
-		options = {
-			{
-				event = "inventory:MakeProducts",
-				label = "Montar Combo",
-				tunnel = "products",
-				service = "foodbox"
-			}, {
-			event = "inventory:MakeProducts",
-			label = "Montar Combo com Brinquedo",
-			tunnel = "products",
-			service = "foodboxtoy"
-		}
-		}
-	})
-
-	AddCircleZone("CallWorks01", vec3(-1197.43, -892.52, 14.09), 0.20, {
-		name = "CallWorks01",
-		heading = 0.0,
-		useZ = true
-	}, {
-		Distance = 1.25,
-		options = {
-			{
-				event = "target:Announces",
-				label = "Anunciar",
-				tunnel = "proserver",
-				service = "Burgershot"
-			}
-		}
-	})
-
-	AddBoxZone("CallWorks02", vec3(-1850.94, -335.23, 49.45), 0.35, 0.35, {
-		name = "CallWorks02",
-		heading = 0.0,
-		minZ = 43.00,
-		maxZ = 43.25
-	}, {
-		Distance = 2.50,
-		options = {
-			{
-				event = "target:Medicplan",
-				label = "Plano de Saúde",
-				tunnel = "server"
-			}, {
-			event = "target:Announces",
-			label = "Anunciar",
-			tunnel = "proserver",
-			service = "Paramedico"
-		}
-		}
-	})
-
-
-	AddTargetModel({ 1906160501 }, { -- Paramedico
-		options = {
-			{
-				event = "target:Medicplan",
-				label = "Plano de Saúde",
-				tunnel = "server"
-			}, {
-			event = "target:Announces",
-			label = "Anunciar",
-			tunnel = "proserver",
-			service = "Paramedico"
-		}
-		},
-		Distance = 2.5
-	})
-
-	AddTargetModel({ -1244325767 }, { -- customs
-		options = {
-			{
-				event = "target:Announces",
-				label = "Anunciar",
-				tunnel = "proserver",
-				service = "Customs"
-			}
-		},
-		Distance = 2.5
-	})
-
-
-	AddTargetModel({ 1303425517 }, { -- MecanicaNorte
-		options = {
-			{
-				event = "target:Announces",
-				label = "Anunciar",
-				tunnel = "proserver",
-				service = ""
-			}
-		},
-		Distance = 2.5
-	})
-
-	AddTargetModel({ -297480469 }, { -- Burgershot
-		options = {
-			{
-				event = "target:Announces",
-				label = "Anunciar",
-				tunnel = "proserver",
-				service = "Burgershot"
-			}
-		},
-		Distance = 2.5
-	})
-
 
 	AddTargetModel({ 858993389, 2913180574 }, {
 		options = {
@@ -471,11 +296,7 @@ CreateThread(function()
 				event = "shops:Fuel",
 				label = "Combustível",
 				tunnel = "client"
-			}, {
-			event = "shops:Oil",
-			label = "Petróleo",
-			tunnel = "client"
-		}
+			}
 		},
 		Distance = 0.75
 	})
@@ -641,75 +462,42 @@ CreateThread(function()
 		Distance = 0.75
 	})
 
-	AddTargetModel(
-		{ 684586828, 577432224, -1587184881, -1426008804, -228596739, 1437508529, -1096777189, -468629664, 1143474856,
-			-2096124444, -115771139, 1329570871, -130812911 }, {
-			options = {
-				{
-					event = "inventory:ObjectsVerify",
-					label = "Vasculhar",
-					tunnel = "shop",
-					service = "Lixeiro"
-				}
-			},
-			Distance = 0.75
-		})
-
-	AddTargetModel({ -206690185, 666561306, 218085040, -58485588, 1511880420, 682791951 }, {
+	AddTargetModel({ 684586828,577432224,-1587184881,-1426008804,-228596739,1437508529,-1096777189,-468629664,1143474856,-2096124444,-115771139,1329570871,-130812911 },{
 		options = {
 			{
-				event = "inventory:ObjectsVerify",
+				event = "inventory:VerifyObjects",
 				label = "Vasculhar",
 				tunnel = "shop",
 				service = "Lixeiro"
-			}, {
-			event = "player:enterTrash",
-			label = "Esconder",
-			tunnel = "client"
-		}, {
-			event = "player:checkTrash",
-			label = "Verificar",
-			tunnel = "server"
-		}, {
-			event = "chest:Open",
-			label = "Abrir",
-			tunnel = "entity",
-			service = "Custom"
-		}
+			}
 		},
 		Distance = 0.75
 	})
 
-	AddTargetModel(
-		{ 1898296526, 1069797899, 1434516869, -896997473, -1748303324, -1366478936, 2090224559, -52638650, 591265130,
-			-915224107, -273279397, 322493792, 10106915, 1120812170 }, {
-			options = {
-				{
-					event = "inventory:ObjectsVerify",
-					label = "Vasculhar",
-					tunnel = "shop",
-					service = "CarWreck"
-				}
-			},
-			Distance = 1.00
-		})
-
-	AddCircleZone("Dealership01", vec3(-31.59, -1098.6, 27.26), 0.55, {
-		name = "Dealership01",
-		heading = 0.0
-	}, {
-		shop = "Santos",
-		Distance = 3.0,
+	AddTargetModel({ -206690185,666561306,218085040,-58485588,1511880420,682791951 },{
 		options = {
 			{
-				event = "pdm:Open",
+				event = "inventory:VerifyObjects",
+				label = "Vasculhar",
+				tunnel = "shop",
+				service = "Lixeiro"
+			},{
+				event = "player:enterTrash",
+				label = "Esconder",
+				tunnel = "client"
+			},{
+				event = "player:checkTrash",
+				label = "Verificar",
+				tunnel = "server"
+			},{
+				event = "chest:Open",
 				label = "Abrir",
-				tunnel = "shop"
+				tunnel = "entity",
+				service = "Custom"
 			}
-		}
+		},
+		Distance = 0.75
 	})
-
-
 
 	AddCircleZone("Cemitery", vec3(-1745.57, -205.19, 57.37), 0.5, {
 		name = "Cemitery",
