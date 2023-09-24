@@ -149,22 +149,22 @@ local shopList = {
 -- THREADTARGET
 -----------------------------------------------------------------------------------------------------------------------------------------
 CreateThread(function()
-	SetNuiFocus(false,false)
-	for k,v in pairs(shopList) do
-		exports["target"]:AddCircleZone("shops:"..k,vector3(v[1],v[2],v[3]),v[6] or 1.25,{
-			name = "shops:"..k
-		},{
-			shop = Number,
-			distance = 1.0,
-			options = {
-				{
-					event = "shops:openSystem",
-					label = "Abrir",
-					tunnel = "shop"
-				}
-			}
-		})
-	end
+    SetNuiFocus(false,false)
+        for Number,v in pairs(shopList) do
+        exports["target"]:AddCircleZone("shops:"..Number,vec3(v[1],v[2],v[3]),v[6] or 1.25,{
+            name = "shops:"..Number
+        },{
+            shop = Number,
+            Distance = 1.0,
+            options = {
+                {
+                    event = "shops:openSystem",
+                    label = "Abrir",
+                    tunnel = "shop"
+                }
+            }
+        })
+    end
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- SHOPS:OPENSYSTEM

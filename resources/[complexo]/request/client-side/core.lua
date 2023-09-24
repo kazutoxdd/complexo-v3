@@ -35,7 +35,7 @@ function Creative.Function(Message,Accept,Reject)
 	end
 
 	Active = true
-	SendNUIMessage({ name = "Open", payload = {Message,Accept,Reject} })
+	SendNUIMessage({ Action = "Open", Message = Message, Accept = Accept, Reject = Reject })
 
 	while Active do
 		Wait(0)
@@ -48,7 +48,7 @@ end
 -----------------------------------------------------------------------------------------------------------------------------------------
 RegisterCommand("Y",function()
 	if Active then
-		SendNUIMessage({ name = "Y" })
+		SendNUIMessage({ Action = "Y" })
 	end
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -56,7 +56,7 @@ end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 RegisterCommand("U",function()
 	if Active then
-		SendNUIMessage({ name = "U" })
+		SendNUIMessage({ Action = "U" })
 	end
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------

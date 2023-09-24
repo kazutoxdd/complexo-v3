@@ -1399,7 +1399,7 @@ function Creative.UseItem(Slot, Amount)
 						end
 					end
 
-					TriggerClientEvent("NotifyItens", source, { "-", itemIndex(Hash), 1, "guardou" })
+					TriggerClientEvent("itensNotify", source, { "-", itemIndex(Hash), 1, "guardou" })
 					exports["inventory"]:CleanWeapons(Passport, false)
 				end
 			else
@@ -1426,7 +1426,7 @@ function Creative.UseItem(Slot, Amount)
 				end
 
 				if vCLIENT.putWeaponHands(source, Item, Ammo, Attachs[Passport][Item]) then
-					TriggerClientEvent("NotifyItens", source, { "+", itemIndex(Full), 1, "equipou" })
+					TriggerClientEvent("itensNotify", source, { "+", itemIndex(Full), 1, "equipou" })
 				end
 			end
 		elseif itemType(Full) == "Munição" then
@@ -1453,7 +1453,7 @@ function Creative.UseItem(Slot, Amount)
 
 					Ammos[Passport][Item] = Ammo + Amount
 
-					TriggerClientEvent("NotifyItens", source, { "-", itemIndex(Full), Amount, itemName(Full) })
+					TriggerClientEvent("itensNotify", source, { "-", itemIndex(Full), Amount, itemName(Full) })
 					TriggerClientEvent("inventory:Update", source, "Backpack")
 					vCLIENT.rechargeWeapon(source, Hash, Amount)
 				end
@@ -1478,12 +1478,12 @@ function Creative.UseItem(Slot, Amount)
 						end
 					end
 
-					TriggerClientEvent("NotifyItens", source, { "+", itemIndex(Hash), 1, itemName(Hash) })
+					TriggerClientEvent("itensNotify", source, { "+", itemIndex(Hash), 1, itemName(Hash) })
 					exports["inventory"]:CleanWeapons(Passport, false)
 				end
 			else
 				if vCLIENT.putWeaponHands(source, Item, 1, nil, Full) then
-					TriggerClientEvent("NotifyItens", source, { "-", itemIndex(Full), 1, itemName(Full) })
+					TriggerClientEvent("itensNotify", source, { "-", itemIndex(Full), 1, itemName(Full) })
 				end
 			end
 		elseif Item == "ATTACH_FLASHLIGHT" or Item == "ATTACH_CROSSHAIR" or Item == "ATTACH_SILENCER" or Item == "ATTACH_MAGAZINE" or Item == "ATTACH_GRIP" then
@@ -1500,7 +1500,7 @@ function Creative.UseItem(Slot, Amount)
 
 					if not Attachs[Passport][Weapon][Item] then
 						if vRP.TakeItem(Passport, Full, 1, false, Slot) then
-							TriggerClientEvent("NotifyItens",source, { "-", itemIndex(Full), 1, itemName(Full) })
+							TriggerClientEvent("itensNotify",source, { "-", itemIndex(Full), 1, itemName(Full) })
 							TriggerClientEvent("inventory:Update", source, "Backpack")
 							Attachs[Passport][Weapon][Item] = true
 							vCLIENT.putAttachs(source, Item, Weapon)
@@ -1519,7 +1519,6 @@ function Creative.UseItem(Slot, Amount)
 		end
 	end
 end
-
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- INVENTORY:SAVETEMPORARY
 -----------------------------------------------------------------------------------------------------------------------------------------
