@@ -52,7 +52,7 @@ end
 -- TASKTHREE
 -----------------------------------------------------------------------------------------------------------------------------------------
 function Creative.getResultLockpick()
-    local success = exports["t3_lockpick"]:startLockpick(1.0, 2, 5)
+    local success = exports["t3_lockpick"]:startLockpick(1.0, 2, 4)
     if success then
         return true
     else
