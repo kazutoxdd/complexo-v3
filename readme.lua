@@ -1,6 +1,6 @@
 # Complexo - Ato 2 - Storm Network
 
-> developer kazuto.
+> developer somente o kazuto.
 
 # Server Events
 
