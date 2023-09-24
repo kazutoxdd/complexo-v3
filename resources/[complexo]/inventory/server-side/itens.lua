@@ -2702,6 +2702,7 @@ Use = {
 		repeat
 			if os.time() >= parseInt(Active[Passport]) then
 				Active[Passport] = nil
+				vRP.DowngradeHunger(Passport,15)
 				vRP.DowngradeStress(Passport,50)
 				vRPC.removeObjects(source,"one")
 				Player(source)["state"]["Buttons"] = false
@@ -2727,7 +2728,7 @@ Use = {
 
 				if vRP.TakeItem(Passport,Full,1,true,Slot) then
 					vRP.UpgradeHunger(Passport,8)
-					vRP.DowngradeStress(Passport,25)
+					vRP.DowngradeStress(Passport,20)
 				end
 			end
 

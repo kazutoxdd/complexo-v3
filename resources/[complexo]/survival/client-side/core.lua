@@ -41,7 +41,7 @@ CreateThread(function()
 
 						TriggerEvent("hud:RemoveHood")
 						TriggerEvent("hud:ScubaRemove")
-						TriggerEvent("hudActived",false)
+						TriggerEvent("SecondaryHud:disable")
 						TriggerEvent("radio:RadioClean")
 						TriggerEvent("inventory:Cancel")
 						TriggerEvent("inventory:CleanWeapons")
@@ -136,7 +136,7 @@ function Creative.Respawn()
 	SetEntityInvincible(PlayerPedId(),false)
 	LocalPlayer["state"]["Invincible"] = false
 
-	TriggerEvent("hudActived",true)
+	TriggerEvent("SecondaryHud:enable")
 	TriggerEvent("paramedic:Reset")
 	TriggerEvent("inventory:CleanWeapons")
 	LocalPlayer["state"]["Handcuff"] = false
@@ -169,7 +169,7 @@ exports("Revive",function(Health,Arena)
 		ClearPedTasks(Ped)
 		NetworkSetFriendlyFireOption(true)
 
-		TriggerEvent("hudActived",true)
+		TriggerEvent("SecondaryHud:enable")
 		SendNUIMessage({ Action = "Display", Mode = "none" })
 
 		if LocalPlayer["state"]["Route"] < 900000 then

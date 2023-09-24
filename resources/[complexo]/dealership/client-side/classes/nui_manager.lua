@@ -8,12 +8,12 @@ function SetNUIDisplay(status)
     if status then
         Showroom:changeVehicleOnDisplay("adder")
         Cam:__construct()
-        TriggerEvent("hudActived", false)
+        TriggerEvent("SecondaryHud:disable")
     else
         Showroom:__destruct()
         Cam:__destruct()
         vRP.removeObjects()
-        TriggerEvent("hudActived", true)
+        TriggerEvent("SecondaryHud:enable")
     end
 end
 

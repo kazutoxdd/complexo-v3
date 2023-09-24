@@ -15,15 +15,18 @@ Tunnel.bindInterface("bank",Creative)
 local Active = {}
 local yield = 0
 -----------------------------------------------------------------------------------------------------------------------------------------
--- CHECKOPEN
+-- VERIFY
 -----------------------------------------------------------------------------------------------------------------------------------------
-function Creative.Wanted()
+function Creative.Verify()
 	local source = source
 	local Passport = vRP.Passport(source)
-	if Passport and vRP.GetHealth(source) > 100 and not exports["hud"]:Reposed(Passport) and not exports["hud"]:Wanted(Passport,source) then
-		return true
+	if Passport then
+		if exports["hud"]:Wanted(Passport,source) then
+			return false
+		end
 	end
-	return false
+
+	return true
 end
 
 CreateThread(function()
@@ -47,58 +50,16 @@ function Creative.Home()
 		if check[1] then
 			yield = check[1].Monthly
 		end
-		local cardnumber = "7822 1352 4522 " .. 1000 + Passport
 		local balance = vRP.Identity(Passport).bank
 		local transactions = Transactions(Passport)
-		local dependents = Dependents(Passport)	
-		local cardlimit = Creative.cardlimit(Passport)
-		local spending =vRP.Query("characters/getLimit",{ id = Passport})
 	  return {
 		Passport = Passport,
 		yield = yield,
-		cardnumber = cardnumber,
 		balance = balance,
 		transactions = transactions,
-		dependents = dependents,
-		cardlimit = cardlimit,
-		spending = spending[1]["spending"]
 	  }
 	end
   end
-
-function Creative.cardlimit(Passport)
-	if Passport then
-		local cardlimit = vRP.Query("characters/getLimit",{ id = Passport})
-		return cardlimit[1]["cardlimit"]
-	end
-end
-
-RegisterNetEvent("player:Spending")
-AddEventHandler("player:Spending",function()
-    local source = source
-    local Passport = vRP.Passport(source)
-	local cardlimit = vRP.Query("characters/getLimit",{ id = Passport})
-    if Passport then
-		if  cardlimit[1]["cardlimit"] < 100000 and  cardlimit[1]["cardlimit"] <  50000 then
-        vRP.Query("characters/UpgradeCardlimit",{ id = Passport , cardlimit = 10000   })
-		else
-			TriggerClientEvent("Notif", source,"Você Não Pode Aumentar O Limit Do Cartão",5000)
-    	end
-    end
-end)
-RegisterNetEvent("player:Spending1")
-AddEventHandler("player:Spending1",function()
-	local source = source
-    local Passport = vRP.Passport(source)
-	local cardlimit = vRP.Query("characters/getLimit",{ id = Passport})
-    if Passport then
-		if  cardlimit[1]["cardlimit"] < 100000 and  cardlimit[1]["cardlimit"] <  50000 then
-			vRP.Query("characters/UpgradeCardlimit",{ id = Passport , cardlimit = 50000   })
-		else
-			TriggerClientEvent("Notif", source,"Você Não Pode Aumentar O Limit Do Cartão",5000)
-    	end
-    end
-end)
 
   CreateThread(function()
 	while true do
@@ -106,51 +67,6 @@ end)
 		Creative.Home()
 	end
   end)
------------------------------------------------------------------------------------------------------------------------------------------
--- ADD DEPENDENTS
------------------------------------------------------------------------------------------------------------------------------------------
-function Creative.AddDependents(Dependent)
-	local source = source
-	local Passport = vRP.Passport(source)
-	if Passport and not Active[Passport] and Dependent ~= Passport then
-		Active[Passport] = true
-		local Consulta = vRP.Query('dependents/Check',{ Passport = Passport, Dependent = Dependent })
-		if not Consulta[1] then
-			local ClosestPed = vRP.Source(Dependent)
-			if ClosestPed then
-				if vRP.Request(ClosestPed,"<b>" ..vRP.Identity(Passport).name .. " deseja convida-lo para sua lista de dependentes bancário, você aceita esse convite?","Sim, aceito","Não, obrigado") then
-					local Name = vRP.Identity(Dependent).name .. " " .. vRP.Identity(Dependent).name2
-					vRP.Query('dependents/Add',{ Passport = Passport, Dependent = Dependent, Name = Name })
-					vRP.GiveItem(Dependent,"creditcard-" .. Passport,1,true)
-					Active[Passport] = nil
-					return Name
-				end
-			end
-		end
-		Active[Passport] = nil
-	end
-	return false
-end
------------------------------------------------------------------------------------------------------------------------------------------
--- REMOVE DEPENDENTS
------------------------------------------------------------------------------------------------------------------------------------------
-function Creative.RemoveDependents(Dependent)
-	local source = source
-	local Passport = vRP.Passport(source)
-	TriggerClientEvent('Notify', source, 'vermelho',  Dependent , 5000)
-	if Passport and not Active[Passport] then
-		Active[Passport] = true
-		local Consulta = vRP.Query('dependents/Check',{ Passport = Passport, Dependent = Dependent })
-		if Consulta[1] then
-			TriggerClientEvent('Notify', source, 'vermelho',  Consulta[1] , 5000)
-				vRP.Query('dependents/Remove',{ Passport = Passport, Dependent = Dependent})
-			Active[Passport] = nil
-			return true
-		end
-		Active[Passport] = nil
-	end
-	return false
-end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- TRANSACTIONS
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -206,7 +122,7 @@ function Creative.Transfer(ClosestPed,amount)
 	local Passport = vRP.Passport(source)
 	if Passport and Active[Passport] == nil and parseInt(amount) > 0 then
 		Active[Passport] = true
-			if vRP.Identity(ClosestPed) and vRP.PaymentFull(Passport, amount, true) then
+			if vRP.Identity(ClosestPed) and vRP.PaymentBank(Passport, amount, true) then
 				vRP.GiveBank(ClosestPed, amount)
 			end
 		Active[Passport] = nil
@@ -241,104 +157,6 @@ function Transactions(Passport, Limit)
 		end
 	end
 	return transactions
-end
-----------------------------------------------------------------------------------------------------------------------------------------
--- DEPENDENTS
------------------------------------------------------------------------------------------------------------------------------------------
-function Dependents(Passport)
-	local Passport = Passport
-	local dependencies = {}
-	local result = vRP.Query('dependents/List',{ Passport = Passport })
-	if result[1] then
-		for i, record in pairs(result) do
-	    	--local name = dname.Name
-			dependencies[#dependencies + 1] = {
-				name = record.Name,
-				dependent = record.Dependent
-			}
-		end
-	end
-	return dependencies
-end
-----------------------------------------------------------------------------------------------------------------------------------------
--- FINES
------------------------------------------------------------------------------------------------------------------------------------------
-function Fines(Passport)
-	local Passport = Passport
-	local fines = {}
-	local result = vRP.Query('fines/List',{ Passport = Passport })
-	if result[1] then
-		for i, row in pairs(result) do
-
-			fines[i] = {
-				id = row.id,
-				name = row.Name,
-				value = row.Value,
-				date = row.Date,
-				hour = row.Hour,
-				message = row.Message
-			}
-		end
-	end
-	return fines
-end
-
-function Creative.FineList()
-	local source = source
-	local Passport = vRP.Passport(source)
-	if Passport then
-	  return Fines(Passport)
-	end
-end
-
------------------------------------------------------------------------------------------------------------------------------------------
--- TRANSFERENCE
------------------------------------------------------------------------------------------------------------------------------------------
-function Creative.FinePayment(id)
-	local source = source
-	local Passport = vRP.Passport(source)
-	local id = id
-	if Passport and Active[Passport] == nil then
-		Active[Passport] = true
-		local result = vRP.Query('fines/Check',{ Passport = Passport, id = id })
-		if result[1] then
-			if vRP.PaymentBank(Passport, result[1].Value) then
-				vRP.RemoveFine(Passport,result[1].Value)
-				vRP.Query("fines/Remove",{ Passport = Passport, id = id })
-				Active[Passport] = nil
-				return true
-			end
-		end
-		Active[Passport] = nil
-	end
-	return false
-end
------------------------------------------------------------------------------------------------------------------------------------------
--- TRANSFERENCE
------------------------------------------------------------------------------------------------------------------------------------------
-function Creative.FinePaymentAll()
-    local source = source
-    local Passport = vRP.Passport(source)
-    if Passport and Active[Passport] == nil then
-        Active[Passport] = true
-        local result = vRP.Query('fines/List',{ Passport = Passport})
-
-        if result[1] then
-            for i, row in pairs(result) do
-                if not vRP.PaymentFull(Passport, row.Value) then
-                    Active[Passport] = nil
-                    return false
-                end
-            end
-
-            vRP.Query("fines/RemoveAll",{ Passport = Passport })
-            Active[Passport] = nil
-            return true
-        end
-
-        Active[Passport] = nil
-    end
-    return Fines(Passport)
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- TRANSFERENCE
@@ -380,7 +198,7 @@ function Creative.TaxPayment(id)
 		Active[Passport] = true
 		local result = vRP.Query('taxs/Check',{ Passport = Passport, id = id })
 		if result[1] then
-			if vRP.PaymentFull(Passport, result[1].Value) then
+			if vRP.PaymentBank(Passport, result[1].Value) then
 				vRP.Query("taxs/Remove",{ Passport = Passport, id = id })
 				Active[Passport] = nil
 				return true
@@ -429,7 +247,7 @@ function Creative.InvoicePayment(id)
 		Active[Passport] = true
 		local result = vRP.Query('invoices/Check',{ Passport = Passport, id = id })
 		if result[1] then
-			if vRP.PaymentFull(Passport, result[1].Value) then
+			if vRP.PaymentBank(Passport, result[1].Value) then
 				vRP.Query("invoices/Remove",{ Passport = Passport, id = id })
 				Active[Passport] = nil
 				return true
@@ -440,7 +258,7 @@ function Creative.InvoicePayment(id)
 	return false
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
--- ADD DEPENDENTS
+-- MAKEINVOICE
 -----------------------------------------------------------------------------------------------------------------------------------------
 function Creative.MakeInvoice(OtherPassport, value, reason)
 	local source = source
@@ -450,7 +268,7 @@ function Creative.MakeInvoice(OtherPassport, value, reason)
 		Active[Passport] = true
 			local ClosestPed = vRP.Source(OtherPassport)
 			if ClosestPed then
-				if vRP.Request(ClosestPed,"<b>" .. vRP.Identity(Passport).name .. "	" .. vRP.Identity(Passport).name2 .. "</b> lhe enviou uma fatura de <b>R$" .. parseFormat(value) .. "</b>, deseja aceita-la?","Sim, aceito","Não, obrigado") then
+				if vRP.Request(ClosestPed,"Banco","<b>" .. vRP.Identity(Passport).name .. "	" .. vRP.Identity(Passport).name2 .. "</b> lhe enviou uma fatura de <b>R$" .. parseFormat(value) .. "</b>, deseja aceita-la?") then
 				local Received = OtherPassport
 				local Type = "received"
     			local Reason = reason
@@ -504,7 +322,7 @@ function Creative.Invest(amount)
 	local Passport = vRP.Passport(source)
 	if Passport and not Active[Passport] and parseInt(amount) > 0 then
 		Active[Passport] = true
-		if vRP.PaymentFull(Passport, amount, true) then
+		if vRP.PaymentBank(Passport, amount, true) then
 			local investment = vRP.Query('investments/Check',{ Passport = Passport })
 			if  investment[1] then
 				local Value = amount
@@ -540,7 +358,7 @@ end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- ADDTRANSACTIONS
 -----------------------------------------------------------------------------------------------------------------------------------------
-exports("AddTransactions", function(Passport, Type, amount)
+exports("AddTransactions",function(Passport,Type,amount)
 	if vRP.Identity(Passport) then
 	  local Passport = Passport
 	  local Type = Type
@@ -565,20 +383,6 @@ exports("AddTaxs", function(Passport, Name, Value, Message)
 	end
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
--- ADDTAXS
------------------------------------------------------------------------------------------------------------------------------------------
-exports("AddFines", function(Passport, OtherPassport, Value, Message)
-	if vRP.Identity(Passport) then
-		local Passport = Passport
-		local Name = vRP.Identity(OtherPassport).name .. " " .. vRP.Identity(OtherPassport).name2
-		local Date = os.date("%d/%m/%Y")
-		local Hour = os.date("%H:%M")
-		local Value = Value
-		local Message = Message
-	  vRP.Query("fines/Add", {Passport = Passport,Name = Name,Date = Date,Hour = Hour,Value = Value,Message = Message}) 
-	end
-end)
------------------------------------------------------------------------------------------------------------------------------------------
 -- DISCONNECT
 -----------------------------------------------------------------------------------------------------------------------------------------
 AddEventHandler("Disconnect", function(Passport)
@@ -587,7 +391,5 @@ AddEventHandler("Disconnect", function(Passport)
 	end
 end)
 exports("Taxs", Taxs)
-exports("Fines", Fines)
 exports("Invoices", Invoices)
-exports("Dependents", Dependents)
 exports("Transactions", Transactions)

@@ -39,7 +39,7 @@ Citizen.CreateThread(function()
             delay = 1
             if IsHeliHighEnough(heli) then
                 if IsControlJustPressed(0, toggle_helicam) and not helicam then
-                    TriggerEvent("hudActived",false)
+                    TriggerEvent("SecondaryHud:disable")
                     SendNUIMessage({type = 'show'})
                     SetGameplayCamRelativeHeading(0.0)
                     SetGameplayCamRelativePitch(0.0)
@@ -75,7 +75,7 @@ Citizen.CreateThread(function()
             while helicam and not IsEntityDead(lPed) and
                 (GetVehiclePedIsIn(lPed) == heli) and IsHeliHighEnough(heli) do
                 if IsControlJustPressed(0, toggle_helicam) then
-                    --[[ TriggerEvent("hudActived",true) ]]
+                    --[[ TriggerEvent("SecondaryHud:enable") ]]
                     helicam = false
                     SendNUIMessage({type = 'hide'})
                 end
@@ -183,7 +183,7 @@ Citizen.CreateThread(function()
 
                 Citizen.Wait(0)
             end
-            TriggerEvent("hudActived",true)
+            TriggerEvent("SecondaryHud:enable",true)
             helicam = false
             fov = (fov_max + fov_min) * 0.5
             RenderScriptCams(false, false, 0, 1, 0)

@@ -4,6 +4,7 @@ local Proxy = module("vrp", "lib/Proxy")
 -- VRP
 -----------------------------------------------------------------------------------------------------------------------------------------
 vRP = Proxy.getInterface("vRP")
+vRPS = Tunnel.getInterface("vRP")
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- CONNECTION
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -24,8 +25,9 @@ local showHood = false
 local showBlips = {}
 local timeBlips = {}
 local numberBlips = 0
-local clientHunger = 75
-local clientThirst = 75
+
+local clientHunger = 100
+local clientThirst = 100
 local updateFoods = GetGameTimer()
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- SEATBELT
@@ -33,6 +35,12 @@ local updateFoods = GetGameTimer()
 local beltSpeed = 0
 local beltLock = true
 local beltVelocity = vector3(0, 0, 0)
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- SEATBELT
+-----------------------------------------------------------------------------------------------------------------------------------------
+local SeatbeltSpeed = 0
+local SeatbeltLock = false
+local SeatbeltVelocity = vec3(0, 0, 0)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- DIVINABLES
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -89,11 +97,12 @@ end)
 -- -----------------------------------------------------------------------------------------------------------------------------------------
 CreateThread(function()
     while true do
-        if LocalPlayer["state"]["Active"] and (LocalPlayer.state.Hud == "Complexo") and not LocalPlayer.state.Farming then
+        if LocalPlayer["state"]["Active"] and not LocalPlayer.state.Farming then
             if divingMask ~= nil then
                 if GetGameTimer() >= divingTimers then
                     divingTimers = GetGameTimer() + 35000
                     clientOxigen = clientOxigen - 1
+                    -- vRPS.clientOxigen()
                     if clientOxigen <= 0 then
                         ApplyDamageToPed(ply, 50, false)
                     end
@@ -129,12 +138,39 @@ RegisterNetEvent("Progress")
 AddEventHandler("Progress", function(progressTimer, Timer)
     EmitNuiMessage("HUD:PROGRESS", { timer = Timer / 1000 })
 end)
--------------------------------------------------------------------------------------------------------------------------------------------
----- THREADHUD
--------------------------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- THREADTIMERS
+-----------------------------------------------------------------------------------------------------------------------------------------
+local shouldSync = true
+CreateThread(function()
+    local timeWait = 500
+    while true do
+        if homeInterior then
+            SetWeatherTypeNow("CLEAR")
+            SetWeatherTypePersist("CLEAR")
+            SetWeatherTypeNowPersist("CLEAR")
+            NetworkOverrideClockTime(00, 00, 00)
+        else
+            if shouldSync then
+                SetWeatherTypeNow(weatherSync)
+                SetWeatherTypePersist(weatherSync)
+                SetWeatherTypeNowPersist(weatherSync)
+                NetworkOverrideClockTime(clockHours, clockMinutes, 00)
+            end
+        end
+        if beltLock then
+            timeWait = 0
+            DisableControlAction(1, 75, true)
+        end
+        Wait(timeWait)
+    end
+end)
+-- -----------------------------------------------------------------------------------------------------------------------------------------
+-- -- THREADHUD
+-- -----------------------------------------------------------------------------------------------------------------------------------------
 CreateThread(function()
     while true do
-        if LocalPlayer["state"]["Active"] and (LocalPlayer.state.Hud == "Complexo") and not LocalPlayer.state.Farming then
+        if LocalPlayer["state"]["Active"] and not LocalPlayer.state.Farming then
             if GetGameTimer() >= updateFoods and GetEntityHealth(PlayerPedId()) > 101 then
                 updateFoods = GetGameTimer() + 45000
                 clientThirst = clientThirst - 1
@@ -147,41 +183,34 @@ CreateThread(function()
         Wait(30000)
     end
 end)
------------------------------------------------------------------------------------------------------------------------------------------
--- HUD:HUNGER
------------------------------------------------------------------------------------------------------------------------------------------
+
 RegisterNetEvent("hud:Hunger")
 AddEventHandler("hud:Hunger", function(Number)
-    clientHunger = clientHunger + parseInt(Number)
+    clientHunger = parseInt(Number)
     if clientHunger >= 100 then
         clientHunger = 100
     end
 end)
------------------------------------------------------------------------------------------------------------------------------------------
--- HUD:THIRST
------------------------------------------------------------------------------------------------------------------------------------------
+
 RegisterNetEvent("hud:Thirst")
 AddEventHandler("hud:Thirst", function(Number)
-    clientThirst = clientThirst + parseInt(Number)
+    clientThirst = parseInt(Number)
     if clientThirst >= 100 then
         clientThirst = 100
     end
 end)
------------------------------------------------------------------------------------------------------------------------------------------
--- HUD:STRESS
------------------------------------------------------------------------------------------------------------------------------------------
+
+
 RegisterNetEvent("hud:Stress")
 AddEventHandler("hud:Stress", function(Number)
-    clientStress = clientStress + parseInt(Number)
+    clientStress = parseInt(Number)
 end)
------------------------------------------------------------------------------------------------------------------------------------------
--- OPENUI
------------------------------------------------------------------------------------------------------------------------------------------
+
 CreateThread(function()
     while true do
         local ply = PlayerPedId()
         local timeSleep = 5000
-        if LocalPlayer["state"]["Active"] and (LocalPlayer.state.Hud == "Complexo") then
+        if LocalPlayer["state"]["Active"]  then
             timeSleep = 500
             if IsPauseMenuActive() then
                 EmitNuiMessage("HUD:SHOW", { show = false })
@@ -196,7 +225,7 @@ CreateThread(function()
                 local armour = GetPedArmour(ply)
                 local coords = GetEntityCoords(ply)
                 local heading = GetEntityHeading(ply)
-                local streetName = GetStreetNameFromHashKey(GetStreetNameAtCoord(coords["x"], coords["y"], coords["z"]))
+                local CreativeName = GetCreativeNameFromHashKey(GetCreativeNameAtCoord(coords["x"], coords["y"], coords["z"]))
                 if heading >= 315 or heading < 45 then
                     flexDirection = "Norte"
                 elseif heading >= 45 and heading < 135 then
@@ -215,7 +244,7 @@ CreateThread(function()
                     thirst = clientThirst,
                     stress = clientStress,
                     oxigen = clientOxigen,
-                    street = streetName,
+                    Creative = CreativeName,
                     direction = flexDirection,
                     radioMhz = radioDisplay,
                 })
@@ -226,13 +255,11 @@ CreateThread(function()
         Wait(timeSleep)
     end
 end)
------------------------------------------------------------------------------------------------------------------------------------------
--- INFOS
------------------------------------------------------------------------------------------------------------------------------------------
+
 function SetInfos()
     local ply = PlayerPedId()
     if IsPedArmed(ply, 7) then
-        local weaponModel = exports['inventory']:returnWeapon()
+        local weaponModel = exports.inventory:Weapons()
         local weaponHash = GetSelectedPedWeapon(ply)
         local weaponAmmo = GetAmmoInPedWeapon(ply, weaponHash)
         local _, ammoInClip = GetAmmoInClip(ply, weaponHash)
@@ -251,9 +278,10 @@ function SetInfos()
         EmitNuiMessage("HUD:WEAPON", { weapon = nil })
     end
 end
+
 -----------------------------------------------------------------------------------------------------------------------------------------
--- THREADHUD VEHICLE
--------------------------------------------------------------------------------------------------------------------------------------------
+-- -- THREADHUD VEHICLE
+-- -----------------------------------------------------------------------------------------------------------------------------------------
 local InVeh = false
 local timeVehAwait = 1000
 CreateThread(function()
@@ -261,7 +289,7 @@ CreateThread(function()
     while true do
         timeVehAwait = 2500
         local ply = PlayerPedId()
-        if LocalPlayer["state"]["Active"] and (LocalPlayer.state.Hud == "Complexo") then
+        if LocalPlayer["state"]["Active"]  then
             if showHud then
                 if IsPedInAnyVehicle(ply) then
                     if not IsMinimapRendering() then
@@ -320,13 +348,13 @@ CreateThread(function()
         Wait(timeVehAwait)
     end
 end)
--------------------------------------------------------------------------------------------------------------------------------------------
--- HUD
-------------------------------------------------------------------------------------------------------------------------------------------
+-- -----------------------------------------------------------------------------------------------------------------------------------------
+-- -- HUD
+-- -----------------------------------------------------------------------------------------------------------------------------------------
 RegisterCommand("hud", function(source, args)
     showHud = not showHud
+
     if showHud then
-        LocalPlayer.state.Hud = "Complexo"
         TriggerEvent("PrimaryHud:disable")
     end
 
@@ -334,7 +362,7 @@ RegisterCommand("hud", function(source, args)
     if IsMinimapRendering() and not showHud then
         DisplayRadar(false)
     end
-end,false)
+end, false)
 -- -----------------------------------------------------------------------------------------------------------------------------------------
 -- -- HUD:TOGGLEHOOD
 -- -----------------------------------------------------------------------------------------------------------------------------------------
@@ -348,28 +376,25 @@ AddEventHandler("hud:toggleHood", function()
     end
     SendNUIMessage({ hood = showHood })
 end)
-------------------------------------------------------------------------------------------------------------------------------------------
--- HUDACTIVE
-------------------------------------------------------------------------------------------------------------------------------------------
-RegisterNetEvent("hudActived", function()
-    showHud = not showHud
+-- -----------------------------------------------------------------------------------------------------------------------------------------
+-- -- HUDACTIVE
+-- -----------------------------------------------------------------------------------------------------------------------------------------
+RegisterNetEvent("SecondaryHud:enable", function()
+    showHud = true
     DisplayRadar(true)
-
-    if showHud then
-        LocalPlayer.state.Hud = "Complexo"
-        TriggerEvent("PrimaryHud:disable")
-    end
-
     EmitNuiMessage("HUD:SHOW", { show = showHud })
-    if IsMinimapRendering() and not showHud then
-        DisplayRadar(false)
-    end
-
     updateMapPosition()
 end)
--------------------------------------------------------------------------------------------------------------------------------------------
--- HUD:RADIODISPLAY
--------------------------------------------------------------------------------------------------------------------------------------------
+
+RegisterNetEvent("SecondaryHud:disable", function()
+    showHud = false
+    DisplayRadar(false)
+    EmitNuiMessage("HUD:SHOW", { show = showHud })
+    updateMapPosition()
+end)
+-- -----------------------------------------------------------------------------------------------------------------------------------------
+-- -- HUD:RADIODISPLAY
+-- -----------------------------------------------------------------------------------------------------------------------------------------
 RegisterNetEvent("hud:Radio")
 AddEventHandler("hud:Radio", function(Frequency)
     if parseInt(Frequency) <= 0 then
@@ -378,9 +403,9 @@ AddEventHandler("hud:Radio", function(Frequency)
         radioDisplay = parseInt(Frequency)
     end
 end)
-------------------------------------------------------------------------------------------------------------------------------------------
--- FOWARDPED
-------------------------------------------------------------------------------------------------------------------------------------------
+-- -----------------------------------------------------------------------------------------------------------------------------------------
+-- -- FOWARDPED
+-- -----------------------------------------------------------------------------------------------------------------------------------------
 function fowardPed(ped)
     local heading = GetEntityHeading(ped) + 90.0
     if heading < 0.0 then
@@ -389,45 +414,82 @@ function fowardPed(ped)
     heading = heading * 0.0174533
     return { x = math.cos(heading) * 2.0, y = math.sin(heading) * 2.0 }
 end
--------------------------------------------------------------------------------------------------------------------------------------------
--- SEATBELT
--------------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------
+-- THREADBELT
+-----------------------------------------------------------------------------------------------------------------------------------------
+local shouldCheckForSeatBelt = true
+function ChangeCheckForSeatBelt(status)
+    shouldCheckForSeatBelt = status
+end
+CreateThread(function()
+    while true do
+        local timeDistance = 999
+        if playerActive then
+            if IsPedInAnyVehicle(ply) then
+                if not IsPedOnAnyBike(ply) and not IsPedInAnyHeli(ply) and not IsPedInAnyPlane(ply) and shouldCheckForSeatBelt then
+                    timeDistance = 50
+                    local vehicle = GetVehiclePedIsUsing(ply)
+                    local speed = GetEntitySpeed(vehicle) * 3.6
+                    if speed ~= beltSpeed then
+                        if (beltSpeed - speed) >= 40 and not beltLock then
+                            local fowardVeh = fowardPed(ply)
+                            local coords = GetEntityCoords(ply)
+                            SetEntityCoords(ply, coords["x"] + fowardVeh["x"], coords["y"] + fowardVeh["y"], coords["z"] + 1, 1, 0, 0, 0)
+                            SetEntityVelocity(ply, beltVelocity["x"], beltVelocity["y"], beltVelocity["z"])
+                            ApplyDamageToPed(ply, 50, false)
+                            Wait(1)
+                            SetPedToRagdoll(ply, 5000, 5000, 0, 0, 0, 0)
+                        end
+                        beltVelocity = GetEntityVelocity(vehicle)
+                        beltSpeed = speed
+                    end
+                end
+            else
+                if beltSpeed ~= 0 then
+                    beltSpeed = 0
+                end
+                if beltLock then
+                    beltLock = false
+                end
+            end
+        end
+        Wait(timeDistance)
+    end
+end)
+-- -----------------------------------------------------------------------------------------------------------------------------------------
+-- -- SEATBELT
+-- -----------------------------------------------------------------------------------------------------------------------------------------
 RegisterCommand("seatbelt", function()
-    if LocalPlayer.state.Hud == "Complexo" then
         local ply = PlayerPedId()
         if not IsPedInAnyVehicle(ply, false) or IsPedOnAnyBike(ply) then return end
         if beltLock then
-            TriggerEvent("sounds:Private","unbelt",0.5)
+            TriggerEvent("sounds:Private", "unbelt", 0.5)
             beltLock = false
         else
-            TriggerEvent("sounds:Private","belt",0.5)
+            TriggerEvent("sounds:Private", "belt", 0.5)
             beltLock = true
-        end
     end
 end, false)
------------------------------------------------------------------------------------------------------------------------------------------
--- SEATBELT
------------------------------------------------------------------------------------------------------------------------------------------
+
 AddEventHandler("hud:seatbelt", function(state)
-    if LocalPlayer.state.Hud == "Complexo" then
         if not IsPedInAnyVehicle(ply, false) or IsPedOnAnyBike(ply) then return end
 
         beltLock = state
 
         if beltLock then
-            TriggerEvent("sounds:Private","belt",0.5)
+            TriggerEvent("sounds:source", "belt", 0.5)
         else
-            TriggerEvent("sounds:Private","unbelt",0.5)
-        end
+            TriggerEvent("sounds:source", "unbelt", 0.5)
+
     end
 end)
--------------------------------------------------------------------------------------------------------------------------------------------
--- KEYMAPPING
--------------------------------------------------------------------------------------------------------------------------------------------
+-- -----------------------------------------------------------------------------------------------------------------------------------------
+-- -- KEYMAPPING
+-- -----------------------------------------------------------------------------------------------------------------------------------------
 RegisterKeyMapping("seatbelt", "Colocar/Retirar o cinto.", "keyboard", "g")
 -------------------------------------------------------------------------------------------------------------------------------
--- REMOVESCUBA
--------------------------------------------------------------------------------------------------------------------------------
+-- -- REMOVESCUBA
+-- -----------------------------------------------------------------------------------------------------------------------------------------
 RegisterNetEvent("hud:ScubaRemove")
 AddEventHandler("hud:ScubaRemove", function()
     if DoesEntityExist(divingMask) or DoesEntityExist(divingTank) then
@@ -443,23 +505,24 @@ AddEventHandler("hud:ScubaRemove", function()
         SetPedMaxTimeUnderwater(ply, 10.0)
     end
 end)
+
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- VARIABLES
 -----------------------------------------------------------------------------------------------------------------------------------------
 function GetMinimapAnchor()
     -- Safezone goes from 1.0 (no gap) to 0.9 (5% gap (1/20))
     -- 0.05 * ((safezone - 0.9) * 10)
-    local defaultAspectRatio = 1920/1080 -- Don't change this.
+    local defaultAspectRatio = 1920 / 1080 -- Don't change this.
     local resolutionX, resolutionY = GetActiveScreenResolution()
-    local aspectRatio = resolutionX/resolutionY
+    local aspectRatio = resolutionX / resolutionY
     local minimapXOffset, minimapYOffset = 0, 0
     if aspectRatio > defaultAspectRatio then
-        local aspectDifference = defaultAspectRatio-aspectRatio
-        minimapXOffset = aspectDifference/3.6
+        local aspectDifference = defaultAspectRatio - aspectRatio
+        minimapXOffset = aspectDifference / 3.6
     end
-    SetMinimapComponentPosition("minimap", "L", "B", -0.0045+minimapXOffset, 0.002+minimapYOffset, 0.150, 0.188888)
-    SetMinimapComponentPosition("minimap_mask", "L", "B", 0.020+minimapXOffset, 0.030+minimapYOffset, 0.111, 0.159)
-    SetMinimapComponentPosition("minimap_blur", "L", "B", -0.03+minimapXOffset, 0.022+minimapYOffset, 0.266, 0.237)
+    SetMinimapComponentPosition("minimap", "L", "B", -0.0045 + minimapXOffset, 0.002 + minimapYOffset, 0.150, 0.188888)
+    SetMinimapComponentPosition("minimap_mask", "L", "B", 0.020 + minimapXOffset, 0.030 + minimapYOffset, 0.111, 0.159)
+    SetMinimapComponentPosition("minimap_blur", "L", "B", -0.03 + minimapXOffset, 0.022 + minimapYOffset, 0.266, 0.237)
     local safezone = GetSafeZoneSize()
     local safezone_x = 1.0 / 20.0
     local safezone_y = 1.0 / 20.0
@@ -483,9 +546,7 @@ function GetMinimapAnchor()
     Minimap.res_y = res_y
     return Minimap
 end
------------------------------------------------------------------------------------------------------------------------------------------
--- UPDATEMAP
------------------------------------------------------------------------------------------------------------------------------------------
+
 function updateMapPosition()
     local defaultAspectRatio = 1920 / 1080
     local resolutionX, resolutionY = GetActiveScreenResolution()
@@ -520,18 +581,16 @@ function updateMapPosition()
     Wait(1000)
     DisplayRadar(false)
 end
------------------------------------------------------------------------------------------------------------------------------------------
--- MAP
------------------------------------------------------------------------------------------------------------------------------------------
+
 CreateThread(function()
     Wait(1000)
     while true do
         local timeSleep = 10000
-        if LocalPlayer.state.Hud == "Complexo" then
+        -- if LocalPlayer.state.Hud == "Creative" then
             timeSleep = 5000
             local Minimap = GetMinimapAnchor()
             local anchor = {
-                Street = {
+                Creative = {
                     Top = (Minimap.res_y * Minimap.top_y) - 55,
                     Left = (Minimap.res_x * Minimap.left_x)
                 },
@@ -544,13 +603,11 @@ CreateThread(function()
             }
 
             EmitNuiMessage("HUD:BOUNDS", { anchor = anchor })
-        end
+        -- end
         Wait(timeSleep)
     end
 end)
------------------------------------------------------------------------------------------------------------------------------------------
--- WEAPONINFO
------------------------------------------------------------------------------------------------------------------------------------------
+
 function SendWeaponInfo()
     local ply = PlayerPedId()
     local weaponModel = exports.inventory:Weapons()
@@ -568,9 +625,7 @@ function SendWeaponInfo()
         }
     })
 end
------------------------------------------------------------------------------------------------------------------------------------------
--- NOTIFY
------------------------------------------------------------------------------------------------------------------------------------------
+
 local notifyId = 0
 local notifyStyles = {
     ["vermelho"] = { "error", "Ocorreu um erro!" },
@@ -599,15 +654,14 @@ AddEventHandler("Notify", function(style, message, title, timer)
         }
     })
 end)
------------------------------------------------------------------------------------------------------------------------------------------
--- EMITNUI
------------------------------------------------------------------------------------------------------------------------------------------
+
 function EmitNuiMessage(type, payload)
     SendNUIMessage({
         type = type,
         payload = { payload } or {}
     })
 end
+
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- RADAR
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -615,7 +669,7 @@ CreateThread(function()
     while true do
         local timeDistance = 999
         local ply = PlayerPedId()
-        if IsPedInAnyPoliceVehicle(ply) and policeService and (LocalPlayer.state.Hud == "Complexo") then
+        if IsPedInAnyPoliceVehicle(ply) and policeService  then
             if policeRadar then
                 if not policeFreeze then
                     timeDistance = 100
@@ -663,13 +717,9 @@ CreateThread(function()
         Wait(timeDistance)
     end
 end)
------------------------------------------------------------------------------------------------------------------------------------------
--- RADAR
------------------------------------------------------------------------------------------------------------------------------------------
-RegisterCommand("toggleRadar", function(source, args)
-    local ply = PlayerPedId()
 
-    --[[ if IsPedInAnyPoliceVehicle(ply) and policeService then ]]
+RegisterCommand("toggleRadar", function(source, args)
+    if IsPedInAnyPoliceVehicle(ply) and policeService then
         if policeRadar then
             policeRadar = false
 
@@ -681,27 +731,22 @@ RegisterCommand("toggleRadar", function(source, args)
             EmitNuiMessage("HUD:SET_FRONT_RADAR", { Plate = "--", Model = "Desconhecido", Speed = 0 })
             EmitNuiMessage("HUD:SET_BACK_RADAR", { Plate = "--", Model = "Desconhecido", Speed = 0 })
         end
-    --[[ end ]]
+    end
 end, false)
------------------------------------------------------------------------------------------------------------------------------------------
--- FREEZE
------------------------------------------------------------------------------------------------------------------------------------------
+
 RegisterCommand("toggleFreeze", function(source, args)
     if IsPedInAnyPoliceVehicle(ply) and policeService then
         policeFreeze = not policeFreeze
     end
 end, false)
------------------------------------------------------------------------------------------------------------------------------------------
--- UPDATESERVICE
------------------------------------------------------------------------------------------------------------------------------------------
+
 RegisterNetEvent("police:updateService", function(status)
     policeService = status
 end)
------------------------------------------------------------------------------------------------------------------------------------------
--- REGISTERKEYMAPPING
------------------------------------------------------------------------------------------------------------------------------------------
+
 RegisterKeyMapping("toggleRadar", "Ativar/Desativar radar das viaturas.", "keyboard", "N")
 RegisterKeyMapping("toggleFreeze", "Travar/Destravar radar das viaturas.", "keyboard", "M")
+
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- WANTED
 -----------------------------------------------------------------------------------------------------------------------------------------

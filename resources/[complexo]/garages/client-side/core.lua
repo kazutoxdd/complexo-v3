@@ -160,28 +160,6 @@ function Creative.CreateVehicle(Model, Network, Engine, Health, Customize, Windo
 				VehicleMods(Vehicle, Mods)
 			end
 
-			if Brakes[1] ~= nil then
-				if Brakes[1] > 0.90 then
-					Brakes[1] = 0.90
-				end
-			end
-
-			if Brakes[2] ~= nil then
-				if Brakes[2] > 0.55 then
-					Brakes[2] = 0.55
-				end
-			end
-
-			if Brakes[3] ~= nil then
-				if Brakes[3] > 0.75 then
-					Brakes[3] = 0.75
-				end
-			end
-
-			SetVehicleHandlingFloat(Vehicle, "CHandlingData", "fBrakeForce", Brakes[1] or 0.90)
-			SetVehicleHandlingFloat(Vehicle, "CHandlingData", "fBrakeBiasFront", Brakes[2] or 0.55)
-			SetVehicleHandlingFloat(Vehicle, "CHandlingData", "fHandBrakeForce", Brakes[3] or 0.75)
-
 			SetVehicleEngineHealth(Vehicle, Engine + 0.0)
 			SetVehicleHasBeenOwnedByPlayer(Vehicle, true)
 			SetVehicleNeedsToBeHotwired(Vehicle, false)
@@ -241,7 +219,6 @@ function Creative.CreateVehicle(Model, Network, Engine, Health, Customize, Windo
 	SendNUIMessage({ action = "Visible", data = false })
 	SetNuiFocus(false, false)
 end
-
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- GetVehiclesInArea
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -260,7 +237,6 @@ function GetVehiclesInArea(coords, radius)
 	EndFindVehicle(handle)
 	return vehicles
 end
-
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- ClosestVehicleModelOnRadius
 -----------------------------------------------------------------------------------------------------------------------------------------

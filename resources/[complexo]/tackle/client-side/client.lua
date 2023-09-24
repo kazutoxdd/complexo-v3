@@ -12,12 +12,14 @@ local function GetForwardPed()
     until hit ~= 0 or GetGameTimer() > timeout
     return result == 2 and hit and entity
 end
+
+
 local function Tackle()
     while plyVeh == 0 and plyInWorld do
         if IsControlPressed(0, 38) and (IsPedRunning(ply) or IsPedSprinting(ply)) and not IsPedSwimming(ply) then
             local forwardPed = GetForwardPed()
             if forwardPed and IsEntityAPed(forwardPed) then
-                if IsPedAPlayer(forwardPed) then _TRE("tackle:Update", GetPlayerServerId(NetworkGetPlayerIndexFromPed(forwardPed))) end
+                if IsPedAPlayer(forwardPed) then TriggerServerEvent("tackle:Update", GetPlayerServerId(NetworkGetPlayerIndexFromPed(forwardPed))) end
                 if not IsPedRagdoll(ply) then
                     LoadAnimDict(dict)
                     if not IsEntityPlayingAnim(ply, dict, anim, 3) then TaskPlayAnim(ply, dict, anim, 8.0, -8, -1, 49, 0, 0, 0, 0) end
@@ -33,12 +35,10 @@ local function Tackle()
         Wait(100)
     end
 end
-CreateThread(Tackle)
-_AEH("utils:GetVehiclePedIsIn", function(veh)
-    if veh > 0 then return end
-    CreateThread(Tackle)
-end)
-_RNE("tackle:Player", function()
+
+
+RegisterNetEvent("tackle:Player")
+AddEventHandler("tackle:Player", function()
     SetPedToRagdoll(ply, 5000, 5000, 0, false, false, false)
-    _TRE("inventory:Cancel")
+    TriggerEvent("inventory:Cancel")
 end)

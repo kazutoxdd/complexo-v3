@@ -9,72 +9,15 @@ vRP = Proxy.getInterface("vRP")
 -----------------------------------------------------------------------------------------------------------------------------------------
 vSERVER = Tunnel.getInterface("bank")
 -----------------------------------------------------------------------------------------------------------------------------------------
--- THREADSTART
------------------------------------------------------------------------------------------------------------------------------------------
-CreateThread(function()
-    local Table = {}
-
-    for _,v in pairs(Locations) do
-        table.insert(Table,{ v[1],v[2],v[3],1.25,"E","Banco","Pressione para abrir" })
-    end
-
-    TriggerEvent("hoverfy:Insert",Table)
-end)
------------------------------------------------------------------------------------------------------------------------------------------
--- THREADOPEN
------------------------------------------------------------------------------------------------------------------------------------------
-CreateThread(function()
-	while true do
-		local TimeDistance = 999
-		if LocalPlayer["state"]["Route"] < 900000 then
-			local Ped = PlayerPedId()
-
-			if not IsPedInAnyVehicle(Ped) then
-				local Coords = GetEntityCoords(Ped)
-				
-				for _,v in pairs(Locations) do
-					local Distance = #(Coords - vec3(v[1],v[2],v[3]))
-					if Distance <= 0.75 then
-						if MumbleIsConnected() then
-							LocalPlayer['state']['Cancel'] = false
-							LocalPlayer['state']['Commands'] = false
-							FreezeEntityPosition(Ped, false)
-						else
-							TimeDistance = 1
-							LocalPlayer['state']['Cancel'] = true
-							  LocalPlayer['state']['Commands'] = true
-							FreezeEntityPosition(Ped, true)
-						end
-
-						TimeDistance = 1
-						
-						if IsControlJustPressed(1,38) and vSERVER.Wanted() then
-							SetNuiFocus(true,true)
-							SendNUIMessage({ Action = "Open", name = LocalPlayer["state"]["Name"] })
-						end
-					end
-				end
-			end
-
-		end
-		
-		Wait(TimeDistance)
-	end
-end)
-
------------------------------------------------------------------------------------------------------------------------------------------
--- TARGET
+-- BANK
 -----------------------------------------------------------------------------------------------------------------------------------------
 RegisterNetEvent("Bank")
 AddEventHandler("Bank",function()
-    if LocalPlayer["state"]["Route"] < 900000 then
-		local source = source
-		TriggerEvent("Progress",source,"Aplicando",3000)
-        SetNuiFocus(true,true)
-		Wait(3000)
-        SendNUIMessage({ Action = "Open", name = LocalPlayer["state"]["Name"] })
-        vRP.playAnim(false,{"amb@prop_human_atm@male@idle_a","idle_a"},false)
-    end
+	if vSERVER.Verify() then
+		SetNuiFocus(true,true)
+		SendNUIMessage({ Action = "Open", name = LocalPlayer["state"]["Name"] })
+		vRP.playAnim(false,{"amb@prop_human_atm@male@idle_a","idle_a"},false)
+	end
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- CLOSE
@@ -117,17 +60,13 @@ end)
 -- ADDDEPENDENTS
 -----------------------------------------------------------------------------------------------------------------------------------------
 RegisterNUICallback("AddDependents",function(Data,Callback)
-	if Data["passport"] then
-		Callback(vSERVER.AddDependents(Data["passport"]))
-	else
-		Callback(false)
-	end
+	TriggerClientEvent("Notify",source,"Atenção","Sistema indisponível.","amarelo",5000)
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- REMOVEDEPENDENTS
 -----------------------------------------------------------------------------------------------------------------------------------------
 RegisterNUICallback("RemoveDependents",function(Data,Callback)
-	Callback(vSERVER.RemoveDependents(Data["passport"]))
+	TriggerClientEvent("Notify",source,"Atenção","Sistema indisponível.","amarelo",5000)
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- INVESTMENTS
