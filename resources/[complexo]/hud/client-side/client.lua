@@ -181,7 +181,7 @@ CreateThread(function()
     while true do
         local ply = PlayerPedId()
         local timeSleep = 5000
-        if LocalPlayer["state"]["Active"] and (LocalPlayer.state.Hud == "Complexo") then
+        if LocalPlayer["state"]["Active"]  then
             timeSleep = 500
             if IsPauseMenuActive() then
                 EmitNuiMessage("HUD:SHOW", { show = false })
