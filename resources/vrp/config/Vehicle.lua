@@ -7423,3 +7423,25 @@ local List = {
 	
 		return "Desconhecido"
 	end
+
+-----------------------------------------------------------------------------------------------------
+-- VehicleIndexByName
+-----------------------------------------------------------------------------------------------------------------------------------------
+local cachedNames = {}
+
+function VehicleIndexByName(Name)
+    if not cachedNames[Name] then
+        for k, v in pairs(List) do
+            if not cachedNames[v.Name] then
+                cachedNames[v.Name] = {}
+            end
+            cachedNames[v.Name].index = k
+        end
+    end
+
+    if cachedNames[Name] then
+        return cachedNames[Name].index
+    else
+        return 'Todos'
+    end
+end

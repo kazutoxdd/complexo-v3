@@ -185,13 +185,6 @@ function Showroom:initTestDrive(vehModel)
     self:deleteVehicleOnDisplay()
 
     SetNUIDisplay(false)
-    if not vSERVER.CheckDrive(vehModel) then return end
-
-    LoadModel(vehModel)
-    local vehicleSpawnCoord = CONFIG.TEST_DRIVE_VEHICLE_SPAWN_COORDS
-    self.vehicleEntity = CreateVehicle(vehModel, vehicleSpawnCoord.x, vehicleSpawnCoord.y, vehicleSpawnCoord.z,
-        vehicleSpawnCoord.w, false, true)
-    while not DoesEntityExist(self.vehicleEntity) do Wait(10) end
 
     self:startTestDriveThread(vehModel)
 end
@@ -262,7 +255,7 @@ function Showroom:startTestDriveThread(Data)
             SetVehicleNeonLightEnabled(Mount, 2, true)
             SetVehicleNeonLightEnabled(Mount, 3, true)
             SetVehicleNeonLightsColour(Mount, 155, 0, 0)
-            SetVehicleNumberPlateText(Mount, "PDMSPORT")
+            SetVehicleNumberPlateText(Mount, "COMPLEXO")
             SetPedIntoVehicle(PlayerPedId(), Mount, -1)
             SetEntityInvincible(Mount, true)
             SetModelAsNoLongerNeeded(Data)

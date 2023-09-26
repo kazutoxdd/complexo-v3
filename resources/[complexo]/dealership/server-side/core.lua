@@ -37,19 +37,6 @@ function Creative.Buy(Name)
 						if vehicle[1] then
 							if vehicle[1]["rental"] <= os.time() then
 								vRP._Query("vehicles/rentalVehiclesUpdate", { Passport = Passport, vehicle = Name })
-								exports['logs']:customLogs('dealership', {
-									Passport = Passport,
-									fields = {
-										{ ['name'] = 'Passaporte', ['value'] = Passport },
-										{ ['name'] = 'Carro',      ['value'] = Name },
-										{ ['name'] = 'Valor',      ['value'] = VehiclePrice },
-										{ ['name'] = 'Tipo',       ['value'] = "Renovou" }
-									},
-									discord = false,
-									screenshot = false,
-									coords = false,
-									ip = false
-								})
 								TriggerClientEvent("Notify", source, "verde",
 									"Compra do veículo <b>" .. VehicleName(Name) .. "</b> atualizado.", "Sucesso", 5000)
 							else
@@ -74,19 +61,6 @@ function Creative.Buy(Name)
 						else
 							vRP._Query("vehicles/rentalVehicles",
 								{ Passport = Passport, vehicle = Name, plate = vRP.GeneratePlate(), work = "false" })
-							exports['logs']:customLogs('dealershipvip', {
-								Passport = Passport,
-								fields = {
-									{ ['name'] = 'Passaporte', ['value'] = Passport },
-									{ ['name'] = 'Carro',      ['value'] = Name },
-									{ ['name'] = 'Valor',      ['value'] = VehiclePrice },
-									{ ['name'] = 'Tipo',       ['value'] = "Rental" }
-								},
-								discord = false,
-								screenshot = false,
-								coords = false,
-								ip = false
-							})
 							TriggerClientEvent("Notify", source, "verde",
 								"Compra do veículo <b>" .. VehicleName(Name) .. "</b> concluído.", "Sucesso", 5000)
 						end

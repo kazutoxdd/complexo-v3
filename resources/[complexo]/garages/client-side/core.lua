@@ -571,6 +571,8 @@ CreateThread(function()
 
 					if Distance <= 8.0 then
 						TimeDistance = 1
+						DrawMarker(23, v.coord.x, v.coord.y, v.coord.z - 0.95, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.75, 1.75,
+							0.0, 83, 20, 163, 100, 0, 0, 0, 0)
 						if Distance <= 1.25 then
 							DisableControlAction(0, 24, true)
 							if IsControlJustPressed(1, 38) and not LocalPlayer["state"]["usingPhone"] and not LocalPlayer["state"]["Target"] then
@@ -586,7 +588,7 @@ CreateThread(function()
 										for k, v in pairs(Vehicles[i]) do
 											originalVehicle[k] = v
 										end
-										originalVehicle.category = GetVehicleClass(Vehicles[i].name)
+										originalVehicle.category = VehicleClass(VehicleIndexByName(Vehicles[i].name))
 
 										if not originalVehicle["status"] then
 											originalVehicle["status"] = {}
