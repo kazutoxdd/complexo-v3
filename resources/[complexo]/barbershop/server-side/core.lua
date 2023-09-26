@@ -63,8 +63,6 @@ AddEventHandler("barbershop:Debug",function()
 	local Passport = vRP.Passport(source)
 	if Passport and not Debug[Passport] or os.time() > Debug[Passport] then
 
-		exports['barbershop']:Apply(vRP.UserData(Passport,"Barbershop"))
-
 		TriggerClientEvent("skinshop:Apply",source,vRP.UserData(Passport,"Clothings"))
 		TriggerClientEvent("tattoos:Apply",source,vRP.UserData(Passport,"Tatuagens"))
 		TriggerClientEvent("target:Debug",source)
