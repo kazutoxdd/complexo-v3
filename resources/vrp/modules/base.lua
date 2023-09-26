@@ -276,11 +276,6 @@ function vRP.CharacterChosen(source,Passport,Model)
                 vRP.GenerateItem(Passport,k,v,false)
             end
 
-        local Identity = vRP.Identity(Passport)
-	    if Identity["serial"] == nil then
-		    vRP.Query("characters/setSerial",{ Passport = Passport, serial = vRP.GenerateSerial() })
-	    end
-
             if NewItemIdentity then
                 vRP.GenerateItem(Passport,"identity-"..Passport,1,false)
             end
