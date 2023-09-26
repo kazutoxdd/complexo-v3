@@ -2277,7 +2277,7 @@ Use = {
 		local homeName = exports["propertys"]:homesTheft(source)
 		if homeName then
 			vRPC.stopActived(source)
-			vRP.upgradeStress(Passport,2)
+			vRP.UpgradeStress(Passport,2)
 			TriggerClientEvent("inventory:Close",source)
 			TriggerClientEvent("inventory:Buttons",source,true)
 			vRPC.playAnim(source,false,{"missheistfbi3b_ig7","lift_fibagent_loop"},false)

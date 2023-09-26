@@ -329,17 +329,20 @@ end)
 -- MAIN THREAD
 -----------------------------------------------------------------------------------------------------------------------------------------
 CreateThread(function()
-	local ply = PlayerPedId()
-
 	while true do
-		local delay = 500
-		if not IsPedInAnyVehicle(ply) then
-			local coords = GetEntityCoords(ply)
-			for _, shopData in ipairs(SHOP_LOCATIONS) do
-				if #(coords - shopData.coords) <= 5 then
-					delay = 1
-					if IsControlJustPressed(0, 38) then
-						openShop(shopData.shop)
+		local delay = 999
+		if LocalPlayer["state"]["Route"] < 900000 then
+			local Ped = PlayerPedId()
+			if not IsPedInAnyVehicle(Ped) then
+				local coords = GetEntityCoords(Ped)
+
+				for _, shopData in ipairs(SHOP_LOCATIONS) do
+					if #(coords - shopData.coords) <= 5 then
+						delay = 1
+						
+						if IsControlJustPressed(0, 38) then
+							openShop(shopData.shop)
+						end
 					end
 				end
 			end
@@ -351,16 +354,11 @@ end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- INTERFACE METHODS
 -----------------------------------------------------------------------------------------------------------------------------------------
-
-RegisterCommand("admskinshop", function (shopType)
-	openShop("Default")
-end)
-
 function openShop(shopType)
 	local ply = PlayerPedId()
 	
 	if InShop then return end
-	TriggerEvent("hud:enable", false)
+	TriggerEvent("hud:active", false)
 	InShop = true
 	setupCamera()
 	EmitNuiMessage("SKINSHOP:SET_VISIBLE", { toggle = true, fileName = GetEntityArchetypeName(ply).."-"..shopType })
@@ -370,7 +368,7 @@ end
 
 function closeShop()
 	if not InShop then return end
-	TriggerEvent("hud:enable", true)
+	TriggerEvent("hud:active", true)
 	if ChangeData then
 		ChangeData = false
 		exports["skinshop"]:Apply(SkinData)
@@ -508,7 +506,7 @@ RegisterNUICallback("TRY_BUY_CLOTHES",function(data, cb)
 	DestroyCam(Cam)
 	Cam = nil
 	EmitNuiMessage("SKINSHOP:SET_VISIBLE", { toggle = false })
-	TriggerEvent("hud:enable", true)
+	TriggerEvent("hud:active", true)
 	InShop = false
 	SetNuiFocus(false, false)
 	vRP.stopAnim()

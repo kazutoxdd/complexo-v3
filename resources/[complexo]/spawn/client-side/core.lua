@@ -138,7 +138,7 @@ AddEventHandler("spawn:justSpawn",function(Open,Barbershop)
 		SetEntityVisible(PlayerPedId(),true,false)
 		LocalPlayer["state"]:set("Invisible",false,true)
 		SendNUIMessage({ Action = "Close" })
-		TriggerEvent("SecondaryHud:enable")
+		TriggerEvent("hud:active",true)
 		SetNuiFocus(false,false)
 
 		if DoesCamExist(Camera) then
@@ -169,7 +169,7 @@ RegisterNUICallback("Spawn",function(Data,Callback)
 	SetEntityVisible(PlayerPedId(),true,false)
 	LocalPlayer["state"]:set("Invisible",false,true)
 	SendNUIMessage({ Action = "Close" })
-	TriggerEvent("SecondaryHud:enable")
+	TriggerEvent("hud:active",true)
 	SetNuiFocus(false,false)
 
 	Callback("Ok")

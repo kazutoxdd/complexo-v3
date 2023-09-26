@@ -256,8 +256,11 @@ end)
 RegisterNetEvent("barbershop:Apply")
 AddEventHandler("barbershop:Apply", function(customs)
     customization = customs
-    exports['barbershop']:Update()
-    print('Carregado com Sucesso!')
+    exports['barbershop']:Update(customization)
+end)
+
+exports("Apply",function(customs)
+    exports['barbershop']:Update(customs)
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- DISPLAYBARBERSHOP
@@ -286,10 +289,10 @@ function DisplayBarbershop(enable)
         local x, y, z = table.unpack(GetEntityCoords(ply))
         SetCamCoord(cam, x + 0.3, y + 0.34, z + 0.8)
         SetCamRot(cam, -22.0, 0.0, 150.0)
-        TriggerEvent("SecondaryHud:disable")
+        TriggerEvent('hud:active',false)
     else
-        TriggerEvent("SecondaryHud:enable")
-        --vRP.removeObjects()
+        TriggerEvent('hud:active',true)
+        --vRP.stopAnim(false)
         EmitNuiMessage("BARBERSHOP:SHOW", { show = false })
         SetPlayerInvincible(ply, false)
         RenderScriptCams(false, false, 0, 1, 0)
@@ -340,28 +343,34 @@ end)
 -- THREADOPEN
 -----------------------------------------------------------------------------------------------------------------------------------------
 CreateThread(function()
-    local ply = PlayerPedId()
     SetNuiFocus(false, false)
-    while true do
-        local timeDistance = 999
-        if not IsPedInAnyVehicle(ply) then
-            local coords = GetEntityCoords(ply)
-            for _, v in pairs(locations) do
-                local distance = #(coords - vector3(v[1], v[2], v[3]))
-                if distance <= 2.5 then
-                    timeDistance = 1
-                    if IsControlJustPressed(1, 38) then
-                        DisplayBarbershop(true)
+	while true do
+		local TimeDistance = 999
+		if LocalPlayer["state"]["Route"] < 900000 then
+			local Ped = PlayerPedId()
+			if not IsPedInAnyVehicle(Ped) then
+				local coords = GetEntityCoords(Ped)
+
+                for _, v in pairs(locations) do
+                    local distance = #(coords - vector3(v[1], v[2], v[3]))
+                    if distance <= 2.5 then
+                        timeDistance = 1
+                        if IsControlJustPressed(1, 38) and vSERVER.CheckWanted() then
+                            DisplayBarbershop(true)
+                        end
                     end
                 end
             end
         end
+
         Wait(timeDistance)
     end
 end)
 
 RegisterCommand('admbarbershop', function()
-    DisplayBarbershop(true)
+    if vSERVER.CheckPerm() then 
+        DisplayBarbershop(true)
+    end
 end)
 
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -417,11 +426,11 @@ function UpdateDrawables()
 	EmitNuiMessage("BARBERSHOP:MAXDRAWABLES", { maxDrawables = valuesMax })
 end
 
-exports("Update",function()
+exports("Update",function(customs)
     local ply = PlayerPedId()
-    exports['barbershop']:UpdateSkin()
-    exports['barbershop']:UpdateFace()
-    exports['barbershop']:UpdateHead()
+    exports['barbershop']:UpdateSkin(customs)
+    exports['barbershop']:UpdateFace(customs)
+    exports['barbershop']:UpdateHead(customs)
     if not IsEntityPlayingAnim(ply, "mp_character_creation@customise@male_a", "drop_loop", 3) then
         --vRP.playAnim(false, { "mp_character_creation@customise@male_a", "drop_loop" }, true)
     end

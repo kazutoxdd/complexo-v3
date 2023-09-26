@@ -81,11 +81,3 @@ AddEventHandler("Disconnect",function(Passport)
 		Debug[Passport] = nil
 	end
 end)
------------------------------------------------------------------------------------------------------------------------------------------
--- RESOURCESTART
------------------------------------------------------------------------------------------------------------------------------------------
-AddEventHandler("onResourceStart",function(Resource)
-    if "barbershop" == Resource then
-        Wait(3000)
-    end
-end)
