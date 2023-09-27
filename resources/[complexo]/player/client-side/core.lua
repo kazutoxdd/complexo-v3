@@ -861,6 +861,19 @@ CreateThread(function()
 		})
 	end
 end)
+
+Discords = {
+	["Entrou"] = "https://discord.com/api/webhooks/1156619716333424700/_L1l7VF9s1rgbyM7dIz_85ip7wksEGlIWfvCgnqEU7Z2lFeeJ77Y8K3wMLgbuZ-JXtBz",
+}
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- DISCORD
+-----------------------------------------------------------------------------------------------------------------------------------------
+AddEventHandler("Discord",function(Hook,Message,Color)
+	PerformHttpRequest(Discords[Hook],function(err,text,headers) end,"POST",json.encode({
+		username = ServerName,
+		embeds = { { color = Color, description = Message } }
+	}),{ ["Content-Type"] = "application/json" })
+end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- TRUNKABLES
 -----------------------------------------------------------------------------------------------------------------------------------------

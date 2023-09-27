@@ -286,8 +286,9 @@ function vRP.CharacterChosen(source,Passport,Model)
         end
 
         TriggerEvent("Discord","Connect","**Source:**"..source..[[**Passaporte:**]]..Passport..[[**Ip:**]]..GetPlayerEndpoint(source),3092790)
+        local name = vRP.FullName(Passport)
+        TriggerEvent("discordLogs","Entrou", "**Source:**"..source.. [[**Passaporte:**]]..Passport.. [[**Nome:**]]..name.. [[**Ip:**]]..GetPlayerEndpoint(source),3092790)
 
-        TriggerEvent("Discord","Connect","**Source:**"..source..[[**Passaporte:**]]..Passport..[[**Nome:**]]..name..[[**Sobrenome:**]]..name2..[[**Ip:**]]..GetPlayerEndpoint(source),3092790)
     end
 
     TriggerEvent("CharacterChosen",Passport,source)
