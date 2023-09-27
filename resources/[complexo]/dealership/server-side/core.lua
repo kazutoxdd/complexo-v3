@@ -25,7 +25,7 @@ function Creative.Buy(Name)
 			Active[Passport] = true
 			if VehicleMode(Name) == "Rental" or not VehicleMode(Name) then
 				Active[Passport] = nil
-				local VehiclePrice = VehicleGemstone(Name)
+				local VehiclePrice = VehicleGems(Name)
 				local Text = "Alugar o veículo <b>" ..
 					VehicleName(Name) .. "</b> por <b>" .. VehiclePrice .. "</b> Gemas?"
 				if vRP.ConsultItem(Passport, "rentalveh", 1) then
