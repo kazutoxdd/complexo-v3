@@ -1,5 +1,6 @@
 **/server.cfg
 **/cache
 **/artifacts
+**/[addons]
 server.cfg
 *.cfg
