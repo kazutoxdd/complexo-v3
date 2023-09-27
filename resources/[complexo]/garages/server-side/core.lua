@@ -600,17 +600,27 @@ function Creative.Spawn(Name, Number)
 				-- end
 			else
 				if vehicle[1]["tax"] * 2 <= os.time() then
-					TriggerClientEvent("Notify", source, "amarelo", "Taxa do veículo atrasada.", "Atenção", 5000)
-				elseif vehicle[1]["arrest"] >= os.time() then
-					TriggerClientEvent("Notify", source, "amarelo",
-						"Veículo apreendido, dirija-se até o <b>Guincho</b> e efetue o pagamento da liberação do mesmo.",
-						"Atenção", 10000)
-				else
-					if vehicle[1]["rental"] ~= 0 then
-						if vehicle[1]["rental"] <= os.time() then
-							vRP.Query("vehicles/rentalVehiclesUpdate", { Passport = Passport, vehicle = Name })
-						end
-					end
+                    TriggerClientEvent("Notify", source, "amarelo", "Taxa do veículo atrasada.", "Atenção", 5000)
+                elseif vehicle[1]["arrest"] >= os.time() then
+                    TriggerClientEvent("Notify", source, "amarelo",
+                        "Veículo apreendido, dirija-se até o <b>Guincho</b> e efetue o pagamento da liberação do mesmo.",
+                        "Atenção", 10000)
+                else
+                if vehicle[1]["rental"] ~= 0 then
+                    if vehicle[1]["rental"] <= os.time() then
+                        if vRP.Request(source,"Atualizar o aluguel do veículo <b>"..VehicleName(Name).."</b> por <b>"..Gemstone.." gemas</b>?","Sim, concluír pagamento","Não, mudei de ideia") then
+                            if vRP.PaymentGems(Passport,Gemstone) then
+                                vRP.Query("vehicles/rentalVehiclesUpdate",{ Passport = Passport, vehicle = Name })
+                                TriggerClientEvent("Notify",source,"verde","Aluguel do veículo <b>"..VehicleName(Name).."</b> atualizado.",5000)
+                            else
+                                TriggerClientEvent("Notify",source,"vermelho","<b>Gemas</b> insuficientes.",5000)
+                                return
+                            end
+                        else
+                            return
+                        end
+                    end
+                end
 
 
 					local Coords = vCLIENT.SpawnPosition(source, Number)
