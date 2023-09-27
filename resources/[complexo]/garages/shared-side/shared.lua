@@ -4277,7 +4277,7 @@ Garages = {
 			blipColor = 2,
 			blipScale = 0.4
 		},
-		perm = { "PoliciaNorte" },
+		perm = { "Police" },
 		garagemType = 'Work', -- tipo de gargem (public, Propertys, Work, Org)
 		garagemConfig = {
 			payment = false,

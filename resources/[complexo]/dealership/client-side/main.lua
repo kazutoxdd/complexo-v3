@@ -31,11 +31,13 @@ CreateThread(function()
                 if distance <= 3.0 then
                     threadDelay = 0
                     if IsControlJustPressed(0, 38) and (not plyVeh or plyVeh == 0) then
-                        local VehicleGlobal = VehicleGlobal()
                         local FilteredVehicles = {}
-                        for key, vehicle in pairs(VehicleGlobal) do
+                        for key, vehicle in pairs(VehicleGlobal()) do
                             if vehicle["Dealership"] == nil or vehicle["Dealership"] == false then
-                                FilteredVehicles[key] = vehicle
+                                local vehicleMode = VehicleMode(vehicle["Name"]) -- Obtenha o VehicleMode usando a função
+                                if vehicleMode then
+                                    table.insert(FilteredVehicles, vehicle)
+                                end
                             end
                         end
                         TriggerEvent("dealership:openSystem", FilteredVehicles)

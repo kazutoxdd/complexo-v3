@@ -836,7 +836,7 @@ function Creative.requestInventory()
 			gems = vRP.Account(vRP.Identities(source)).gems,
 			isVip = isPremium,
 			vipType = vipType
-		}			
+		}
 	end
 end
 -----------------------------------------------------------------------------------------------------------------------------------------

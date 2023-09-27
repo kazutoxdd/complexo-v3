@@ -3,4 +3,7 @@
 **/artifacts
 **/[addons]
 server.cfg
+complexo-v3/server.cfg
 *.cfg
+resources/\[addons\]
+resources/\[addons\]/

@@ -392,6 +392,58 @@ RegisterCommand("god",function(source,Message)
 		end
 	end
 end)
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- GOD
+-----------------------------------------------------------------------------------------------------------------------------------------
+RegisterCommand("fome",function(source,Message)
+	local Passport = vRP.Passport(source)
+	local List = vRP.Players()
+	local OtherPlayer = parseInt(Message[1])
+	local text = parseInt(Message[1])
+	if Passport then
+		if vRP.HasGroup(Passport,"Admin",1 or 2 or 3)  then
+			if Message[1] then
+				if Message[1] == "all" then
+					local Text = ""
+					for OtherPlayer,OtherSource in pairs(List) do
+						async(function()
+							vRP.DowngradeThirst(Passport,100)
+							vRP.DowngradeHunger(Passport,100)
+							
+							
+							if Text == "" then
+								Text = OtherPlayer
+							else
+								Text = Text..", "..OtherPlayer
+							end
+						end)
+					end
+				else
+					
+					local ClosestPed = vRP.Source(OtherPlayer)
+					if ClosestPed then
+						vRP.DowngradeThirst(Passport,100)
+						vRP.DowngradeHunger(Passport,100)
+					end
+				end
+			else
+				vRP.DowngradeThirst(Passport,100)
+				vRP.DowngradeHunger(Passport,100)
+				
+				vRPC.removeObjects(source)
+			end
+			
+			if List then
+				TriggerEvent("Discord","Admin","**Fome**\n\n**Passaporte:** "..Passport.."\n**Para:** "..text,3553599)
+			elseif OtherPlayer then
+				TriggerEvent("Discord","Admin","**Fome**\n\n**Passaporte:** "..Passport.."\n**Para:** "..OtherPlayer,3553599)
+			else
+				TriggerEvent("Discord","Admin","**Fome**\n\n**Passaporte:** "..Passport.."\n**Para:** "..Passport,3553599)
+			end
+		end
+	end
+end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- GODA
 -----------------------------------------------------------------------------------------------------------------------------------------

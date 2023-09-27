@@ -172,9 +172,15 @@ CreateThread(function()
     while true do
         if LocalPlayer["state"]["Active"] and not LocalPlayer.state.Farming then
             if GetGameTimer() >= updateFoods and GetEntityHealth(PlayerPedId()) > 101 then
-                updateFoods = GetGameTimer() + 45000
-                clientThirst = clientThirst - 1
-                clientHunger = clientHunger - 1
+                updateFoods = GetGameTimer() + 4500
+                clientThirst = clientThirst - 5
+                clientHunger = clientHunger - 5
+                if clientHunger <= 10 then
+                    TriggerEvent("Notify", "hunger", "Sofrendo de fome.", 2500)
+                end
+                if clientThirst <= 10 then
+                    TriggerEvent("Notify", "thirst", "Sofrendo de sede.", 2500)
+                end
                 if clientHunger <= 10 or clientThirst <= 10 then
                     ApplyDamageToPed(PlayerPedId(), 10, false)
                 end
