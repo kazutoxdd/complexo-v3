@@ -9,7 +9,7 @@ MenuOptions = {
                 title = "Aplicar",
                 icon = "icon linear save-2",
                 server = true,
-                trigger = "player:outfitFunctions",
+                trigger = "player:Outfit",
                 triggerArgs = { "aplicar" }
             },
             {
@@ -17,7 +17,7 @@ MenuOptions = {
                 title = "Salvar",
                 icon = "icon linear add",
                 server = true,
-                trigger = "player:outfitFunctions",
+                trigger = "player:Outfit",
                 triggerArgs = { "salvar" }
             },
             {
@@ -25,7 +25,7 @@ MenuOptions = {
                 title = "Remover",
                 icon = "icon linear save-remove",
                 server = true,
-                trigger = "player:outfitFunctions",
+                trigger = "player:Outfit",
                 triggerArgs = { "remover" }
             }
         },

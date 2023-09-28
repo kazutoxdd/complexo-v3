@@ -178,7 +178,7 @@ RegisterCommand("911",function(source,Message,History)
 			local Service = vRP.NumPermission("Police")
 			for Passports,Sources in pairs(Service) do
 				async(function()
-					TriggerClientEvent("chat:ClientMessage",Sources,Identity["name"],History:sub(4))
+					TriggerClientEvent("chat:messageEntered",Sources,Identity["name"],History:sub(4))
 				end)
 			end
 		end

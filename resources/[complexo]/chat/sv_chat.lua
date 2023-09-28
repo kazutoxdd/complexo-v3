@@ -16,14 +16,16 @@ RegisterServerEvent("chat:messageEntered")
 AddEventHandler("chat:messageEntered",function(message)
     local source = source
     local Passport = vRP.Passport(source)
-    if Passport then
+     if Passport then
         local Identity = vRP.Identity(Passport)
         if Identity then
-            TriggerClientEvent("chatME",source,"^0"..Identity["name"].." "..Identity["name2"]..": "..message)
+        --    TriggerClientEvent("chatME",source,"^0" ..Identity["name"].. " " ..Identity["name2"], message)
 
             local Players = vRPC.ClosestPeds(source,10)
-            for _,v in pairs(Players) do
-                TriggerClientEvent("chatME",v[2],"^0"..Identity["name"].." "..Identity["name2"]..": "..message)
+            for _, v in pairs(Players) do
+                async(function()
+                TriggerClientEvent("chatME", v, Identity["name"].. " " ..Identity["name2"], message)
+                end)
             end
         end
     end

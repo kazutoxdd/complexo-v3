@@ -1437,7 +1437,7 @@ function Creative.paymentTheft(mobile)
 			TriggerClientEvent("Notify",source,"vermelho","Mochila cheia.",5000,"Negado")
 		end
 
-		vRP.upgradeStress(Passport,1)
+		vRP.UpgradeStress(Passport,3)
 
 		if math.random(1000) >= 950 then
 			TriggerEvent("Wanted",source,Passport,120)
@@ -1469,7 +1469,7 @@ function Creative.callPolice(disX,disY,disZ)
 		local policeResult = vRP.NumPermission("Police")
 		for k,v in pairs(policeResult) do
 			async(function()
-				TriggerClientEvent("NotifyPush",v,{ code = 90, title = "Roubo de Propriedade", x = disX, y = disY, z = disZ, criminal = "Alarme de segurança", time = "Recebido às "..os.date("%H:%M"), blipColor = 43 })
+				TriggerClientEvent("NotifyPush",v,{ code = 10-90, title = "Roubo de Propriedade", x = disX, y = disY, z = disZ, criminal = "Alarme de segurança", time = "Recebido às "..os.date("%H:%M"), blipColor = 43 })
 			end)
 		end
 	end

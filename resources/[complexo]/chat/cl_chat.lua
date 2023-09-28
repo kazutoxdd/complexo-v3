@@ -19,27 +19,23 @@ local chatActive = true
 -----------------------------------------------------------------------------------------------------------------------------------------
 RegisterNetEvent("chatMessage")
 AddEventHandler("chatMessage",function(author,color,text)
-	--[[ if not exports["player"]:blockCommands() and not exports["player"]:handCuff() then ]]
-		if chatActive then
-			local args = { text }
-			if author ~= "" then
-				table.insert(args,1,author)
-			end
-
-			SendMessage({ color = color, multiline = true, content = args })
+	if chatActive then
+		local args = { text }
+		if author ~= "" then
+			table.insert(args,1,author)
 		end
---[[ 	end ]]
+
+		SendMessage({ color = color, multiline = true, content = args })
+	end
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- CHATME
 -----------------------------------------------------------------------------------------------------------------------------------------
 RegisterNetEvent("chatME")
 AddEventHandler("chatME",function(author, text, type)
---[[ 	if not exports["player"]:blockCommands() and not exports["player"]:handCuff() then ]]
-		if chatActive then
-			SendMessage({ author = author, content = text, type = type })
-		end
---[[ 	end ]]
+	if chatActive then
+		SendMessage({ author = author, content = text, type = type })
+	end
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- CHATLB
@@ -116,16 +112,14 @@ end)
 -- CHAT
 -----------------------------------------------------------------------------------------------------------------------------------------
 RegisterCommand("chat",function(source,args)
---[[ 	if not exports["player"]:blockCommands() and not exports["player"]:handCuff() then ]]
-		if chatOpen then
-			if chatActive then
-				chatActive = false
-				SendNUIMessage({ type = "ON_CLEAR" })
-			else
-				chatActive = true
-			end
+	if chatOpen then
+		if chatActive then
+			chatActive = false
+		--	SendNUIMessage({ type = "ON_CLEAR" })
+		else
+			chatActive = true
 		end
---[[ 	end ]]
+	end
 end, false)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- THREADSTART
@@ -138,18 +132,16 @@ end)
 -- OPENCHAT
 -----------------------------------------------------------------------------------------------------------------------------------------
 RegisterCommand("openChat",function(source,args)
---[[ 	if not exports["player"]:blockCommands() and not exports["player"]:handCuff() then ]]
-		chatOpen = true
-		SetNuiFocus(true, false)
-		SendNUIMessage({ type = "ON_OPEN" })
---[[ 	end ]]
+	chatOpen = true
+	SetNuiFocus(true, false)
+	SendNUIMessage({ type = "ON_OPEN" })
 end, false)
-
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- SERVER/PRINT
+-----------------------------------------------------------------------------------------------------------------------------------------
 RegisterNetEvent("__cfx_internal:serverPrint")
 AddEventHandler("__cfx_internal:serverPrint", function(msg)
-	--[[ if not exports["player"]:blockCommands() and not exports["player"]:handCuff() then ]]
-		chatOpen = false
-	--[[ end ]]
+	chatOpen = false
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- COMMAND
@@ -180,7 +172,9 @@ end
 -- EXPORTS
 -----------------------------------------------------------------------------------------------------------------------------------------
 exports("statusChat",statusChat)
-
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- SENDMESSAGE
+-----------------------------------------------------------------------------------------------------------------------------------------
 function SendMessage(message)
 	EmitNuiMessage("ON_MESSAGE", message)
 end

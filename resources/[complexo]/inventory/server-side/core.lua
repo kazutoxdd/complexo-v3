@@ -1176,7 +1176,7 @@ function Creative.SendItem(Slot, Amount)
 					repeat
 						if os.time() >= parseInt(Active[Passport]) then
 							Active[Passport] = nil
-							vRPC.Destroy(source)
+							vRPC.removeObjects(source)
 							Player(source)["state"]["Cancel"] = false
 							Player(source)["state"]["Buttons"] = false
 							Player(ClosestPed)["state"]["Cancel"] = false
@@ -1186,15 +1186,6 @@ function Creative.SendItem(Slot, Amount)
 								vRP.GiveItem(OtherPassport, Item, Amount, true)
 								TriggerClientEvent("inventory:Update", source, "Backpack")
 								TriggerClientEvent("inventory:Update", ClosestPed, "Backpack")
-								--[[ exports['logs']:customLogs('senditem', {
-									Passport = Passport,
-									fields = {
-										{ name = "Passport",      value = Passport },
-										{ name = "OtherPassport", value = OtherPassport },
-										{ name = "Item",          value = Item },
-										{ name = "Amount",        value = Amount }
-									}
-								}) ]]
 							end
 						end
 						Wait(100)
@@ -1620,7 +1611,7 @@ function Creative.Cancel()
 			if vRP.Passport(Carry[Passport]) then
 				TriggerClientEvent("inventory:Carry", Carry[Passport], nil, "Detach")
 				Player(Carry[Passport])["state"]["Carry"] = false
-				vRPC.Destroy(Carry[Passport])
+				vRPC.removeObjects(Carry[Passport])
 			end
 
 			Carry[Passport] = nil
@@ -1634,7 +1625,7 @@ function Creative.Cancel()
 			Scanners[Passport] = nil
 		end
 
-		vRPC.Destroy(source)
+		vRPC.removeObjects(source)
 
 		if GetPlayerRoutingBucket(source) > 900000 then
 			TriggerEvent("arena:Cancel", source, Passport)
@@ -2245,7 +2236,7 @@ function Creative.Animals(Entity)
 						TriggerClientEvent("Progress", source, "Esfolando", 10000)
 
 						if not vCLIENT.animalAnim(source) then
-							vRPC.Destroy(source)
+							vRPC.removeObjects(source)
 							vRPC.playAnim(source, false, { "amb@medic@standing@kneel@base", "base" }, true)
 							vRPC.playAnim(source, true, { "anim@gangops@facility@servers@bodysearch@", "player_search" },
 								true)
@@ -2290,7 +2281,7 @@ function Creative.Animals(Entity)
 										vRP.GenerateItem(Passport, otherSelects, math.random(2, 4), true)
 									end
 
-									vRPC.Destroy(source)
+									vRPC.removeObjects(source)
 									Animals[Model][netObjects] = nil
 									TriggerEvent("DeletePed", netObjects)
 								end
@@ -2576,7 +2567,7 @@ function Creative.Dismantle(Entity)
 		repeat
 			if os.time() >= parseInt(Active[Passport]) then
 				Active[Passport] = nil
-				vRPC.Destroy(source)
+				vRPC.removeObjects(source)
 				Player(source)["state"]["Buttons"] = false
 				TriggerEvent("garages:dismantleVehicle", Entity[4], Entity[1])
 				TriggerClientEvent("player:Residuals", source, "Resíduo de Metal.")
@@ -2719,7 +2710,7 @@ function Creative.RemoveTyres(Entity)
 					end
 
 					Player(source)["state"]["Buttons"] = false
-					vRPC.Destroy(source)
+					vRPC.removeObjects(source)
 				end
 			end
 		end
@@ -2763,7 +2754,7 @@ AddEventHandler("inventory:Drink", function()
 					vRP.UpgradeThirst(Passport, 15)
 				end
 
-				vRPC.Destroy(source, "one")
+				vRPC.removeObjects(source, "one")
 				Player(source)["state"]["Buttons"] = false
 			end
 			Wait(100)
@@ -2939,7 +2930,7 @@ AddEventHandler("player:RollVehicle", function(Entity)
 			repeat
 				if os.time() >= parseInt(Active[Passport]) then
 					Active[Passport] = nil
-					vRPC.Destroy(source)
+					vRPC.removeObjects(source)
 					Player(source)["state"]["Buttons"] = false
 
 					local Players = vRPC.Players(source)
@@ -3051,7 +3042,7 @@ function Creative.MakePackage(Service)
 		repeat
 			if os.time() >= parseInt(Active[Passport]) then
 				Active[Passport] = nil
-				vRPC.Destroy(source)
+				vRPC.removeObjects(source)
 				Player(source)["state"]["Buttons"] = false
 				if vRP.MaxItens(Passport, Service, 1) then
 					TriggerClientEvent("Notify", source, "vermelho", "Limite atingido.", "Aviso", 5000)
@@ -3256,7 +3247,7 @@ AddEventHandler("Disconnect", function(Passport)
 		if vRP.Passport(Carry[Passport]) then
 			TriggerClientEvent("inventory:Carry", Carry[Passport], nil, "Detach")
 			Player(Carry[Passport])["state"]["Carry"] = false
-			vRPC.Destroy(Carry[Passport])
+			vRPC.removeObjects(Carry[Passport])
 		end
 
 		Carry[Passport] = nil

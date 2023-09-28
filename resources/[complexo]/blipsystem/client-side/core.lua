@@ -42,13 +42,14 @@ CreateThread(function()
 
 					for Number,v in pairs(List) do
 						if Blips[Number] then
-							SetBlipCoords(Blips[Number],v["Coords"])
+							MoveBlipSmooth(Blips[k], vec3(v.coords.x, v.coords.y, v.coords.z))
+						--	SetBlipCoords(Blips[Number],v["Coords"])
 						else
 							Blips[Number] = AddBlipForCoord(v["Coords"])
 							SetBlipSprite(Blips[Number],1)
 							SetBlipDisplay(Blips[Number],4)
-							SetBlipAsShortRange(Blips[Number],true)
-							SetBlipColour(Blips[Number],Colors[v["service"]])
+							SetBlipAsShortRange(Blips[Number],false)
+							SetBlipColour(Blips[Number],Colors[v["service"]]or 0)
 							SetBlipScale(Blips[Number],0.7)
 							BeginTextCommandSetBlipName("STRING")
 							AddTextComponentString("! "..v["service"])
@@ -77,8 +78,8 @@ CreateThread(function()
 								SetBlipSprite(Blips[Number],1)
 								SetBlipDisplay(Blips[Number],4)
 								SetBlipShowCone(Blips[Number],true)
-								SetBlipAsShortRange(Blips[Number],true)
-								SetBlipColour(Blips[Number],Colors[v["service"]])
+								SetBlipAsShortRange(Blips[Number],false)
+								SetBlipColour(Blips[Number],Colors[v["service"]] or 0)
 								SetBlipScale(Blips[Number],0.7)
 								BeginTextCommandSetBlipName("STRING")
 								AddTextComponentString("! "..v["service"])
@@ -98,6 +99,27 @@ CreateThread(function()
 		Wait(1000)
 	end
 end)
+function MoveBlipSmooth(blip, coords)
+    local t = 0.0
+    local start_coords = GetBlipCoords(blip)
+    local delay_time = GetGameTimer()
+    while t < 1.0 do
+        if GetTimeDifference(GetGameTimer(), delay_time) > 10 then
+            delay_time = GetGameTimer()
+            t = t + 0.01
+            if DoesBlipExist(blip) then
+                SetBlipCoords(blip, VectorLerp(start_coords, coords, t))
+            else
+                t = 1.0
+            end
+        end
+        Wait(1)
+    end
+end
+function VectorLerp(vec1, vec2, t)
+    vecOut = vec1 - (t * (vec1 - vec2))
+    return vecOut
+end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- BLIPSYSTEM:FULL
 -----------------------------------------------------------------------------------------------------------------------------------------
