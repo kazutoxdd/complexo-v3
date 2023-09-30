@@ -4,7 +4,7 @@
 UsableF7 = true
 Whitelisted = true
 CombatLogMinutes = 3
-SalarySeconds = 10
+SalarySeconds = 1800
 BannedText = "Banido"
 ServerName = "Complexo - Ato 2"
 ReleaseText = "Envie esse 'ID RANDÔMICO' na sala liberação, lembre-se de que esse 'ID' não é o 'ID' do seu personagem."
