@@ -1532,6 +1532,13 @@ local List = {
 		["Economy"] = 100,
 		["Weight"] = 0.05
 	},
+	["divingsuit"] = {
+		["Index"] = "divingsuit",
+		["Name"] = "Roupa de Mergulho",
+		["Type"] = "Comum",
+		["Economy"] = 3650,
+		["Weight"] = 1.5
+	},
 	["rivotril"] = {
 		["Index"] = "rivotril",
 		["Name"] = "Clonazepam Potente",

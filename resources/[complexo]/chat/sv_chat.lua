@@ -24,7 +24,7 @@ AddEventHandler("chat:messageEntered",function(message)
             local Players = vRPC.ClosestPeds(source,10)
             for _, v in pairs(Players) do
                 async(function()
-                TriggerClientEvent("chatME", v, Identity["name"].. " " ..Identity["name2"], message)
+                TriggerClientEvent("chatME", v,Identity["name"].. " " ..Identity["name2"], message)
                 end)
             end
         end

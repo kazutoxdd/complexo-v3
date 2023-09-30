@@ -7,3 +7,4 @@ complexo-v3/server.cfg
 *.cfg
 resources/\[addons\]
 resources/\[addons\]/
+server.cfg

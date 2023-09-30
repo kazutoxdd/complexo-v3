@@ -840,6 +840,50 @@ function Creative.requestInventory()
 	end
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
+-- CRAFTLIST
+-----------------------------------------------------------------------------------------------------------------------------------------
+local craftList = {
+	["lixeiroShop"] = {
+		["list"] = {
+			["glass"] = {
+				["amount"] = 3,
+				["destroy"] = false,
+				["require"] = {
+					["glassbottle"] = 1
+				}
+			},
+			["plastic"] = {
+				["amount"] = 3,
+				["destroy"] = false,
+				["require"] = {
+					["plasticbottle"] = 1
+				}
+			},
+			["rubber"] = {
+				["amount"] = 3,
+				["destroy"] = false,
+				["require"] = {
+					["elastic"] = 1
+				}
+			},
+			["aluminum"] = {
+				["amount"] = 3,
+				["destroy"] = false,
+				["require"] = {
+					["metalcan"] = 1
+				}
+			},
+			["copper"] = {
+				["amount"] = 3,
+				["destroy"] = false,
+				["require"] = {
+					["battery"] = 1
+				}
+			}
+		}
+	}
+}
+-----------------------------------------------------------------------------------------------------------------------------------------
 -- REQUESTCRAFTING
 -----------------------------------------------------------------------------------------------------------------------------------------
 function Creative.requestCrafting(craftType)
@@ -847,14 +891,14 @@ function Creative.requestCrafting(craftType)
 	local Passport = vRP.Passport(source)
 	if Passport then
 		local inventoryShop = {}
-		for k,v in pairs(craftList[craftType]["list"]) do
+		--for k,v in pairs(craftList[craftType]["list"]) do
 			local craftList = {}
 			for k,v in pairs(v["require"]) do
 				table.insert(craftList,{ name = itemName(k), amount = v })
 			end
 
 			table.insert(inventoryShop,{ name = itemName(k), index = itemIndex(k), key = k, peso = itemWeight(k), list = craftList, amount = parseInt(v["amount"]), desc = itemDescription(k) })
-		end
+		--end
 
 		local inventoryUser = {}
 		local inventory = vRP.Inventory(Passport)
@@ -866,15 +910,10 @@ function Creative.requestCrafting(craftType)
 			v["key"] = v["item"]
 			v["slot"] = k
 
-			local splitName = splitString(v["item"],"-")
-			if splitName[2] ~= nil then
-				if itemDurability(v["item"]) then
-					v["durability"] = parseInt(os.time() - splitName[2])
-					v["days"] = itemDurability(v["item"])
-				else
-					v["durability"] = 0
-					v["days"] = 1
-				end
+			local Split = splitString(v["item"],"-")
+			if Split[2] ~= nil then
+				v["durability"] = parseInt(os.time() - Split[2])
+				v["days"] = itemDurability(v["item"])
 			else
 				v["durability"] = 0
 				v["days"] = 1
@@ -883,10 +922,65 @@ function Creative.requestCrafting(craftType)
 			inventoryUser[k] = v
 		end
 
-		return inventoryShop,inventoryUser,vRP.inventoryWeight(Passport),vRP.getWeight(Passport)
+		return inventoryShop,inventoryUser,vRP.GetWeight(Passport)
 	end
 end
 
+function Creative.functionCrafting(shopItem,shopType,shopAmount,slot)
+	local source = source
+	local Passport = vRP.Passport(source)
+	if Passport then
+		local consumePendrive = ""
+		if shopAmount == nil then shopAmount = 1 end
+		if shopAmount <= 0 then shopAmount = 1 end
+
+		if shopType == "dirtyMoneys" then
+			local consultItem = vRP.InventoryItemAmount(Passport,"pendrive")
+			if consultItem[1] <= 0 then
+				TriggerClientEvent("Notify",source,"amarelo","Pendrive não encontrado.",5000)
+				return
+			end
+
+			if vRP.CheckDamaged(consultItem[2]) then
+				TriggerClientEvent("Notify",source,"vermelho","Pendrive quebrado.",5000)
+				return
+			end
+
+			consumePendrive = consultItem[2]
+		end
+
+		if craftList[shopType]["list"][shopItem] then
+			if vRP.MaxItens(Passport,shopItem,craftList[shopType]["list"][shopItem]["amount"] * shopAmount) then
+				TriggerClientEvent("Notify",source,"amarelo","Limite atingido.",3000)
+				TriggerClientEvent("crafting:Update",source,"requestCrafting")
+				return
+			end
+
+			if (vRP.GetWeight(Passport) + (itemWeight(shopItem) * parseInt(shopAmount))) <= vRP.GetWeight(Passport) then
+				for k,v in pairs(craftList[shopType]["list"][shopItem]["require"]) do
+					local consultItem = vRP.InventoryItemAmount(Passport,k)
+					if consultItem[1] < parseInt(v * shopAmount) then
+						return
+					end
+
+					if vRP.CheckDamaged(consultItem[2]) then
+						TriggerClientEvent("Notify",source,"vermelho","Item quebrado.",5000)
+						return
+					end
+				end
+
+				for k,v in pairs(craftList[shopType]["list"][shopItem]["require"]) do
+					local consultItem = vRP.InventoryItemAmount(Passport,k)
+					vRP.RemoveItem(Passport,consultItem[2],parseInt(v * shopAmount))
+				end
+
+				vRP.GenerateItem(Passport,shopItem,craftList[shopType]["list"][shopItem]["amount"] * shopAmount,false,slot)
+			end
+		end
+
+		TriggerClientEvent("crafting:Update",source,"requestCrafting")
+	end
+end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- EVIDENCE
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -904,9 +998,6 @@ function Creative.Evidence(Mode)
 		elseif Mode == "Blue" then
 			Color = 4
 		end
-		-- exports["inventory"]:DropsServer(vRPC.EntityCoordsZ(source),
-		-- 	"evidence0" .. Color .. "-" .. Passport .. "-" .. vRP.Identity(Passport)["license"], 1,
-		-- 	Player(source)["state"]["Route"])
 	end
 end
 

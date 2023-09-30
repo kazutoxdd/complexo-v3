@@ -43,8 +43,8 @@ local SeatbeltVelocity = vec3(0, 0, 0)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- DIVINABLES
 -----------------------------------------------------------------------------------------------------------------------------------------
-local divingMask
-local divingTank
+local divingMask = nil
+local divingTank = nil
 local clientOxigen = 100
 local divingTimers = GetGameTimer()
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -84,25 +84,27 @@ AddEventHandler("hud:Voip", function(number)
     local voiceTarget = { "Baixo", "Médio", "Alto", "Muito Alto" }
     EmitNuiMessage("HUD:VOICE", { voice = voiceTarget[Number] })
 end)
--- -----------------------------------------------------------------------------------------------------------------------------------------
--- -- THREADGLOBAL
--- -----------------------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- THREADGLOBAL
+-----------------------------------------------------------------------------------------------------------------------------------------
 CreateThread(function()
-    while true do
-        if LocalPlayer["state"]["Active"] and not LocalPlayer.state.Farming then
-            if divingMask ~= nil then
-                if GetGameTimer() >= divingTimers then
-                    divingTimers = GetGameTimer() + 35000
-                    clientOxigen = clientOxigen - 1
-                    -- vRPS.clientOxigen()
-                    if clientOxigen <= 0 then
-                        ApplyDamageToPed(ply, 50, false)
-                    end
-                end
-            end
-        end
-        Wait(5000)
-    end
+	while true do
+		if LocalPlayer["state"]["Active"] and not LocalPlayer.state.Farming then
+			if divingMask ~= nil then
+				if GetGameTimer() >= divingTimers then
+					divingTimers = GetGameTimer() + 30000
+					clientOxigen = clientOxigen - 1
+					vRPS.clientOxigen()
+
+					if clientOxigen <= 0 then
+						ApplyDamageToPed(PlayerPedId(),50,false)
+					end
+				end
+			end
+		end
+
+		Wait(5000)
+	end
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- PROGRESS
@@ -121,13 +123,13 @@ CreateThread(function()
                 updateFoods = GetGameTimer() + 4500
                 clientThirst = clientThirst - 1
                 clientHunger = clientHunger - 1
-                if clientHunger <= 10 then
+                if clientHunger <= 15 then
                     TriggerEvent("Notify", "hunger", "Sofrendo de fome.", 2500)
                 end
-                if clientThirst <= 10 then
+                if clientThirst <= 15 then
                     TriggerEvent("Notify", "thirst", "Sofrendo de sede.", 2500)
                 end
-                if clientHunger <= 10 or clientThirst <= 10 then
+                if clientHunger <= 15 or clientThirst <= 10 then
                     ApplyDamageToPed(PlayerPedId(), 10, false)
                 end
             end
@@ -161,6 +163,115 @@ end)
 RegisterNetEvent("hud:Stress")
 AddEventHandler("hud:Stress", function(Number)
     clientStress = parseInt(Number)
+end)
+-------------------------------------------------------------------------------------------------------------------------------------------
+-- HUD:STRESS
+-------------------------------------------------------------------------------------------------------------------------------------------
+RegisterNetEvent("hud:Oxigen")
+AddEventHandler("hud:Oxigen", function(Number)
+    clientOxigen = parseInt(Number)
+end)
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- THREADSHAKESTRESS
+-----------------------------------------------------------------------------------------------------------------------------------------
+CreateThread(function()
+	while true do
+		local timeDistance = 999
+		if LocalPlayer["state"]["Active"] and not LocalPlayer.state.Farming then
+			local ped = PlayerPedId()
+			local health = GetEntityHealth(ped)
+
+			if health > 101 then
+				if clientStress >= 99 then
+					ShakeGameplayCam("LARGE_EXPLOSION_SHAKE",0.75)
+				elseif clientStress >= 80 and clientStress <= 98 then
+					timeDistance = 9990
+					ShakeGameplayCam("LARGE_EXPLOSION_SHAKE",0.50)
+				elseif clientStress >= 60 and clientStress <= 79 then
+					timeDistance = 7500
+					ShakeGameplayCam("LARGE_EXPLOSION_SHAKE",0.25)
+				elseif clientStress >= 40 and clientStress <= 59 then
+					timeDistance = 9990
+					ShakeGameplayCam("LARGE_EXPLOSION_SHAKE",0.05)
+				end
+			end
+		end
+
+		Wait(timeDistance)
+	end
+end)
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- REMOVESCUBA
+-----------------------------------------------------------------------------------------------------------------------------------------
+RegisterNetEvent("hud:removeScuba")
+AddEventHandler("hud:removeScuba",function()
+	local ped = PlayerPedId()
+	if DoesEntityExist(divingMask) or DoesEntityExist(divingTank) then
+		if DoesEntityExist(divingMask) then
+			TriggerServerEvent("tryDeleteObject",NetworkGetNetworkIdFromEntity(divingMask))
+			divingMask = nil
+		end
+
+		if DoesEntityExist(divingTank) then
+			TriggerServerEvent("tryDeleteObject",NetworkGetNetworkIdFromEntity(divingTank))
+			divingTank = nil
+		end
+
+		SetEnableScuba(ped,false)
+		SetPedMaxTimeUnderwater(ped,10.0)
+	end
+end)
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- HUD:SETDIVING
+-----------------------------------------------------------------------------------------------------------------------------------------
+RegisterNetEvent("hud:setDiving")
+AddEventHandler("hud:setDiving",function()
+	local ped = PlayerPedId()
+
+	if DoesEntityExist(divingMask) or DoesEntityExist(divingTank) then
+		if DoesEntityExist(divingMask) then
+			TriggerServerEvent("tryDeleteObject",NetworkGetNetworkIdFromEntity(divingMask))
+			divingMask = nil
+		end
+
+		if DoesEntityExist(divingTank) then
+			TriggerServerEvent("tryDeleteObject",NetworkGetNetworkIdFromEntity(divingTank))
+			divingTank = nil
+		end
+
+		SetEnableScuba(ped,false)
+		SetPedMaxTimeUnderwater(ped,10.0)
+	else
+		local maskModel = GetHashKey("p_s_scuba_mask_s")
+		local tankModel = GetHashKey("p_s_scuba_tank_s")
+
+		RequestModel(tankModel)
+		while not HasModelLoaded(tankModel) do
+			Wait(1)
+		end
+
+		RequestModel(maskModel)
+		while not HasModelLoaded(maskModel) do
+			Wait(1)
+		end
+
+		if HasModelLoaded(tankModel) then
+			divingTank = CreateObject(tankModel,1.0,1.0,1.0,true,true,false)
+			AttachEntityToEntity(divingTank,ped,GetPedBoneIndex(ped,24818),-0.28,-0.24,0.0,180.0,90.0,0.0,1,1,0,0,2,1)
+			SetEntityAsMissionEntity(divingTank,true,true)
+			SetModelAsNoLongerNeeded(divingTank)
+		end
+
+		if HasModelLoaded(maskModel) then
+			divingMask = CreateObject(maskModel,1.0,1.0,1.0,true,true,false)
+			AttachEntityToEntity(divingMask,ped,GetPedBoneIndex(ped,12844),0.0,0.0,0.0,180.0,90.0,0.0,1,1,0,0,2,1)
+			SetEntityAsMissionEntity(divingMask,true,true)
+			SetModelAsNoLongerNeeded(divingMask)
+		end
+
+		SetEnableScuba(ped,true)
+		SetPedMaxTimeUnderwater(ped,2000.0)
+	end
 end)
 -------------------------------------------------------------------------------------------------------------------------------------------
 -- OPENUI

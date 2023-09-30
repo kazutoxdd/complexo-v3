@@ -4,24 +4,48 @@
         "bankType": "fleeca",
         "uploadServer": "https://discord.com/api/webhooks/1100550198159224832/k6c3YX4XqDOvGYhfjrOPdQYjdTB_WFweSkFiD1XBmcUhPK53FvjMcZgRd3sKEGGZMSwP",
         "allowUnsafeURL": true,
-        "videoServer": "ws://127.0.0.1:8080",
+        "videoServer": "ws://SEUIP:8080",
         "case": "s9",
-        "isAndroid": true,
+        "isAndroid": false,
         "apps": {
-            "calculator": "https://media.discordapp.net/attachments/852981021296295936/1064015597425393734/calculator.png",
-            "whatsapp": "https://media.discordapp.net/attachments/852981021296295936/1064015667369627720/whatsapp.png",
-            "yellowpages": "https://media.discordapp.net/attachments/852981021296295936/1064015729298518138/yellowpages.png",
-            "tinder": "https://media.discordapp.net/attachments/852981021296295936/1064015816456159262/tinder.png",
-            "instagram": "https://media.discordapp.net/attachments/852981021296295936/1064016211756716093/instagram.png",
-            "instagram_hand": "https://media.discordapp.net/attachments/852981021296295936/1064016301980385330/instagram_hand.png",
-            "fleeca": "https://media.discordapp.net/attachments/852981021296295936/1064016390744440894/fleeca.png",
-            "minado": "https://media.discordapp.net/attachments/852981021296295936/1064016523355758673/minado.png",
-            "truco": "https://media.discordapp.net/attachments/852981021296295936/1064016602330312755/truco.png",
-            "tor": "https://media.discordapp.net/attachments/852981021296295936/1064016693636104343/tor.png",
+            "calculator": "https://media.discordapp.net/attachments/852981021296295936/1157755469566320641/calculator.png?ex=6519c34e&is=651871ce&hm=205fb2b3da3b2b15d7644682628a94a42041030ab2b44f5dc7951ce988e8179f&=",
+            "whatsapp": {
+                "name": "ZipZop",
+                "icon": "https://media.discordapp.net/attachments/852981021296295936/1157759168355242085/whatsapp.png?ex=6519c6bf&is=6518753f&hm=f05f546436c251ff8bca59744c19cd9b7259ab9f4d243405e5b0a6a60f5579dd&="
+            },
+            "yellowpages": {
+                "name": "BananaPages",
+                "icon": "https://media.discordapp.net/attachments/852981021296295936/1157742123471339661/bananapages.png?ex=6519b6e0&is=65186560&hm=37193f31d17a20fd75874182ed60ae81fccb2fc6fea90606f3e0d143ae4d999b&="
+            },
+            "tinder": {
+                "name": "CupidLove",
+                "icon": "https://media.discordapp.net/attachments/1002030382067241071/1157762340029214780/tinder.png?ex=6519c9b4&is=65187834&hm=a693c76c6745f6214e4ad9771b6d650570e7b7b05caebb9961e86c393733964d&="
+            },
+            "instagram": {
+                "name": "Instacom",
+                "icon": "https://media.discordapp.net/attachments/852981021296295936/1157763889489006673/instagram.png?ex=6519cb25&is=651879a5&hm=5261b00f8397ceca41beb9ef72b9530a8ade828520150cda8f00c7cfea55bdbc&="
+            },
+            "instagram_hand": "https://media.discordapp.net/attachments/852981021296295936/1157764230506893432/instagram_hand.png?ex=6519cb76&is=651879f6&hm=700bbc2d8ccb84fab7a0a3321b5471b63e04a6cc8431287ec80beff6e1b053b6&=",
+            "bank": {
+                "name": "Fleeca",
+                "icon": "https://media.discordapp.net/attachments/852981021296295936/1157761053061566515/fleeca.png?ex=6519c881&is=65187701&hm=a31b8059af62c82079462004ef1a4d3e94c29b392bc41cde6e13affadc31078b&="
+            },
+            "minesweeper": {
+                "name": "Minado",
+                "icon": "https://media.discordapp.net/attachments/852981021296295936/1157762807891243018/minado.png?ex=6519ca23&is=651878a3&hm=c00f62916730a7a658a2795eaa97049ca70c048fb60f48433d8e235da85b1edf&="
+            },
+            "tor": {
+                "name": "Deep Web",
+                "icon": "https://media.discordapp.net/attachments/852981021296295936/1064016693636104343/tor.png"
+            },
+            "twitter": {
+                "name": "Tuintter",
+                "icon": "https://media.discordapp.net/attachments/852981021296295936/1157760617843785829/tuintterlogo.png?ex=6519c819&is=65187699&hm=42d94866a83af016b823e74b38ed7c7e5e42acd825dfdd0beb2342596e6b78de&="
+            },
             "camera": "https://media.discordapp.net/attachments/852981021296295936/1064018303477092412/camera.png",
             "notes": "https://media.discordapp.net/attachments/852981021296295936/1064016761185382490/notes.png",
             "settings": "https://media.discordapp.net/attachments/852981021296295936/1064016897160523929/settings.png",
-            "contacts": "https://fivem.jesteriruka.dev/apps/samsung/contacts.webp",
+            "contacts": "https://media.discordapp.net/attachments/852981021296295936/1157756816793542798/phone.png?ex=6519c48f&is=6518730f&hm=d584359799606430bda4a6659912f3091c237e501fe880f64d4ced3ad7198d4a&=",
             "sms": "https://media.discordapp.net/attachments/852981021296295936/1064017296902864968/sms.png",
             "gallery": "https://media.discordapp.net/attachments/852981021296295936/1064017368172482670/gallery.png",
             "phone": "https://media.discordapp.net/attachments/852981021296295936/1064017458484228096/phone.png",
@@ -30,10 +54,12 @@
         "useGameClock": false,
         "phone_template": "XXX-XXX",
         "backgroundURL": "https://media.discordapp.net/attachments/852981021296295936/1064022908659322931/wallpaper.jpg",
+        "ringSound": "https://cdn.discordapp.com/attachments/852981021296295936/1157764596166299728/ring.ogg?ex=6519cbcd&is=65187a4d&hm=a797b0e63d23912be38f940c78647f25d7b9629c8e2146601dda38481163956e&",
+        "notificationSound": "https://cdn.discordapp.com/attachments/852981021296295936/1157764595809788044/notification.ogg?ex=6519cbcd&is=65187a4d&hm=4b1abaf7d3f62f91099c9b97ec2666798a774c1feabdbae5a9c86f4d13df7166&",
         "disabledApps": [
             "paypal",
             "olx",
-            "twitter",
+            "truco",
             "casino",
             "weazel"
         ]

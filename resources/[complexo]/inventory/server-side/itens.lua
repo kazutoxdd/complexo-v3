@@ -739,6 +739,12 @@ Use = {
 		vRPC.AnimActive(source)
 	end,
 
+	["divingsuit"] = function(source,Passport,Amount,Slot,Full,Item,Split)
+		TriggerClientEvent("inventory:Close",source)
+		TriggerClientEvent("hud:setDiving",source)
+		vRPC.AnimActive(source)
+	end,
+	
 	["vest"] = function(source,Passport,Amount,Slot,Full,Item,Split)
 		if Armors[Passport] then
 			if os.time() < Armors[Passport] then

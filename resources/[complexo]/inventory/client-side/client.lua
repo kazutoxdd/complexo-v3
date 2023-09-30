@@ -92,9 +92,9 @@ local weaponAmmos = {
 
 local craftList = {
     { vec3(713.95, -961.54, 30.4), "dressMaker" },
-    { vec3(82.45, -1553.26, 29.59), "lixeiroShop" },
-    { vec3(287.36, 2843.6, 44.7), "lixeiroShop" },
-    { vec3(-413.68, 6171.99, 31.48), "lixeiroShop" },
+    { vec3(82.45, -1553.26, 29.59), "Lixeiro" },
+    { vec3(287.36, 2843.6, 44.7), "Lixeiro" },
+    { vec3(-413.68, 6171.99, 31.48), "Lixeiro" },
     { vec3(228.35, -1752.9, 25.24), "ilegalWeapons" },
     { vec3(-1001.07, -1025.9, 2.19), "ilegalWeapons" },
     { vec3(-197.84, -1711.81, 32.65), "lockpickShop" },

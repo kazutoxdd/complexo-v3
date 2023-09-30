@@ -1636,7 +1636,7 @@ local List = {
 			["Price"] = 130000,
 			["Mode"] = nil,
 			["Gemstone"] = 0,
-			["Class"] = "Motocicletas"
+			["Class"] = nil
 		},
 		["oppressor2"] = {
 			["Name"] = "Oppressor 2",
@@ -1644,7 +1644,7 @@ local List = {
 			["Price"] = 130000,
 			["Mode"] = nil,
 			["Gemstone"] = 0,
-			["Class"] = "Motocicletas"
+			["Class"] = nil
 		},
 		["pcj"] = {
 			["Name"] = "Pcj",
