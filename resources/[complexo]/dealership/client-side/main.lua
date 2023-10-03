@@ -33,7 +33,7 @@ CreateThread(function()
                     if IsControlJustPressed(0, 38) and (not plyVeh or plyVeh == 0) then
                         local VehicleGlobal = VehicleGlobal()
                         TriggerEvent("dealership:openSystem", VehicleGlobal)
-                        vRP._Destroy()
+                        vRP._removeObjects()
                         -- vRP._createObjects("amb@code_human_in_bus_passenger_idles@female@tablet@base", "base",
                         --     "prop_cs_tablet", 50, 28422)
                     end

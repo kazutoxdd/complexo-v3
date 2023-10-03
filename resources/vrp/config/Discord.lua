@@ -2,14 +2,14 @@
 -- DISCORDS
 -----------------------------------------------------------------------------------------------------------------------------------------
 Discords = {
-	["Connect"] = "https://discord.com/api/webhooks/1156619716333424700/_L1l7VF9s1rgbyM7dIz_85ip7wksEGlIWfvCgnqEU7Z2lFeeJ77Y8K3wMLgbuZ-JXtBz",
-	["Disconnect"] = "https://discord.com/api/webhooks/1094742379078098964/9-AJKi7ukS1oRkui1gQi4bEHYJ9cw2WcCIhyOFa-bqKcLn5-_0Co5fcjcishxd2xBBoZ",
-	["Airport"] = "https://discord.com/api/webhooks/1094742453711540274/-SEZRUWW6U8oHmddAXhK2L0P7gdwFCkSf2zNwdj0o5PwBjgavWycIyz1wTOdVV5vYSjb",
-	["Deaths"] = "https://discord.com/api/webhooks/1094742535609532486/peO-VDPJ39p5te5sn-YrAtMu20L-qtxBPYmBdgwkqaW-sbfzXBmbySA3za-vlaZIysmr",
-	["Police"] = "https://discord.com/api/webhooks/1094742625396986017/O3m752d-UABqLOWOg0-9jvEp4Pmiot7PMPp_EYX-RxI9haKeo1xsz_sRT2Os6VZJLptS",
-	["Paramedic"] = "https://discord.com/api/webhooks/1094742718976114698/7O4ExS0tlMp9H-UxT6Xho5r3L34mJwCywhMx_mq7dCDPbxFOpetXvht8BK16DWKi9U6E",
-	["Gemstone"] = "https://discord.com/api/webhooks/1094742811779289178/-C56hgr7oNUXjX5MjZqiHk7WhNixImHVLVBwOHZAHjJ1b2GiZVbiWGhWczyEYNv9CHWf",
-	["Login"] = "https://discord.com/api/webhooks/1094742888602161222/ds2h0-viRM5NRAj_tuS94wSlcEYU5ILhUG5Yc1zxDY11CpcxUlYPqtQbCJRueVghTACU"
+	["Connect"] = "",
+	["Disconnect"] = "",
+	["Airport"] = "",
+	["Deaths"] = "",
+	["Police"] = "",
+	["Paramedic"] = "",
+	["Gemstone"] = "",
+	["Login"] = ""
 }
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- DISCORD

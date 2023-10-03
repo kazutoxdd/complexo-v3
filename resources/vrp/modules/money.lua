@@ -10,7 +10,7 @@ function vRP.GiveBank(Passport,Amount)
 
         local Source = vRP.Source(Passport)
         if Source then
-            TriggerClientEvent("itensNotify",Source,{ "recebeu","dollars",parseFormat(Amount),"Dólares" })
+            TriggerClientEvent("itensNotify",Source,{ "recebeu","dollars",parseFormat(Amount),"Reais" })
         end
 
         if Characters[Source] then
@@ -30,7 +30,7 @@ function vRP.RemoveBank(Passport,Amount)
 
         local Source = vRP.Source(Passport)
         if Source then
-            TriggerClientEvent("itensNotify",Source,{ "removeu","dollars",parseFormat(Amount),"Dólares" })
+            TriggerClientEvent("itensNotify",Source,{ "removeu","dollars",parseFormat(Amount),"Reais" })
         end
 
         if Characters[Source] then
@@ -142,8 +142,8 @@ function vRP.PaymentDirty(Passport,Amount)
 	if parseInt(Amount) > 0 then
 		local Amount = parseInt(Amount)
 		local Passport = parseInt(Passport)
-		if vRP.ConsultItem(Passport,"dollarsroll",Amount) then
-            vRP.TakeItem(Passport,"dollarsroll",Amount,true)
+		if vRP.ConsultItem(Passport,"dollarsz",Amount) then
+            vRP.TakeItem(Passport,"dollarsz",Amount,true)
 			return true
 		end
 	end

@@ -2,13 +2,6 @@
 -- GROUPS
 -----------------------------------------------------------------------------------------------------------------------------------------
 Groups = {
-	-- ["Priv"] = {
-	-- 	["Parent"] = {
-	-- 		["Priv"] = true
-	-- 	},
-	-- 	["Hierarchy"] = { "Administrador" },
-	-- 	["Service"] = {}
-	-- },
 	["HeliPriv"] = {
 		["Parent"] = {
 			["HeliPriv"] = true
@@ -87,6 +80,16 @@ Groups = {
 	},
 	["Police"] = {
 		["Parent"] = {
+			["Police"] = true
+		},
+		["Hierarchy"] = { "Chefe","Gerente","Membro" },
+		["Salary"] = { 4500,4250,4000 },
+		["Service"] = {},
+		["Type"] = "Work"
+	},
+	["Civil"] = {
+		["Parent"] = {
+			["Civil"] = true,
 			["Police"] = true
 		},
 		["Hierarchy"] = { "Chefe","Gerente","Membro" },

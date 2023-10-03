@@ -26,7 +26,7 @@ function Creative.Finish(Number,Points)
 
 		if Payments[Passport] then
 			local Rand = math.random(Races[Number]["Payment"][1],Races[Number]["Payment"][1])
-			vRP.GenerateItem(Passport,"dollars2",Rand,true)
+			vRP.GenerateItem(Passport,"dollarsz",Rand,true)
 
 			local Ranking = vRP.Query("races/TopFive",{ Race = Number })
 			if Ranking[1] then

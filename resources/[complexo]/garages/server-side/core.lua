@@ -124,8 +124,7 @@ function Creative.Vehicles(Number)
 			if Consult[1] then
 				if parseInt(Consult[1]["Passport"]) == Passport or vRP.InventoryFull(Passport, "propertys-" .. Consult[1]["Serial"]) then
 					if os.time() > Consult[1]["Tax"] then
-						TriggerClientEvent("Notify", source, "amarelo",
-							"Aluguel atrasado, procure um <b>Corretor de Imóveis</b>.", "Atenção", 5000)
+						TriggerClientEvent("Notify", source,"amarelo","Aluguel atrasado, procure um <b>Corretor de Imóveis</b>.", "Atenção", 5000)
 						return false
 					end
 					local Vehicle = {}
@@ -149,8 +148,7 @@ function Creative.Vehicles(Number)
 					end
 					return Vehicle
 				else
-					TriggerClientEvent("Notify", source, "vermelho", "Você não tem permissão para acessar esta garagem.",
-						"Atenção", 5000)
+					TriggerClientEvent("Notify", source, "vermelho", "Você não tem permissão para acessar esta garagem.","Atenção", 5000)
 					return false
 				end
 			end
@@ -173,8 +171,7 @@ function Creative.Vehicles(Number)
 				end
 			end
 			if not hasGroup then
-				TriggerClientEvent("Notify", source, "vermelho", "Você não tem permissão para acessar esta garagem.",
-					"Atenção", 5000)
+				TriggerClientEvent("Notify", source, "vermelho", "Você não tem permissão para acessar esta garagem.","Atenção", 5000)
 				return false
 			end
 		end
@@ -987,28 +984,27 @@ end)
 -- GARAGES:PROPERTYS
 -----------------------------------------------------------------------------------------------------------------------------------------
 RegisterServerEvent("garages:Propertys")
-AddEventHandler("garages:Propertys", function(Name)
+AddEventHandler("garages:Propertys",function(Name)
 	local source = source
 	local Passport = vRP.Passport(source)
 	if Passport then
-		TriggerClientEvent("dynamic:closeSystem", source)
-		TriggerClientEvent("Notify", source, "amarelo", "Selecione o local da garagem.", "Atenção", 5000)
+		TriggerClientEvent("dynamic:closeSystem",source)
+		TriggerClientEvent("Notify",source,"amarelo","Selecione o local da garagem.",5000,"Alerta")
 
 		local Hash = "prop_offroad_tyres02"
-		local Application, Coords, Heading = vRPC.ObjectControlling(source, Hash)
+		local Application,Coords,Heading = vRPC.objectCoords(source,Hash)
 		if Application then
 			if #(Coords - exports["propertys"]:Coords(Name)) <= 25 then
-				TriggerClientEvent("Notify", source, "amarelo", "Selecione o local do veículo.", "Atenção", 5000)
+				TriggerClientEvent("Notify",source,"amarelo","Selecione o local do veículo.",5000,"Alerta")
 
 				local Open = Coords
 				local Hash = "patriot"
-				local Application, Coords, Heading = vRPC.ObjectControlling(source, Hash)
+				local Application,Coords,Heading = vRPC.objectCoords(source,Hash)
 				if Application then
 					if #(Coords - exports["propertys"]:Coords(Name)) <= 25 then
 						local New = {
-							["1"] = { mathLength(Open["x"]), mathLength(Open["y"]), mathLength(Open["z"] + 1) },
-							["2"] = { mathLength(Coords["x"]), mathLength(Coords["y"]), mathLength(Coords["z"] + 1),
-								mathLength(Heading) }
+							["1"] = { mathLength(Open["x"]),mathLength(Open["y"]),mathLength(Open["z"] + 1) },
+							["2"] = { mathLength(Coords["x"]),mathLength(Coords["y"]),mathLength(Coords["z"] + 1),mathLength(Heading) }
 						}
 
 						Garages[Name] = { name = "Garage", payment = false }
@@ -1020,16 +1016,14 @@ AddEventHandler("garages:Propertys", function(Name)
 							["1"] = New["2"]
 						}
 
-						vRP.Query("propertys/Garage", { name = Name, garage = json.encode(New) })
-						TriggerClientEvent("garages:Propertys", -1, Propertys)
+						vRP.Query("propertys/Garage",{ name = Name, garage = json.encode(New) })
+						TriggerClientEvent("garages:Propertys",-1,Propertys)
 					else
-						TriggerClientEvent("Notify", source, "vermelho", "A garagem precisa ser próximo da entrada.",
-							"Aviso", 5000)
+						TriggerClientEvent("Notify",source,"amarelo","A garagem precisa ser próximo da entrada.",5000,"Alerta")
 					end
 				end
 			else
-				TriggerClientEvent("Notify", source, "vermelho", "A garagem precisa ser próximo da entrada.", "Aviso",
-					5000)
+				TriggerClientEvent("Notify",source,"amarelo","A garagem precisa ser próximo da entrada.",5000,"Alerta")
 			end
 		end
 	end

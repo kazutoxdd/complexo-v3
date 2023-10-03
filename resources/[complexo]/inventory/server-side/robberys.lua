@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- BANKS
 -----------------------------------------------------------------------------------------------------------------------------------------
-local BanksPermission = "Policia"
+local BanksPermission = "Police"
 local BanksRadio = "701"
 local BanksNeed = 10
 local BanksItem = "gold_pure"
@@ -10,40 +10,40 @@ local BanksWeaponRequired = "WEAPON_CROWBAR"
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- BARBERSHOP
 -----------------------------------------------------------------------------------------------------------------------------------------
-local BarbershopPermission = "Policia"
+local BarbershopPermission = "Police"
 local BarbershopRadio = "601"
 local BarbershopNeed = 4
-local BarbershopItem = "dollars2"
+local BarbershopItem = "dollarsz"
 local BarbershopAmount = math.random(5000, 6000)
 local BarbershopRequired = "card04"
 local BarbershopRequiredAmount = 1
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- WEAPON
 -----------------------------------------------------------------------------------------------------------------------------------------
-local WeaponPermission = "Policia"
+local WeaponPermission = "Police"
 local WeaponRadio = "101"
 local WeaponNeed = 3
-local WeaponItem = "dollars2"
+local WeaponItem = "dollarsz"
 local WeaponAmount = math.random(5000, 6000)
 local WeaponRequired = "card02"
 local WeaponRequiredAmount = 1
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- FLEECAS
 -----------------------------------------------------------------------------------------------------------------------------------------
-local FleecasPermission = "Policia"
+local FleecasPermission = "Police"
 local FleecasRadio = "301"
 local FleecasNeed = 5
-local FleecasItem = "dollars2"
+local FleecasItem = "dollarsz"
 local FleecasAmount = math.random(7000, 14000)
 local FleecasRequired = "card03"
 local FleecasRequiredAmount = 1
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- DEPARTMENT
 -----------------------------------------------------------------------------------------------------------------------------------------
-local DepartmentPermission = "Policia"
+local DepartmentPermission = "Police"
 local DepartmentRadio = "401"
 local DepartmentNeed = 5
-local DepartmentItem = "dollars2"
+local DepartmentItem = "dollarsz"
 local DepartmentAmount = math.random(5000, 6000)
 local DepartmentRequired = "card01"
 local DepartmentRequiredAmount = 1

@@ -677,7 +677,7 @@ function TargetEnable()
 										end
 									end
 
-									if LocalPlayer["state"]["Policia"] or LocalPlayer["state"]["PoliciaNorte"] or LocalPlayer["state"]["PRF"] or LocalPlayer["state"]["Exercito"] or LocalPlayer["state"]["Civil"] then
+									if LocalPlayer["state"]["Police"] or LocalPlayer["state"]["Civil"] then
 										Menu[#Menu + 1] = {
 											event = "police:Plate",
 											label = "Verificar Placa",
@@ -771,7 +771,7 @@ function TargetEnable()
 								label = "Verificar RG",
 								tunnel = "police"
 							}
-							if LocalPlayer["state"]["Policia"] or LocalPlayer["state"]["PRF"] or LocalPlayer["state"]["PoliciaNorte"] or LocalPlayer["state"]["Exercito"] or LocalPlayer["state"]["Civil"] then
+							if LocalPlayer["state"]["Police"] or LocalPlayer["state"]["Civil"] then
 								if GetEntityHealth(Entity) >= 101 then
 									Menu[#Menu + 1] = {
 										event = "police:runInspect",
@@ -784,7 +784,7 @@ function TargetEnable()
 									label = "Uniforme Presidiário",
 									tunnel = "police"
 								}
-							elseif LocalPlayer["state"]["Paramedico"] then
+							elseif LocalPlayer["state"]["Paramedic"] then
 								if GetEntityHealth(Entity) <= 100 then
 									Menu[#Menu + 1] = {
 										event = "paramedic:Revive",

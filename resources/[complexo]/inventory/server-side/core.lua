@@ -61,30 +61,38 @@ Buffs = {
 -- DRUGSLIST
 -----------------------------------------------------------------------------------------------------------------------------------------
 DrugsList = {
-	["cokesack"] = {
-		Price = { ["Min"] = 1050, ["Max"] = 1300 },
-		Amount = { ["Min"] = 3, ["Max"] = 7 }
+	["cocaine"] = {
+		Price = { ["Min"] = 220, ["Max"] = 320},
+		Amount = { ["Min"] = 2, ["Max"] = 3 }
 	},
-	["meth"] = {
-		Price = { ["Min"] = 1050, ["Max"] = 1300 },
-		Amount = { ["Min"] = 3, ["Max"] = 7 }
+	["crack"] = {
+		Price = { ["Min"] = 220, ["Max"] = 320},
+		Amount = { ["Min"] = 2, ["Max"] = 3 }
+	},
+	["heroin"] = {
+		Price = { ["Min"] = 220, ["Max"] = 320},
+		Amount = { ["Min"] = 2, ["Max"] = 3 }
 	},
 	["joint"] = {
-		Price = { ["Min"] = 1050, ["Max"] = 1300 },
-		Amount = { ["Min"] = 3, ["Max"] = 7 }
+		Price = { ["Min"] = 220, ["Max"] = 320},
+		Amount = { ["Min"] = 2, ["Max"] = 3 }
 	},
 	["lean"] = {
-		Price = { ["Min"] = 1050, ["Max"] = 1300 },
-		Amount = { ["Min"] = 3, ["Max"] = 7 }
+		Price = { ["Min"] = 220, ["Max"] = 320},
+		Amount = { ["Min"] = 2, ["Max"] = 3 }
 	},
-	["ecstasy"] = {
-		Price = { ["Min"] = 1050, ["Max"] = 1300 },
-		Amount = { ["Min"] = 3, ["Max"] = 7 }
+	["metadone"] = {
+		Price = { ["Min"] = 220, ["Max"] = 320},
+		Amount = { ["Min"] = 2, ["Max"] = 3 }
 	},
-	["k9"] = {
-		Price = { ["Min"] = 1050, ["Max"] = 1300 },
-		Amount = { ["Min"] = 3, ["Max"] = 7 }
+	["meth"] = {
+		Price = { ["Min"] = 220, ["Max"] = 320},
+		Amount = { ["Min"] = 2, ["Max"] = 3 }
 	},
+	["oxy"] = {
+		Price = { ["Min"] = 220, ["Max"] = 320},
+		Amount = { ["Min"] = 2, ["Max"] = 3 }
+	}
 }
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- OBJECTS
@@ -567,15 +575,15 @@ Products = {
 -- STEALPEDS
 -----------------------------------------------------------------------------------------------------------------------------------------
 StealPeds = {
-	{ ["Item"] = "dollars2", ["Min"] = 250, ["Max"] = 350 },
-	{ ["Item"] = "dollars2", ["Min"] = 450, ["Max"] = 650 },
+	{ ["Item"] = "dollarsz", ["Min"] = 250, ["Max"] = 350 },
+	{ ["Item"] = "dollarsz", ["Min"] = 450, ["Max"] = 650 },
 }
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- STEALITENS
 -----------------------------------------------------------------------------------------------------------------------------------------
 StealItens = {
-	{ ["Item"] = "dollars2", ["Min"] = 250, ["Max"] = 350 },
-	{ ["Item"] = "dollars2", ["Min"] = 450, ["Max"] = 650 },
+	{ ["Item"] = "dollarsz", ["Min"] = 250, ["Max"] = 350 },
+	{ ["Item"] = "dollarsz", ["Min"] = 450, ["Max"] = 650 },
 }
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- LOOTITENS
@@ -836,53 +844,9 @@ function Creative.requestInventory()
 			gems = vRP.Account(vRP.Identities(source)).gems,
 			isVip = isPremium,
 			vipType = vipType
-		}
+		}			
 	end
 end
------------------------------------------------------------------------------------------------------------------------------------------
--- CRAFTLIST
------------------------------------------------------------------------------------------------------------------------------------------
-local craftList = {
-	["lixeiroShop"] = {
-		["list"] = {
-			["glass"] = {
-				["amount"] = 3,
-				["destroy"] = false,
-				["require"] = {
-					["glassbottle"] = 1
-				}
-			},
-			["plastic"] = {
-				["amount"] = 3,
-				["destroy"] = false,
-				["require"] = {
-					["plasticbottle"] = 1
-				}
-			},
-			["rubber"] = {
-				["amount"] = 3,
-				["destroy"] = false,
-				["require"] = {
-					["elastic"] = 1
-				}
-			},
-			["aluminum"] = {
-				["amount"] = 3,
-				["destroy"] = false,
-				["require"] = {
-					["metalcan"] = 1
-				}
-			},
-			["copper"] = {
-				["amount"] = 3,
-				["destroy"] = false,
-				["require"] = {
-					["battery"] = 1
-				}
-			}
-		}
-	}
-}
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- REQUESTCRAFTING
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -891,14 +855,14 @@ function Creative.requestCrafting(craftType)
 	local Passport = vRP.Passport(source)
 	if Passport then
 		local inventoryShop = {}
-		--for k,v in pairs(craftList[craftType]["list"]) do
+		for k,v in pairs(craftList[craftType]["list"]) do
 			local craftList = {}
 			for k,v in pairs(v["require"]) do
 				table.insert(craftList,{ name = itemName(k), amount = v })
 			end
 
 			table.insert(inventoryShop,{ name = itemName(k), index = itemIndex(k), key = k, peso = itemWeight(k), list = craftList, amount = parseInt(v["amount"]), desc = itemDescription(k) })
-		--end
+		end
 
 		local inventoryUser = {}
 		local inventory = vRP.Inventory(Passport)
@@ -910,10 +874,15 @@ function Creative.requestCrafting(craftType)
 			v["key"] = v["item"]
 			v["slot"] = k
 
-			local Split = splitString(v["item"],"-")
-			if Split[2] ~= nil then
-				v["durability"] = parseInt(os.time() - Split[2])
-				v["days"] = itemDurability(v["item"])
+			local splitName = splitString(v["item"],"-")
+			if splitName[2] ~= nil then
+				if itemDurability(v["item"]) then
+					v["durability"] = parseInt(os.time() - splitName[2])
+					v["days"] = itemDurability(v["item"])
+				else
+					v["durability"] = 0
+					v["days"] = 1
+				end
 			else
 				v["durability"] = 0
 				v["days"] = 1
@@ -922,65 +891,10 @@ function Creative.requestCrafting(craftType)
 			inventoryUser[k] = v
 		end
 
-		return inventoryShop,inventoryUser,vRP.GetWeight(Passport)
+		return inventoryShop,inventoryUser,vRP.inventoryWeight(Passport),vRP.getWeight(Passport)
 	end
 end
 
-function Creative.functionCrafting(shopItem,shopType,shopAmount,slot)
-	local source = source
-	local Passport = vRP.Passport(source)
-	if Passport then
-		local consumePendrive = ""
-		if shopAmount == nil then shopAmount = 1 end
-		if shopAmount <= 0 then shopAmount = 1 end
-
-		if shopType == "dirtyMoneys" then
-			local consultItem = vRP.InventoryItemAmount(Passport,"pendrive")
-			if consultItem[1] <= 0 then
-				TriggerClientEvent("Notify",source,"amarelo","Pendrive não encontrado.",5000)
-				return
-			end
-
-			if vRP.CheckDamaged(consultItem[2]) then
-				TriggerClientEvent("Notify",source,"vermelho","Pendrive quebrado.",5000)
-				return
-			end
-
-			consumePendrive = consultItem[2]
-		end
-
-		if craftList[shopType]["list"][shopItem] then
-			if vRP.MaxItens(Passport,shopItem,craftList[shopType]["list"][shopItem]["amount"] * shopAmount) then
-				TriggerClientEvent("Notify",source,"amarelo","Limite atingido.",3000)
-				TriggerClientEvent("crafting:Update",source,"requestCrafting")
-				return
-			end
-
-			if (vRP.GetWeight(Passport) + (itemWeight(shopItem) * parseInt(shopAmount))) <= vRP.GetWeight(Passport) then
-				for k,v in pairs(craftList[shopType]["list"][shopItem]["require"]) do
-					local consultItem = vRP.InventoryItemAmount(Passport,k)
-					if consultItem[1] < parseInt(v * shopAmount) then
-						return
-					end
-
-					if vRP.CheckDamaged(consultItem[2]) then
-						TriggerClientEvent("Notify",source,"vermelho","Item quebrado.",5000)
-						return
-					end
-				end
-
-				for k,v in pairs(craftList[shopType]["list"][shopItem]["require"]) do
-					local consultItem = vRP.InventoryItemAmount(Passport,k)
-					vRP.RemoveItem(Passport,consultItem[2],parseInt(v * shopAmount))
-				end
-
-				vRP.GenerateItem(Passport,shopItem,craftList[shopType]["list"][shopItem]["amount"] * shopAmount,false,slot)
-			end
-		end
-
-		TriggerClientEvent("crafting:Update",source,"requestCrafting")
-	end
-end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- EVIDENCE
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -998,6 +912,9 @@ function Creative.Evidence(Mode)
 		elseif Mode == "Blue" then
 			Color = 4
 		end
+		-- exports["inventory"]:DropsServer(vRPC.EntityCoordsZ(source),
+		-- 	"evidence0" .. Color .. "-" .. Passport .. "-" .. vRP.Identity(Passport)["license"], 1,
+		-- 	Player(source)["state"]["Route"])
 	end
 end
 
@@ -1061,7 +978,7 @@ function Creative.Drops(Item, Slot, Amount, x, y, z)
 			TriggerClientEvent("inventory:verifyWeapon", source, Item)
 
 
-			if vRP.TakeItem(Passport, Item, Amount, false, Slot) then
+			if vRP.TakeItem(Passport, Item, Amount, true, Slot) then
 				local Days = 1
 				local Number = 0
 				local Charges = nil
@@ -1107,7 +1024,7 @@ function Creative.Drops(Item, Slot, Amount, x, y, z)
 					Active[Passport] = os.time() + 100
 
 					SetTimeout(1000, function()
-						vRPC.Destroy(source)
+						vRPC.removeObjects(source)
 						Active[Passport] = nil
 					end)
 				end
@@ -1153,7 +1070,7 @@ function Creative.Pickup(Number, Amount, Slot)
 						local inventory = vRP.Inventory(Passport)
 						if inventory[Slot] and Drops[Number]["key"] then
 							if inventory[Slot]["item"] == Drops[Number]["key"] then
-								vRP.GiveItem(Passport, Drops[Number]["key"], Amount, false, Slot)
+								vRP.GiveItem(Passport, Drops[Number]["key"], Amount, true, Slot)
 								--[[ exports['logs']:customLogs('pickupitem', {
 									Passport = Passport,
 									fields = {
@@ -1163,7 +1080,7 @@ function Creative.Pickup(Number, Amount, Slot)
 									}
 								}) ]]
 							else
-								vRP.GiveItem(Passport, Drops[Number]["key"], Amount, false)
+								vRP.GiveItem(Passport, Drops[Number]["key"], Amount, true)
 								--[[ exports['logs']:customLogs('pickupitem', {
 									Passport = Passport,
 									fields = {
@@ -1175,7 +1092,7 @@ function Creative.Pickup(Number, Amount, Slot)
 							end
 						else
 							if Drops[Number] then
-								vRP.GiveItem(Passport, Drops[Number]["key"], Amount, false, Slot)
+								vRP.GiveItem(Passport, Drops[Number]["key"], Amount, true, Slot)
 								--[[ exports['logs']:customLogs('pickupitem', {
 									Passport = Passport,
 									fields = {
@@ -1203,7 +1120,7 @@ function Creative.Pickup(Number, Amount, Slot)
 							Active[Passport] = os.time() + 100
 
 							SetTimeout(1000, function()
-								vRPC.Destroy(source)
+								vRPC.removeObjects(source)
 								Active[Passport] = nil
 							end)
 						end
@@ -1277,6 +1194,15 @@ function Creative.SendItem(Slot, Amount)
 								vRP.GiveItem(OtherPassport, Item, Amount, true)
 								TriggerClientEvent("inventory:Update", source, "Backpack")
 								TriggerClientEvent("inventory:Update", ClosestPed, "Backpack")
+								--[[ exports['logs']:customLogs('senditem', {
+									Passport = Passport,
+									fields = {
+										{ name = "Passport",      value = Passport },
+										{ name = "OtherPassport", value = OtherPassport },
+										{ name = "Item",          value = Item },
+										{ name = "Amount",        value = Amount }
+									}
+								}) ]]
 							end
 						end
 						Wait(100)
@@ -1292,132 +1218,32 @@ function Creative.SendItem(Slot, Amount)
 		end
 	end
 end
-
 -----------------------------------------------------------------------------------------------------------------------------------------
--- DELIVER
+-- DESTROYITEM
 -----------------------------------------------------------------------------------------------------------------------------------------
-function Creative.Deliver(Work)
-	local source = source
-	local Passport = vRP.Passport(source)
-	if Passport and not Active[Passport] then
-		Active[Passport] = os.time() + 100
+function Creative.RemoveItem(Slot, Amount)
+    local source = source
+    local Slot = tostring(Slot)
+    local Amount = parseInt(Amount)
+    local Passport = vRP.Passport(source)
 
-		if Work == "Lumberman" then
-			if not vRPC.LastVehicle(source, "ratloader") then
-				TriggerClientEvent("Notify", source, "amarelo", "Precisa utilizar o veículo do <b>Lenhador</b>.",
-					"Atenção", 5000)
-				Active[Passport] = nil
+    if Passport then
+        local inventory = vRP.Inventory(Passport)
+        
+        if not inventory[Slot] or not inventory[Slot]["item"] then
+            Active[Passport] = nil
+            return
+        end
 
-				return false
-			end
+        if Amount <= 0 then Amount = 1 end
+        local Item = inventory[Slot]["item"]
 
-			if vRP.TakeItem(Passport, "woodlog", 5, false, Slot) then
-				local Experience = vRP.GetExperience(Passport, "Lumberman")
-				local Level = ClassCategory(Experience)
-				local Valuation = 150 + (Level * 10)
-
-				local Party, UsersAmount = exports['party']:PartyDistance(Passport, 10)
-
-				if parseInt(UsersAmount) >= 2 then
-					Valuation = Valuation + (Valuation * 0.1)
-				end
-
-				if Buffs["Dexterity"][Passport] and Buffs["Dexterity"][Passport] > os.time() then
-					Valuation = Valuation + (Valuation * 0.1)
-				end
-
-				vRP.GenerateItem(Passport, "dollars", Valuation, true)
-				vRP.PutExperience(Passport, "Lumberman", 1)
-				Active[Passport] = nil
-
-				return true
-			end
-		elseif Work == "Transporter" then
-			if not vRPC.LastVehicle(source, "stockade") then
-				TriggerClientEvent("Notify", source, "amarelo", "Precisa utilizar o veículo do <b>Transportador</b>.",
-					"Atenção", 5000)
-				Active[Passport] = nil
-
-				return false
-			end
-
-			if vRP.TakeItem(Passport, "pouch", 1, false, Slot) then
-				local Experience = vRP.GetExperience(Passport, "Transporter")
-				local Level = ClassCategory(Experience)
-				local Valuation = 60
-
-				if Level == 2 or Level == 3 then
-					Valuation = Valuation + 15
-				elseif Level == 4 or Level == 5 then
-					Valuation = Valuation + 25
-				elseif Level == 6 or Level == 7 then
-					Valuation = Valuation + 35
-				elseif Level == 8 or Level == 9 then
-					Valuation = Valuation + 45
-				elseif Level == 10 then
-					Valuation = Valuation + 50
-				end
-
-				local Members = exports["party"]:Room(Passport, source, 10)
-				if parseInt(#Members) >= 2 then
-					Valuation = Valuation + (Valuation * 0.1)
-				end
-
-				if Buffs["Dexterity"][Passport] and Buffs["Dexterity"][Passport] > os.time() then
-					Valuation = Valuation + (Valuation * 0.1)
-				end
-
-				vRP.GenerateItem(Passport, "dollars", Valuation, true)
-				vRP.PutExperience(Passport, "Transporter", 1)
-				Active[Passport] = nil
-
-				return true
-			end
-		elseif Work == "Burgershot" then
-			if vRP.TakeItem(Passport, "foodbox", 1, false, Slot) then
-				local Experience = vRP.GetExperience(Passport, "Delivery")
-				local Level = ClassCategory(Experience)
-				local Valuation = 140
-
-				if Level == 2 or Level == 3 then
-					Valuation = Valuation + 20
-				elseif Level == 4 or Level == 5 then
-					Valuation = Valuation + 30
-				elseif Level == 6 or Level == 7 then
-					Valuation = Valuation + 40
-				elseif Level == 8 or Level == 9 then
-					Valuation = Valuation + 50
-				elseif Level == 10 then
-					Valuation = Valuation + 60
-				end
-
-				if Buffs["Dexterity"][Passport] and Buffs["Dexterity"][Passport] > os.time() then
-					Valuation = Valuation + (Valuation * 0.1)
-				end
-
-				if vRP.TakeItem(Passport, "dollars2", 500) then
-					Valuation = Valuation + 300
-				end
-
-				vRP.GenerateItem(Passport, "dollars", Valuation, true)
-				vRP.PutExperience(Passport, "Delivery", 1)
-				Active[Passport] = nil
-
-				return true
-			end
-		elseif Work == "Ballas" or Work == "Families" or Work == "Vagos" or Work == "Aztecas" or Work == "Bloods" then
-			vRP.GenerateItem(Passport, "dollars3", 100, true)
-			Active[Passport] = nil
-
-			return true
-		end
-
-		Active[Passport] = nil
-	end
-
-	return false
+        if vRP.TakeItem(Passport, Item, Amount, true, Slot) then
+			TriggerClientEvent("inventory:Update",source,"Backpack")
+            TriggerClientEvent("Notify", source, "warn", "Item destruído.", 3000)
+        end
+    end
 end
-
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- USEITEM
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -1481,7 +1307,7 @@ function Creative.UseItem(Slot, Amount)
 						end
 					end
 
-					TriggerClientEvent("itensNotify", source, { "-", itemIndex(Hash), 1, "guardou" })
+					TriggerClientEvent("itensNotify", source, { "-", itemIndex(Hash), 1, "Guardou" })
 					exports["inventory"]:CleanWeapons(Passport, false)
 				end
 			else
@@ -1508,7 +1334,7 @@ function Creative.UseItem(Slot, Amount)
 				end
 
 				if vCLIENT.putWeaponHands(source, Item, Ammo, Attachs[Passport][Item]) then
-					TriggerClientEvent("itensNotify", source, { "+", itemIndex(Full), 1, "equipou" })
+					TriggerClientEvent("itensNotify", source, { "+", itemIndex(Full), 1, "Equipou" })
 				end
 			end
 		elseif itemType(Full) == "Munição" then
@@ -2205,11 +2031,8 @@ function Creative.StealTrunk(Entity)
 	local vehModels = Entity[2]
 	local Passport = vRP.Passport(source)
 	if Passport and not Active[Passport] then
-		local Ped = GetPlayerPed(source)
-
-		if not (GetSelectedPedWeapon(Ped) == GetHashKey("WEAPON_CROWBAR")) then
-			TriggerClientEvent("Notify", source, "amarelo",
-				"Você precisa colocar o <b>" .. itemName("WEAPON_CROWBAR") .. "</b> em mãos.", "Atenção", 5000)
+		if not vCLIENT.checkWeapon(source,"WEAPON_CROWBAR") then
+			TriggerClientEvent("Notify",source,"amarelo","<b>Pé de Cabra</b> não encontrado.",5000)
 			return
 		end
 
@@ -2219,40 +2042,37 @@ function Creative.StealTrunk(Entity)
 			end
 
 			if os.time() >= Trunks[Plate] then
-				vRPC.playAnim(source, false,
-					{ "anim@amb@clubhouse@tutorial@bkr_tut_ig3@", "machinic_loop_mechandplayer" },
-					true)
+				vRPC.playAnim(source,false,{"anim@amb@clubhouse@tutorial@bkr_tut_ig3@","machinic_loop_mechandplayer"},true)
 				Active[Passport] = os.time() + 100
 
-				if vTASKBAR.Task(source, 4, 10500) then
+				if vTASKBAR.Task(source,3,15500) then
 					Active[Passport] = os.time() + 20
 					Player(source)["state"]["Buttons"] = true
-					TriggerClientEvent("Progress", source, "Vasculhando", 20000)
-					TriggerClientEvent("player:Residuals", source, "Resíduo de Ferro.")
-					TriggerClientEvent("player:VehicleDoors", source, Network, "open")
+					TriggerClientEvent("Progress",source,"Vasculhando",20000)
+					TriggerClientEvent("player:Residuals",source,"Resíduo de Ferro.")
+					TriggerClientEvent("player:syncDoorsOptions",source,Network,"open")
 
 					repeat
 						if os.time() >= parseInt(Active[Passport]) then
 							Active[Passport] = nil
-							vRPC.stopAnim(source, false)
+							vRPC.stopAnim(source,false)
 							Player(source)["state"]["Buttons"] = false
-							TriggerClientEvent("player:VehicleDoors", source, Network, "close")
+							TriggerClientEvent("player:syncDoorsOptions",source,Network,"close")
 
 							if os.time() >= Trunks[Plate] then
 								local randItens = math.random(#StealItens)
-								if math.random(100) <= 50 then
-									local randAmounts = math.random(StealItens[randItens]["Min"],
-										StealItens[randItens]["Max"])
+								if math.random(250) <= StealItens[randItens]["rand"] then
+									local randAmounts = math.random(StealItens[randItens]["min"],StealItens[randItens]["max"])
 
 									if (vRP.InventoryWeight(Passport) + itemWeight(StealItens[randItens]["item"]) * randAmounts) <= vRP.GetWeight(Passport) then
-										vRP.GenerateItem(Passport, StealItens[randItens]["item"], randAmounts, true)
+										vRP.GenerateItem(Passport,StealItens[randItens]["item"],randAmounts,true)
 										Trunks[Plate] = os.time() + 3600
-										vRP.UpgradeStress(Passport, 2)
+										vRP.UpgradeStress(Passport,2)
 									else
-										TriggerClientEvent("Notify", source, "vermelho", "Mochila cheia.", "Aviso", 5000)
+										TriggerClientEvent("Notify",source,"vermelho","Mochila cheia.",5000)
 									end
 								else
-									TriggerClientEvent("Notify", source, "vermelho", "Nada encontrado.", "Aviso", 5000)
+									TriggerClientEvent("Notify",source,"amarelo","Nada encontrado.",5000)
 									Trunks[Plate] = os.time() + 3600
 								end
 							end
@@ -2261,37 +2081,26 @@ function Creative.StealTrunk(Entity)
 						Wait(100)
 					until not Active[Passport]
 				else
-					TriggerClientEvent("inventory:vehicleAlarm", source, Network, Plate)
-					vRPC.stopAnim(source, false)
+					TriggerClientEvent("inventory:vehicleAlarm",source,Network,Plate)
+					vRPC.stopAnim(source,false)
 					Active[Passport] = nil
 
 					local Coords = vRP.GetEntityCoords(source)
-					local Service = vRP.NumPermission("Policia")
-					for Passports, Sources in pairs(Service) do
+					local Service = vRP.NumPermission("Police")
+					for Passports,Sources in pairs(Service) do
 						async(function()
-							TriggerClientEvent("NotifyPush", Sources,
-								{
-									code = 31,
-									title = "Roubo de Veículo",
-									x = Coords["x"],
-									y = Coords["y"],
-									z = Coords["z"],
-									vehicle = VehicleName(vehModels) .. " - " .. Plate,
-									time = "Recebido às " .. os.date("%H:%M"),
-									blipColor = 44
-								})
+							TriggerClientEvent("NotifyPush",Sources,{ code = 31, title = "Roubo de Veículo", x = Coords["x"], y = Coords["y"], z = Coords["z"], vehicle = VehicleName(vehModels).." - "..Plate, time = "Recebido às "..os.date("%H:%M"), blipColor = 44 })
 						end)
 					end
 				end
 			else
-				TriggerClientEvent("Notify", source, "vermelho", "Nada encontrado.", "Aviso", 5000)
+				TriggerClientEvent("Notify",source,"amarelo","Nada encontrado.",5000)
 			end
 		else
-			TriggerClientEvent("Notify", source, "amarelo", "Veículo protegido pela seguradora.", "Atenção", 1000)
+			TriggerClientEvent("Notify",source,"amarelo","Veículo protegido pela seguradora.",1000)
 		end
 	end
 end
-
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- ANIMALS
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -2729,11 +2538,11 @@ function Creative.Dismantle(Entity)
 				local Members = exports["vrp"]:Party(Passport, source, 20)
 				if #Members > 1 then
 					for _, v in pairs(Members) do
-						vRP.GenerateItem(v["Passport"], "dollars", AmountItens * #Members, true)
+						vRP.GenerateItem(v["Passport"], "dollarsz", AmountItens * #Members, true)
 						vRP.PutExperience(v["Passport"], "Dismantle", 2)
 					end
 				else
-					vRP.GenerateItem(Passport, "dollars", AmountItens, true)
+					vRP.GenerateItem(Passport, "dollarsz", AmountItens, true)
 					vRP.PutExperience(Passport, "Dismantle", 1)
 				end
 
@@ -2859,42 +2668,33 @@ function Creative.StealPeds()
 	local source = source
 	local Passport = vRP.Passport(source)
 	if Passport then
-		local Rand = math.random(1, #StealPeds)
-		local Amount = math.random(StealPeds[Rand]["Min"], StealPeds[Rand]["Max"])
+		local Rand = math.random(#StealPeds)
+		local Amount = math.random(StealPeds[Rand]["min"],StealPeds[Rand]["max"])
 
-		if not Amount then return end
+		if vRP.MaxItens(Passport,StealPeds[Rand]["item"],Amount) then
+			TriggerClientEvent("Notify",source,"amarelo","Limite atingido.",3000)
+			return true
+		end
 
-		if (vRP.InventoryWeight(Passport) + itemWeight(StealPeds[Rand]["Item"]) * Amount) <= vRP.GetWeight(Passport) then
-			vRP.GenerateItem(Passport, StealPeds[Rand]["Item"], Amount, true)
+		if (vRP.InventoryWeight(Passport) + itemWeight(StealPeds[Rand]["item"]) * Amount) <= vRP.GetWeight(Passport) then
+			vRP.GenerateItem(Passport,StealPeds[Rand]["item"],Amount,true)
 
-			if math.random(100) >= 65 then
+			if math.random(100) >= 80 then
 				local Ped = GetPlayerPed(source)
 				local Coords = GetEntityCoords(Ped)
-				local Service = vRP.NumPermission("Policia")
-				for Passports, Sources in pairs(Service) do
+				local Service = vRP.NumPermission("Police")
+				for Passports,Sources in pairs(Service) do
 					async(function()
-						vRPC.PlaySound(Sources, "ATM_WINDOW", "HUD_FRONTEND_DEFAULT_SOUNDSET")
-						TriggerClientEvent("NotifyPush", Sources,
-							{
-								code = 32,
-								title = "Assalto a mão armada",
-								x = Coords["x"],
-								y = Coords["y"],
-								z = Coords["z"],
-								criminal = "Ligação Anônima",
-								time = "Recebido às " .. os.date("%H:%M"),
-								blipColor = 16
-							})
+						vRPC.PlaySound(Sources,"ATM_WINDOW","HUD_FRONTEND_DEFAULT_SOUNDSET")
+						TriggerClientEvent("NotifyPush",Sources,{ code = 32, title = "Assalto a mão armada", x = Coords["x"], y = Coords["y"], z = Coords["z"], criminal = "Ligação Anônima", time = "Recebido às "..os.date("%H:%M"), blipColor = 16 })
 					end)
 				end
 			end
 		else
-			TriggerClientEvent("Notify", source, "vermelho", "Mochila cheia.", "Aviso", 5000)
+			TriggerClientEvent("Notify",source,"vermelho","Mochila cheia.",5000)
 		end
 	end
-	TriggerClientEvent("Notify", source, "vermelho", "Função indisponivel no momento.", "Aviso", 5000)
 end
-
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- CHECKDRUGS
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -2902,13 +2702,13 @@ function Creative.CheckDrugs()
 	local source = source
 	local Passport = vRP.Passport(source)
 	if Passport then
-		for k, v in pairs(DrugsList) do
-			local Amount = math.random(v["Amount"]["Min"], v["Amount"]["Max"])
-			local Price = math.random(v["Price"]["Min"], v["Price"]["Max"])
+		for k,v in pairs(DrugsList) do
+			local Amount = math.random(v["Amount"]["Min"],v["Amount"]["Max"])
+			local Price = math.random(v["Price"]["Min"],v["Price"]["Max"])
 
-			local Consult = vRP.InventoryItemAmount(Passport, k)
+			local Consult = vRP.InventoryItemAmount(Passport,k)
 			if Consult[1] >= Amount then
-				Drugs[Passport] = { Consult[2], Amount, Price * Amount }
+				Drugs[Passport] = { Consult[2],Amount,Price * Amount }
 				return true
 			end
 		end
@@ -2916,83 +2716,43 @@ function Creative.CheckDrugs()
 
 	return false
 end
-
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- PAYMENTDRUGS
 -----------------------------------------------------------------------------------------------------------------------------------------
 function Creative.PaymentDrugs()
 	local source = source
 	local Passport = vRP.Passport(source)
-	local inInfluenceZone = false
 	if Passport and Drugs[Passport] then
 		local Points = 0
 		local Percentage = 95
-		local Split = splitString(Drugs[Passport][1], "-")
+		local Split = splitString(Drugs[Passport][1],"-")
 		if Split[2] ~= nil then
 			Points = parseInt(Split[2])
 		end
 
-		if vRP.tryGetTimer(Passport, 'selldrugs') then
-			vRP.BanPassport(Passport, 'Puxando dinheiro [SELLDRUGS]')
-			return
-		end
+		if vRP.TakeItem(Passport,Drugs[Passport][1],Drugs[Passport][2],true) then
+			vRP.GenerateItem(Passport,"dollarz",Drugs[Passport][3] + (Points * 2),true)
+			vRP.UpgradeStress(Passport,math.random(1,2))
 
-		vRP.setTimer(Passport, 'selldrugs', 5)
-
-		if vRP.TakeItem(Passport, Drugs[Passport][1], Drugs[Passport][2], true) then
 			local Ped = GetPlayerPed(source)
 			local Coords = GetEntityCoords(Ped)
-			local bonusFactor = 0
 
-			for k, v in pairs(DrugsInfluence) do
-				if hasPayed then return end
-				local Distance = #(Coords - vec3(v[1], v[2], v[3]))
-				if Distance <= v[4] then
-					bonusFactor = bonusFactor + 0.10
-				end
-			end
-
-
-			local Party, UsersAmount = exports['party']:PartyDistance(Passport, 10)
-
-			if parseInt(UsersAmount) >= 2 then
-				bonusFactor = bonusFactor + 0.05
-			end
-
-			bonusFactor = bonusFactor + vRP.calculateBonus(Passport, false, 20)
-			::payment::
-			local bonusPayment = ((Drugs[Passport][3] + (Points * 2)))
-			vRP.GenerateItem(Passport, "dollars2", bonusPayment + bonusFactor, true)
-
-			TriggerClientEvent("Notify", source, "verde",
-				"Você recebeu um bônus de " .. tostring(bonusFactor) .. " Dólares!", "Sucesso", 5000)
-
-			TriggerClientEvent("player:Residuals", source, "Resíduo Orgânico.")
+			TriggerClientEvent("player:Residuals",source,"Resíduo Orgânico.")
 
 			Percentage = Percentage - Points
 
-			if Percentage <= 25 then
-				Percentage = 25
+			if Percentage <= 10 then
+				Percentage = 10
 			end
 
 			if math.random(100) >= Percentage then
 				local Ped = GetPlayerPed(source)
 				local Coords = GetEntityCoords(Ped)
-				local Service = vRP.NumPermission("Policia")
-				for Passports, Sources in pairs(Service) do
+				local Service = vRP.NumPermission("Police")
+				for Passports,Sources in pairs(Service) do
 					async(function()
-						vRPC.PlaySound(Sources, "ATM_WINDOW", "HUD_FRONTEND_DEFAULT_SOUNDSET")
-						TriggerClientEvent("NotifyPush", Sources,
-							{
-								code = 20,
-								title = "Venda de Drogas",
-								x = Coords["x"],
-								y = Coords["y"],
-								z = Coords["z"],
-								criminal = "Ligação Anônima",
-								time = "Recebido às " .. os.date("%H:%M"),
-								blipColor = 16
-							})
+						vRPC.PlaySound(Sources,"ATM_WINDOW","HUD_FRONTEND_DEFAULT_SOUNDSET")
+						TriggerClientEvent("NotifyPush",Sources,{ code = 20, title = "Venda de Drogas", x = Coords["x"], y = Coords["y"], z = Coords["z"], criminal = "Ligação Anônima", time = "Recebido às "..os.date("%H:%M"), blipColor = 16 })
 					end)
 				end
 			end
@@ -3001,7 +2761,6 @@ function Creative.PaymentDrugs()
 		end
 	end
 end
-
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- PLAYER:ROLLVEHICLE
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -3035,8 +2794,7 @@ AddEventHandler("player:RollVehicle", function(Entity)
 				Wait(100)
 			until not Active[Passport]
 		else
-			TriggerClientEvent("Notify", source, "vermelho", "Você precisa de <b>1x " .. itemName("carjack") .. "</b>.",
-				"Aviso", 5000)
+			TriggerClientEvent("Notify", source, "vermelho", "Você precisa de <b>1x " .. itemName("carjack") .. "</b>.","Aviso", 5000)
 		end
 	end
 end)
@@ -3047,58 +2805,52 @@ function Creative.RegistersTimers(Number)
 	local source = source
 	local Passport = vRP.Passport(source)
 	if Passport then
-		if not vCLIENT.checkWeapon(source, "WEAPON_CROWBAR") then
-			TriggerClientEvent("Notify", source, "amarelo",
-				"Você precisa colocar o <b>" .. itemName("WEAPON_CROWBAR") .. "</b> em mãos.", "Atenção", 5000)
-			return false
+		local Service,Total = vRP.NumPermission("Police")
+		if Total <= 4 then
+			TriggerClientEvent("Notify",source,"amarelo","Contingente indisponível.",5000)
+			Player(source)["state"]["Buttons"] = false
+	
+			return
 		end
 
-		if Registers[Number] then
-			if GetGameTimer() < Registers[Number] then
-				TriggerClientEvent("Notify", source, "vermelho", "Sistema indisponível no momento.", "Aviso", 5000)
-				return false
+		if vRP.ConsultItem(Passport,"lockpick",1) then
+			if Registers[Number] then
+				if GetGameTimer() < Registers[Number] then
+					TriggerClientEvent("Notify",source,"amarelo","Sistema indisponível no momento.",5000)
+					return false
+				else
+					InitRegisters(Number,source)
+					return true
+				end
 			else
-				InitRegisters(Number, source)
+				InitRegisters(Number,source)
 				return true
 			end
-		else
-			InitRegisters(Number, source)
-			return true
+	    else
+			TriggerClientEvent("Notify",source,"amarelo","<b>Lockpick</b> não encontrado.",5000)
 		end
 	end
 
 	return false
 end
-
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- INITREGISTERS
 -----------------------------------------------------------------------------------------------------------------------------------------
-function InitRegisters(Number, source)
-	Registers[Number] = GetGameTimer() + (20 * 60000)
+function InitRegisters(Number,source)
+	Registers[Number] = GetGameTimer() + (16 * 60000)
 
-	if math.random(100) >= 75 then
-		local Ped = GetPlayerPed(source)
-		local Coords = GetEntityCoords(Ped)
+	local Ped = GetPlayerPed(source)
+	local Coords = GetEntityCoords(Ped)
 
-		local Service = vRP.NumPermission("Policia")
-		for Passports, Sources in pairs(Service) do
+	if math.random(100) <= 60 then
+		local Service = vRP.NumPermission("Police")
+		for Passports,Sources in pairs(Service) do
 			async(function()
-				TriggerClientEvent("NotifyPush", Sources,
-					{
-						code = 31,
-						title = "Caixa Registradora",
-						x = Coords["x"],
-						y = Coords["y"],
-						z = Coords["z"],
-						criminal = "Alarme de segurança",
-						time = "Recebido às " .. os.date("%H:%M"),
-						blipColor = 16
-					})
+				TriggerClientEvent("NotifyPush",Sources,{ code = 31, title = "Caixa Registradora", x = Coords["x"], y = Coords["y"], z = Coords["z"], criminal = "Alarme de segurança", time = "Recebido às "..os.date("%H:%M"), blipColor = 44 })
 			end)
 		end
 	end
 end
-
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- REGISTERSPAY
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -3106,16 +2858,28 @@ function Creative.RegistersPay()
 	local source = source
 	local Passport = vRP.Passport(source)
 	if Passport then
-		local Rand = math.random(1500, 3200)
+		Active[Passport] = os.time() + 15
+		Player(source)["state"]["Buttons"] = true
+		TriggerClientEvent("inventory:Close",source)
+		TriggerClientEvent("Progress",source,"Roubando",15000)
+		vRPC.playAnim(source,false,{"oddjobs@shop_robbery@rob_till","loop"},true)
 
-		vRP.UpgradeStress(Passport, 2)
-		vRP.GenerateItem(Passport, "dollars2", parseInt(Rand), true)
+		repeat
+			if os.time() >= parseInt(Active[Passport]) then
+				Active[Passport] = nil
+				vRPC.removeObjects(source)
+				Player(source)["state"]["Buttons"] = false
 
-		TriggerEvent("Wanted", source, Passport, 300)
-		TriggerClientEvent("player:Residuals", source, "Resíduo de Arrombamento.")
+				vRP.UpgradeStress(Passport,math.random(1,2))
+				TriggerEvent("Wanted",source,Passport,300)
+				vRP.GenerateItem(Passport,"dollarsz",math.random(600,750),true)
+				TriggerClientEvent("player:Residuals",source,"Resíduo de Arrombamento.")
+			end
+
+			Wait(100)
+		until not Active[Passport]
 	end
 end
-
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- MAKEPACKAGE
 -----------------------------------------------------------------------------------------------------------------------------------------

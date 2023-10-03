@@ -3476,6 +3476,10 @@ const Tc = "" + new URL("../css/warnbox.svg",
         import.meta.url).href,
     Cc = "" + new URL("../css/successbox.svg",
         import.meta.url).href,
+    Lb = "" + new URL("../css/hunger.svg",
+        import.meta.url).href,
+    tH = "" + new URL("../css/water.svg",
+        import.meta.url).href,
     Ic = "" + new URL("../css/errorbox.svg",
         import.meta.url).href;
 
@@ -4289,6 +4293,16 @@ let sa = {
         title: "Informação",
         color: "blue"
     },
+    hunger: {
+        icon: Lb,
+        title: "Fome",
+        color: "yellow"
+    },
+    thirst: {
+        icon: tH,
+        title: "Sede",
+        color: "blue"
+    },
     warn: {
         icon: Tc,
         title: "Informação",
@@ -5057,7 +5071,7 @@ const Nf = {
     Mf = p("header", {
         class: "logo-container"
     }, [p("img", {
-        src: "https://cdn.cpx.gg/hud/logo.png"
+        src: "logo.png"
     })], -1),
     Df = {
         class: "hud"

@@ -137,7 +137,7 @@ Use = {
 						explosionProgress = explosionProgress - 1
 					until explosionProgress <= 0
 
-					Creative.DropServer(CoordsAtm,"dollarsroll",math.random(2500,5000))
+					Creative.DropServer(CoordsAtm,"dollarsz",math.random(2500,5000))
 					TriggerClientEvent("player:Residuals",source,"Resíduo de Explosivo.")
 					TriggerClientEvent("objects:Remover",-1,tostring(Number))
 					TriggerClientEvent("vRP:Explosion",source,Coords)
@@ -739,12 +739,6 @@ Use = {
 		vRPC.AnimActive(source)
 	end,
 
-	["divingsuit"] = function(source,Passport,Amount,Slot,Full,Item,Split)
-		TriggerClientEvent("inventory:Close",source)
-		TriggerClientEvent("hud:setDiving",source)
-		vRPC.AnimActive(source)
-	end,
-	
 	["vest"] = function(source,Passport,Amount,Slot,Full,Item,Split)
 		if Armors[Passport] then
 			if os.time() < Armors[Passport] then
@@ -972,7 +966,6 @@ Use = {
 				if vRP.TakeItem(Passport,Full,1,true,Slot) then
 					vRP.ChemicalTimer(Passport,10)
 					TriggerClientEvent("Cocaine",source)
-					vRP.UpgradeStress(Passport,3)
 					TriggerClientEvent("Energetic",source,15,1.20)
 				end
 			end
@@ -1030,7 +1023,6 @@ Use = {
 					TriggerClientEvent("Methamphetamine",source)
 					Armors[Passport] = os.time() + 20
 					vRP.ChemicalTimer(Passport,10)
-					vRP.UpgradeStress(Passport,5)
 					vRP.SetArmour(source,10)
 				end
 			end
@@ -1049,7 +1041,7 @@ Use = {
 	end,
 
 	["creators"] = function(source,Passport,Amount,Slot,Full,Item,Split)
-		TriggerClientEvent("Notify",source,"amarelo","<b>Complexo Creators</b> Disponível em <b>01/12</b>.",5000)
+		TriggerClientEvent("Notify",source,"amarelo","<b>Creative Creators</b> Disponível em <b>03/06</b>.",5000)
 	end,
 
 	["premium"] = function(source,Passport,Amount,Slot,Full,Item,Split)
@@ -2330,7 +2322,6 @@ Use = {
 						Brokenpick = 900
 						TriggerEvent("plateEveryone",Plate)
 						TriggerEvent("platePlayers",Plate,Passport)
-						vRP.UpgradeStress(Passport,6)
 						TriggerClientEvent("inventory:vehicleAlarm",source,Network,Plate)
 
 						local Network = NetworkGetEntityFromNetworkId(Network)
@@ -2390,7 +2381,6 @@ Use = {
 								TriggerEvent("plateEveryone",Plate)
 								TriggerClientEvent("target:Dismantles",source)
 								TriggerClientEvent("inventory:vehicleAlarm",source,Network,Plate)
-								vRP.UpgradeStress(Passport,6)
 
 								local Network = NetworkGetEntityFromNetworkId(Network)
 								if GetVehicleDoorLockStatus(Network) == 2 then

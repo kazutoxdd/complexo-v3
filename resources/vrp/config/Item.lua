@@ -1532,13 +1532,6 @@ local List = {
 		["Economy"] = 100,
 		["Weight"] = 0.05
 	},
-	["divingsuit"] = {
-		["Index"] = "divingsuit",
-		["Name"] = "Roupa de Mergulho",
-		["Type"] = "Comum",
-		["Economy"] = 3650,
-		["Weight"] = 1.5
-	},
 	["rivotril"] = {
 		["Index"] = "rivotril",
 		["Name"] = "Clonazepam Potente",
@@ -2285,13 +2278,13 @@ local List = {
 	},
 	["dollars"] = {
 		["Index"] = "dollars",
-		["Name"] = "Dólares",
+		["Name"] = "Reais",
 		["Type"] = "Comum",
 		["Weight"] = 0.0
 	},
-	["dollarsroll"] = {
-		["Index"] = "dollarsroll",
-		["Name"] = "Rolo de Dólares",
+	["dollarsz"] = {
+		["Index"] = "dollarsz",
+		["Name"] = "Bloquinho de Reais",
 		["Type"] = "Comum",
 		["Weight"] = 0.0,
 		["Economy"] = 10

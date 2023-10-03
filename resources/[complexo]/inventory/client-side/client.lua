@@ -92,9 +92,9 @@ local weaponAmmos = {
 
 local craftList = {
     { vec3(713.95, -961.54, 30.4), "dressMaker" },
-    { vec3(82.45, -1553.26, 29.59), "Lixeiro" },
-    { vec3(287.36, 2843.6, 44.7), "Lixeiro" },
-    { vec3(-413.68, 6171.99, 31.48), "Lixeiro" },
+    { vec3(82.45, -1553.26, 29.59), "lixeiroShop" },
+    { vec3(287.36, 2843.6, 44.7), "lixeiroShop" },
+    { vec3(-413.68, 6171.99, 31.48), "lixeiroShop" },
     { vec3(228.35, -1752.9, 25.24), "ilegalWeapons" },
     { vec3(-1001.07, -1025.9, 2.19), "ilegalWeapons" },
     { vec3(-197.84, -1711.81, 32.65), "lockpickShop" },
@@ -119,7 +119,7 @@ local storeWeaponHands = false
 local timeReload = GetGameTimer()
 local plyIdentity = {}
 local plyInventory = {}
-local WEAPON_UNARMED <const> = `WEAPON_UNARMED`
+local WEAPON_UNARMED <const> = "WEAPON_UNARMED"
 local useItemCooldown = 0
 local blockButtons = false
 local Paralyzing = false
@@ -457,8 +457,8 @@ CreateThread(function()
         for _, v in pairs(Drops) do
             if #(Coords - vec3(v["Coords"][1], v["Coords"][2], v["Coords"][3])) <= 50 then
                 TimeDistance = 1
-                DrawMarker(23, v["coords"][1], v["coords"][2], v["coords"][3] + 0.05, 0.0, 0.0, 0.0, 0.0, 180.0, 0.0, 0.15, 0.15, 0.0, 255, 255, 255, 50, 0, 0, 0, 0)
-                DrawMarker(21, v["coords"][1], v["coords"][2], v["coords"][3] + 0.25, 0.0, 0.0, 0.0, 0.0, 180.0, 0.0, 0.20, 0.20, 0.20, 42, 137, 255, 125, 0, 0, 0, 1)
+                DrawMarker(23, v["Coords"][1], v["Coords"][2], v["Coords"][3] + 0.05, 0.0, 0.0, 0.0, 0.0, 180.0, 0.0, 0.15, 0.15, 0.0, 255, 255, 255, 50, 0, 0, 0, 0)
+                DrawMarker(21, v["Coords"][1], v["Coords"][2], v["Coords"][3] + 0.25, 0.0, 0.0, 0.0, 0.0, 180.0, 0.0, 0.20, 0.20, 0.20, 42, 137, 255, 125, 0, 0, 0, 1)
             end
         end
 
@@ -864,7 +864,6 @@ local function LoadScaleform(scaleForm, text)
     return scaleform
 end
 
-
 exports("useItem", useItem)
 RegisterNUICallback("invError", function(_, cb)
     errorSound()
@@ -953,25 +952,17 @@ RegisterNetEvent("inventory:Firecracker", function()
         explosives = explosives - 1
         Wait(2000)
     until explosives <= 0
-    _TRE("tryDeleteObject", netObjs)
+    TriggerEvent("DeleteObject", netObjs)
     SetTimeout(fireCrackerDuration, function()
         fireTimers = nil
     end)
 end)
-RegisterNetEvent("inventory:stealTrunk", function(entity)
-    if useWeapon ~= "WEAPON_CROWBAR" then
-        return TriggerEvent("Notify", "amarelo", "<b>Pé de Cabra</b> não encontrado.",
-            5000)
-    end
-    if GetVehicleDoorsLockedForPlayer(entity[3], 128) == 1 then return end
-    local trunk = GetEntityBoneIndexByName(entity[3], "boot")
-    if trunk == -1 then return end
-    if GetVehicleDoorAngleRatio(entity[3], 5) > 0.89 then return end
-    local coords = GetOffsetFromEntityInWorldCoords(ply, 0.0, 0.5, 0.0)
-    local coordsEnt = GetWorldPositionOfEntityBone(entity[3], trunk)
-    local distance = #(coords - coordsEnt)
-    if distance > 1.9 then return end
-    vSERVER._stealTrunk(entity)
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- INVENTORY:STEALTRUNK
+-----------------------------------------------------------------------------------------------------------------------------------------
+RegisterNetEvent("inventory:StealTrunk")
+AddEventHandler("inventory:StealTrunk",function(Entity)
+	vSERVER.StealTrunk(Entity)
 end)
 
 RegisterNetEvent("inventory:applyCondom", function()
@@ -1030,6 +1021,68 @@ RegisterNetEvent("inventory:applyCondom", function()
     end
     scaleForms = {}
 end)
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- INVENTORY:EXPLODETYRES
+-----------------------------------------------------------------------------------------------------------------------------------------
+RegisterNetEvent("inventory:explodeTyres")
+AddEventHandler("inventory:explodeTyres",function(Network,Plate,Tyre)
+	if NetworkDoesNetworkIdExist(Network) then
+		local Vehicle = NetToEnt(Network)
+		if DoesEntityExist(Vehicle) then
+			if GetVehicleNumberPlateText(Vehicle) == Plate then
+				SetVehicleTyreBurst(Vehicle,Tyre,true,1000.0)
+			end
+		end
+	end
+end)
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- TYRELIST
+-----------------------------------------------------------------------------------------------------------------------------------------
+local tyreList = {
+	["wheel_lf"] = 0,
+	["wheel_rf"] = 1,
+	["wheel_lm"] = 2,
+	["wheel_rm"] = 3,
+	["wheel_lr"] = 4,
+	["wheel_rr"] = 5
+}
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- TYRESTATUS
+-----------------------------------------------------------------------------------------------------------------------------------------
+function Creative.tyreStatus()
+	local Ped = PlayerPedId()
+	if not IsPedInAnyVehicle(Ped) then
+		local Vehicle = vRP.ClosestVehicle(7)
+		if IsEntityAVehicle(Vehicle) then
+			local Coords = GetEntityCoords(Ped)
+
+			for Index,Tyre in pairs(tyreList) do
+				local Selected = GetEntityBoneIndexByName(Vehicle,Index)
+				if Selected ~= -1 then
+					local CoordsWheel = GetWorldPositionOfEntityBone(Vehicle,Selected)
+					local Distance = #(Coords - CoordsWheel)
+					if Distance <= 1.0 then
+						return true,Tyre,VehToNet(Vehicle),GetVehicleNumberPlateText(Vehicle)
+					end
+				end
+			end
+		end
+	end
+
+	return false
+end
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- TYREHEALTH
+-----------------------------------------------------------------------------------------------------------------------------------------
+function Creative.tyreHealth(Network,Tyre)
+	if NetworkDoesNetworkIdExist(Network) then
+		local Vehicle = NetToEnt(Network)
+		if DoesEntityExist(Vehicle) then
+			return GetTyreHealth(Vehicle,Tyre)
+		end
+	end
+end
 
 
 AddEventHandler("utils:PedWeapons", function(armed)
@@ -1141,14 +1194,27 @@ end
 
 --Inspect
 
+RegisterNetEvent("inspect:Open")
+AddEventHandler("inspect:Open", function()
+    SetNuiFocus(true, true)
+    local NewInventory, MaxWeight, MaxSlots = vSERVER.requestInventory()
+    if not NewInventory then return errorSound() end
+    CurrentInventory = NewInventory
+    local myInfos, vehInfos, InventoryWeight, PlayerWeight, ChestWeight, VehicleWeight = vSERVER.openChest()
+    CurrentInventory = myInfos
+    openInspect(CurrentInventory, MaxWeight, vehInfos, ChestWeight)
+    vRP.playAnim(false, { "amb@prop_human_bum_bin@base", "base" }, true)
+end)
+
 function Creative.openInspect(myInventory, myBackpack, targetInventory, targetBackpack, targetId)
-    if not IsNuiFocused() then
+        -- if not IsNuiFocused() then
         inspecting = true
         SetNuiFocus(true, true)
         SetCursorLocation(0.5, 0.5)
         TriggerScreenblurFadeIn(250.0)
         SendNUIMessage({ action = "showMenu" })
-    end
+        -- end
+        
     SendNUIMessage({
         action = "setPlayerInventory",
         payload = {
@@ -1168,6 +1234,7 @@ function Creative.openInspect(myInventory, myBackpack, targetInventory, targetBa
 end
 
 --HomesChest
+
 function Creative.openHomesChest(homeName, vaultMode, myInventory, myBackpack, homeInventory, homeWeight)
     houseName = homeName
     houseVault = vaultMode
@@ -1265,14 +1332,6 @@ AddEventHandler('putcondom', function()
         SetScaleformMovieAsNoLongerNeeded(scaleForms[i].scaleform)
     end
     scaleForms = {}
-end)
-
-RegisterNetEvent("itensNotify")
-AddEventHandler("itensNotify", function(status)
-    SendNUIMessage({
-        action = "itemResponse",
-        payload = { type = status[1], name = status[2], quantity = status[3], label = status[4], duration = 5 }
-    })
 end)
 
 RegisterNetEvent("inventory:updateInterfaceAchievements")

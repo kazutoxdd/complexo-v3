@@ -25,7 +25,7 @@ end
 -----------------------------------------------------------------------------------------------------------------------------------------
 RegisterNUICallback("close",function(Data,Callback)
 	SetNuiFocus(false,false)
-	vRP.Destroy()
+	vRP.removeObjects()
 	vSERVER.ClosePainel()
 
 	Callback("Ok")

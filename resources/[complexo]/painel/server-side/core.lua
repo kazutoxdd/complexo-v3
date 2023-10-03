@@ -62,41 +62,29 @@ function Creative.Invite(OtherId)
         if Data then
             local Permission = Data[1]
             local PlayerHierarchy = Data[2] 
-            if vRP.HasPermission(Passport, Permission, 1) then
+            if vRP.HasPermission(Passport,Permission,1) then
                 local OtherSource = vRP.Source(OtherId)
                 if OtherSource then
                     local Identity = vRP.Identity(Passport)
-
                     TriggerClientEvent("Notify",source,"verde","O convite foi enviado.")
-
                     if vRP.Request(OtherSource,"<b>" .. Identity["name"] .. " " .. Identity["name2"] .. " te convidou para se juntar a sua organização, você aceita esse convite?","Sim, aceito","Não, obrigado") then
                         vRP.SetPermission(OtherId,Permission)
                         TriggerClientEvent("Notify", source, "verde", "O convite foi aceito.")
-
                         local OtherIdentity = vRP.Identity(OtherId)
                         local Hierarchy = vRP.Hierarchy(Permission)
-
                         return { ["name"] = OtherIdentity["name"].." "..OtherIdentity["name2"], ["phone"] = OtherIdentity["phone"], ["online"] = OtherSource or false, ["id"] = tonumber(OtherId), ["role"] = Hierarchy[#Hierarchy], ["role_id"] = #Hierarchy }
                     end
-
                     TriggerClientEvent("Notify", source, "vermelho", "O convite não foi aceito.")
-
                     return false
                 end
-
                 TriggerClientEvent("Notify", source, "vermelho", "O convidado não está presente na cidade.")
-                
                 return false
             end
-
             TriggerClientEvent("Notify", source, "vermelho", "Você não tem permissão para convidar uma pessoa para sua organização.")
-
             return false
         end
-
         return false
     end
-
     return false
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -110,35 +98,27 @@ function Creative.Hierarchy(OtherId, Type)
         if Data then
             local Permission = Data[1]
             local PlayerHierarchy = Data[2] 
-            
             local Datatable = vRP.GetSrvData("Permissions:" .. Permission)
             if Datatable then 
                 local currentHierarchy = Datatable[tostring(OtherId)]
                 if not (PlayerHierarchy < currentHierarchy) then
                     TriggerClientEvent("Notify", source, "vermelho", "Você não tem permissão para fazer isto.")
-
                     return false
                 end
-                
                 local newHierarchy = currentHierarchy - 1
                 if Type == "Demote" then
                     newHierarchy = currentHierarchy + 1
                 end
-
                 local Hierarchy = vRP.Hierarchy(Permission)
                 local newRole = Hierarchy[newHierarchy]
-
                 if newHierarchy == 0 or (newHierarchy > #Hierarchy) then
                     local message = "Não foi possível promover, pois este integrante já está no topo da hierarquia."
                     if Type == "Demote" then
                         message = "Não foi possível rebaixar, pois este integrante está no nível mais baixo da hierarquia."
                     end
-
                     TriggerClientEvent("Notify", source, "vermelho", message)
-
                     return false
                 end
-
                 if OtherSource then
                     local color = "verde"
                     local message = "Você foi promovido para " 
@@ -146,31 +126,22 @@ function Creative.Hierarchy(OtherId, Type)
                         color = "vermelho"
                         message = "Você foi rebaixado para "
                     end
-
                     TriggerClientEvent("Notify", OtherSource, color, message .. newRole)
                 end
-
                 local OtherIdentity = vRP.Identity(OtherId)
                 local OtherName = OtherIdentity["name"] .. " " .. OtherIdentity["name2"]
-
                 local message = "Você promoveu o integrante "
                 if Type == "Demote" then
                     message = "Você rebaixou o integrante "
                 end
-
                 TriggerClientEvent("Notify", source, "verde", message .. OtherName .. " para " .. newRole .. " com sucesso.")
-
                 vRP.SetPermission(OtherId, Permission, newHierarchy)
-
                 return { newRole, newHierarchy }
             end
-
             return false
         end
-
         return false
     end
-
     return false
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -208,6 +179,40 @@ function Creative.Dismiss(OtherId)
     end
 
     return false
+end
+
+function Creative.Dismiss(Number)
+    local source = source
+    local Number = parseInt(Number)
+    local Passport = vRP.Passport(source)
+    if Passport and Panel[Passport] and Number > 1 and Passport ~= Number then
+        if vRP.HasPermission(Passport,Panel[Passport],1) then
+            vRP.RemovePermission(Number,Panel[Passport])
+            vRP.RemovePermission(Number,"Buff",1)
+            LocalPlayer["state"]["Buff"] = false
+
+            TriggerClientEvent("Notify",source,"verde","Passaporte removido.",5000,"Sucesso")
+
+            local Members = {}
+            local Sources = vRP.Players()
+            local Entitys = vRP.DataGroups(Panel[Passport])
+            local Hierarchy = vRP.Hierarchy(Panel[Passport])
+
+            for Number,v in pairs(Entitys) do
+                local Number = parseInt(Number)
+                local Identity = vRP.Identity(Number)
+                if Identity then
+                    if vRP.HasPermission(Number,Panel[Passport],3) then
+                        Members[#Members + 1] = { ["name"] = Identity["name"].." "..Identity["name2"], ["phone"] = Identity["phone"], ["online"] = Sources[Number], ["id"] = Number, ["role"] = Hierarchy[1] or Hierarchy, ["role_id"] = 1 }
+                    else
+                        Members[#Members + 1] = { ["name"] = Identity["name"].." "..Identity["name2"], ["phone"] = Identity["phone"], ["online"] = Sources[Number], ["id"] = Number, ["role"] = Hierarchy[v] or Hierarchy }
+                    end
+                end
+            end
+            
+            return Members
+        end
+    end
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- TRANSCATIONS

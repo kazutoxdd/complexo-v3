@@ -203,7 +203,7 @@ function tvRP.createObjects(Dict,Anim,Prop,Flag,Hands,Height,Pos1,Pos2,Pos3,Pos4
 	end
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
--- removeObjects
+-- DESTROY
 -----------------------------------------------------------------------------------------------------------------------------------------
 function tvRP.removeObjects(Mode)
 	local Ped = PlayerPedId()

@@ -26,14 +26,14 @@ AddEventHandler("player:Charge", function(Entity)
 		if Identity then
 			local Keyboard = vKEYBOARD.Primary(source, "Valor:")
 			if Keyboard then
-				if vRP.Request(Entity, "Cobrança", "Aceitar a cobrança de <b>$" .. parseInt(Keyboard[1]) .. "</b> feita por <b>" .. vRP.Identity(Passport)["Name"] .. " " .. vRP.Identity(Passport)["Lastname"] .. "</b>?") then
+				if vRP.Request(Entity, "Cobrança", "Aceitar a cobrança de <b>$" .. parseInt(Keyboard[1]) .. "</b> feita por <b>" .. vRP.Identity(Passport)["name"] .. " " .. vRP.Identity(Passport)["name2"] .. "</b>?") then
 					if vRP.GetBank(Entity) >= parseInt(Keyboard[1]) then
-						TriggerClientEvent("NotifyItens", Entity, { "-", "dollars", parseInt(Keyboard[1]), "Dólares" })
+						TriggerClientEvent("NotifyItens", Entity, { "-", "dollars", parseInt(Keyboard[1]), "Reais" })
 						vRP.RemoveBank(OtherPassport, Keyboard[1])
 						vRP.GiveBank(Passport, Keyboard[1])
 					else
 						TriggerClientEvent("Notify", Entity, "vermelho", "<b>Saldo</b> insuficiente.", "Aviso", 5000)
-						TriggerClientEvent("Notify", source, "vermelho", "<b>" .. Identity["Name"] .. " " .. Identity["Lastname"] .. "</b> não possúi saldo suficiente.", "Aviso", 5000)
+						TriggerClientEvent("Notify", source, "vermelho", "<b>" .. Identity["name"] .. " " .. Identity["name2"] .. "</b> não possúi saldo suficiente.", "Aviso", 5000)
 					end
 				end
 			end
@@ -931,22 +931,6 @@ AddEventHandler("player:Death",function(nsource)
 			end
 		end
 	end
-end)
------------------------------- -----------------------------------------------------------------------------------------------------------
--- DISCORDLINKS  
------------------------------------------------------------------------------------------------------------------------------------------
-local discordLinks = {
-	["Entrou"] = "https://discord.com/api/webhooks/1156619716333424700/_L1l7VF9s1rgbyM7dIz_85ip7wksEGlIWfvCgnqEU7Z2lFeeJ77Y8K3wMLgbuZ-JXtBz",
-}
------------------------------------------------------------------------------------------------------------------------------------------
--- DISCORDLOGS
------------------------------------------------------------------------------------------------------------------------------------------
-RegisterNetEvent("discordLogs")
-AddEventHandler("discordLogs",function(webhook,message,color)
-	PerformHttpRequest(discordLinks[webhook],function(err,text,headers) end,"POST",json.encode({
-		username = ServerName,
-		embeds = { { color = color, description = message } }
-	}),{ ["Content-Type"] = "application/json" })
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- BIKEPACK

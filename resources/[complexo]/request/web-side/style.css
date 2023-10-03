@@ -1,4 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
+@import url("https://fonts.cdnfonts.com/css/akrobat");
 
 html,body {
 	margin: 0;
@@ -33,7 +34,8 @@ input::-webkit-inner-spin-button {
 }
 
 #RequestM {
-	color: #ccc;
+	border-radius: 0.4rem;
+	color: #FFF;
 	float: left;
 	width: 400px;
 	padding: 25px;
@@ -41,13 +43,18 @@ input::-webkit-inner-spin-button {
 	margin-top: 25px;
  	line-height: 20px;
 	margin-bottom: 10px;
-	font-family: "Roboto";
-	background: rgba(15,15,15,.75);
+	font-family: "Akrobat", sans-serif;
+	background: #2F2F2F;
 }
 
 #RequestM b {
-	color: #fff;
-	font-weight: 300;
+	border-radius: 0.4rem;
+	background: #2F2F2F;
+	min-height: 60px;
+	color: #FFF;
+	font-weight: 100;
+	height: 100%;
+	padding: 0.4rem;
 }
 
 #RequestY {
@@ -56,12 +63,14 @@ input::-webkit-inner-spin-button {
 	color: #d6ffea;
 	font-size: 13px;
 	position: relative;
+	border-radius: 0.4rem;
+	border: none;
 	padding: 20px 10px;
 	margin-right: 10px;
 	text-align: center;
 	letter-spacing: 2px;
-	font-family: "Roboto";
-	background: rgba(43,135,86,.75);
+	font-family: "Akrobat", sans-serif;
+	background: #9FCA58;
 }
 
 #RequestU {
@@ -71,10 +80,12 @@ input::-webkit-inner-spin-button {
 	font-size: 13px;
 	position: relative;
 	padding: 20px 10px;
+	border-radius: 0.4rem;
+	border: none;
 	text-align: center;
 	letter-spacing: 3px;
-	font-family: "Roboto";
-	background: rgba(237,105,106,.75);
+	font-family: "Akrobat", sans-serif;
+	background: #F50A46;
 }
 
 #RequestY::before {
@@ -87,7 +98,7 @@ input::-webkit-inner-spin-button {
 	position: absolute;
 	border-radius: 100%;
 	padding: 7px 0 6px 2px;
-	background: rgba(15,15,15,.75);
+	background: rgba(10, 10, 10, 0.45);
 }
 
 #RequestU::before {
@@ -100,5 +111,5 @@ input::-webkit-inner-spin-button {
 	position: absolute;
 	border-radius: 100%;
 	padding: 7px 0 6px 3px;
-	background: rgba(15,15,15,.75);
+	background: rgba(10, 10, 10, 0.45);
 }

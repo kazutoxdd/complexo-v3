@@ -50,7 +50,7 @@ AddEventHandler("inventory:Stockade",function(Vehicle)
 						Active[Passport] = nil
 						vRPC.stopAnim(source, false)
 						Player(source)["state"]["Buttons"] = false
-						vRP.GenerateItem(Passport,"dollars2",math.random(6500,8000),true)
+						vRP.GenerateItem(Passport,"dollarsz",math.random(6500,8000),true)
 					end
 
 					Wait(100)

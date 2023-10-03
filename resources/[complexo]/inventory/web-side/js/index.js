@@ -4709,7 +4709,7 @@ function S0(t, e, n, r, i, s) {
 		})
 	}, [x("div", m0, [x("img", {
 		src: n.item.image
-	}, null, 8, p0)]), x("div", _0, [x("div", g0, [x("div", y0, [x("span", null, Oe(n.item.name), 1), x("span", null, " x" + Oe(n.item.amount), 1)]), x("div", v0, Oe(n.item.rarity), 1)]), x("div", x0, Oe(n.item.desc), 1), x("div", T0, [x("div", null, [b0, x("span", null, " " + Oe(n.item.max), 1)]), x("div", null, [w0, x("span", null, " " + Oe(n.item.weight) + "kg", 1)])])])], 2)
+	}, null, 8, p0)]), x("div", _0, [x("div", g0, [x("div", y0, [x("span", null, Oe(n.item.name), 1), x("span", null, " x" + Oe(n.item.amount), 1)]), x("div", v0, Oe(n.item.rarity), 1)]), x("div", x0, Oe(n.item.description), 1), x("div", T0, [x("div", null, [b0, x("span", null, " " + Oe(n.item.max), 1)]), x("div", null, [w0, x("span", null, " " + Oe(n.item.weight) + "kg", 1)])])])], 2)
 }
 const I0 = rt(h0, [
 	["render", S0]
@@ -9300,7 +9300,7 @@ const nb = rt(jT, [
 		Amount: e.amount,
 		Duration: e.durability ? em(e.days, e.durability) : !1,
 		Metadata: {
-			Description: e.desc,
+			Description: e.description,
 			Weight: e.peso,
 			MaxAmount: e.max ?? -1,
 			EconomyValue: e.economy ?? 0,
@@ -9485,7 +9485,7 @@ const nb = rt(jT, [
 					Duration: o.durability ? em(o.days, o.durability) : !1,
 					DropId: o.id ?? 0,
 					Metadata: {
-						Description: o.desc ?? "",
+						Description: o.description ?? "",
 						Weight: o.peso,
 						MaxAmount: o.max ?? -1,
 						EconomyValue: o.economy ?? 0,
