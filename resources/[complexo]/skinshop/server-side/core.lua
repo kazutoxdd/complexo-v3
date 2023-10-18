@@ -8,56 +8,37 @@ vRP = Proxy.getInterface("vRP")
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- CONNECTION
 -----------------------------------------------------------------------------------------------------------------------------------------
-cRP = {}
-Tunnel.bindInterface("skinshop",cRP)
+Creative = {}
+Tunnel.bindInterface("skinshop",Creative)
 -----------------------------------------------------------------------------------------------------------------------------------------
--- CHECK
+-- VERIFY
 -----------------------------------------------------------------------------------------------------------------------------------------
-function cRP.Check()
+function Creative.Verify()
 	local source = source
 	local Passport = vRP.Passport(source)
-	if Passport and not exports["hud"]:Reposed(Passport) and not exports["hud"]:Wanted(Passport,source) then
-		return true
+	if Passport then
+		if vRP.GetFine(Passport) > 0 then
+			TriggerClientEvent("Notify",source,"amarelo","Você possui multas pendentes.",10000)
+			return false
+		end
+
+		if exports["hud"]:Wanted(Passport,source) and exports["hud"]:Reposed(Passport) then
+			return false
+		end
 	end
 
-	return false
+	return true
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- UPDATE
 -----------------------------------------------------------------------------------------------------------------------------------------
-function cRP.Update(Clothes)
+function Creative.Update(Clothes)
 	local source = source
 	local Passport = vRP.Passport(source)
 	if Passport then
 		vRP.Query("playerdata/SetData",{ Passport = Passport, dkey = "Clothings", dvalue = json.encode(Clothes) })
 	end
 end
-
-function cRP.tryBuyClothes(Data)
-    local source = source
-    local Passport = vRP.Passport(source)
-    if Passport then
-        if vRP.PaymentFull(Passport, parseInt(#Data)) then
-            return true
-        end
-    end
-    return false
-end
------------------------------------------------------------------------------------------------------------------------------------------
--- SKIN
------------------------------------------------------------------------------------------------------------------------------------------
-RegisterCommand("skin",function(source,Message)
-	local Passport = vRP.Passport(source)
-	if Passport and Message[1] then
-		if vRP.HasService(Passport,"Paramedic") or vRP.HasGroup(Passport,"Moderator") then
-			local ClosestPed = vRP.Source(Message[1])
-			if ClosestPed then
-				vRPC.Skin(ClosestPed,Message[2])
-				vRP.SkinCharacter(parseInt(Message[1]),Message[2])
-			end
-		end
-	end
-end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- SKINSHOP:REMOVE
 -----------------------------------------------------------------------------------------------------------------------------------------

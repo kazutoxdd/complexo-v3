@@ -1997,7 +1997,7 @@ pL.service_request = async (i, j, k, l) => {
         const r = await pp.getUsersByPermission(p.permission);
         let s = false;
         
-        if (r.length === 0) {
+        if (r.length < 0) {
             const w = {};
             w.source = i, w.user_id = m, w.phone = n, w.name = o, w.service = p, w.content = k, w.location = l, emit('smartphone:service_unavailable', w);
             const x = {

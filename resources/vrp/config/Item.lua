@@ -2,6 +2,15 @@
 -- LIST
 -----------------------------------------------------------------------------------------------------------------------------------------
 local List = {
+	["carjack"] = {
+		["Index"] = "carjack",
+		["Name"] = "Elevador Hidráulico",
+		["desc"] = "Um elevador hidráulico usado para levantar veículos.",
+		["Type"] = "Usável",
+		["Economy"] = 125,
+		["Weight"] = 0.15,
+		["Max"] = 1
+	},
 	-- TOKENS SERIAL
 	["TOKEN_WEAPON_PISTOL"] = {
 		["Index"] = "tokenpistol",
@@ -3500,6 +3509,14 @@ function itemDescription(Item)
 	end
 
 	return false
+end
+
+function itemDescription(Item)
+    local Split = splitString(Item, "-")
+    if List[Split[1]] then
+        return List[Split[1]]["desc"] or nil
+    end
+    return nil
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- ITEMDURABILITY

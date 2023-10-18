@@ -63,7 +63,7 @@ RegisterNUICallback("menuActive",function(data)
 		elseif data["active"] == "hood" then
 			TriggerServerEvent("player:Doors","6")
 		elseif data["active"] == "vtuning" then
-			TriggerEvent("engine:Vehrify")
+			TriggerEvent("engine:vehTuning")
 
 			SendNUIMessage({ show = false })
 			SetCursorLocation(0.5,0.5)

@@ -7,6 +7,7 @@
         "videoServer": "ws://SEUIP:8080",
         "case": "s9",
         "isAndroid": false,
+        "instagram_hand": "https://media.discordapp.net/attachments/852981021296295936/1157764230506893432/instagram_hand.png?ex=6519cb76&is=651879f6&hm=700bbc2d8ccb84fab7a0a3321b5471b63e04a6cc8431287ec80beff6e1b053b6&=",
         "apps": {
             "calculator": "https://media.discordapp.net/attachments/852981021296295936/1157755469566320641/calculator.png?ex=6519c34e&is=651871ce&hm=205fb2b3da3b2b15d7644682628a94a42041030ab2b44f5dc7951ce988e8179f&=",
             "whatsapp": {
@@ -25,7 +26,6 @@
                 "name": "Instacom",
                 "icon": "https://media.discordapp.net/attachments/852981021296295936/1157763889489006673/instagram.png?ex=6519cb25&is=651879a5&hm=5261b00f8397ceca41beb9ef72b9530a8ade828520150cda8f00c7cfea55bdbc&="
             },
-            "instagram_hand": "https://media.discordapp.net/attachments/852981021296295936/1157764230506893432/instagram_hand.png?ex=6519cb76&is=651879f6&hm=700bbc2d8ccb84fab7a0a3321b5471b63e04a6cc8431287ec80beff6e1b053b6&=",
             "bank": {
                 "name": "Fleeca",
                 "icon": "https://media.discordapp.net/attachments/852981021296295936/1157761053061566515/fleeca.png?ex=6519c881&is=65187701&hm=a31b8059af62c82079462004ef1a4d3e94c29b392bc41cde6e13affadc31078b&="

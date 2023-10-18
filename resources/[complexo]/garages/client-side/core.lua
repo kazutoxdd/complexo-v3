@@ -11,17 +11,20 @@ Creative = {}
 Tunnel.bindInterface("garages", Creative)
 vSERVER = Tunnel.getInterface("garages")
 -----------------------------------------------------------------------------------------------------------------------------------------
--- DECORATIONS
+-- DECOR
 -----------------------------------------------------------------------------------------------------------------------------------------
-DecorRegister("PlayerVehicle", 3)
+DecorRegister("PlayerVehicle",3)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- VARIAVEIS
 -----------------------------------------------------------------------------------------------------------------------------------------
-local Opened = "1"
 local Searched = nil
 local Hotwired = false
 local Anim = "machinic_loop_mechandplayer"
 local Dict = "anim@amb@clubhouse@tutorial@bkr_tut_ig3@"
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- VARIAVEIS
+-----------------------------------------------------------------------------------------------------------------------------------------
+local Opened = "1"
 local blipRegistry = {}
 local blipRefs = {}
 local actualGaragesNumber = nil
@@ -330,7 +333,6 @@ function Creative.SearchBlip(Coords)
 		Searched = nil
 	end)
 end
-
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- STARTHOTWIRED
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -338,10 +340,9 @@ function Creative.StartHotwired()
 	Hotwired = true
 
 	if LoadAnim(Dict) then
-		TaskPlayAnim(PlayerPedId(), Dict, Anim, 8.0, 8.0, -1, 49, 1, 0, 0, 0)
+		TaskPlayAnim(PlayerPedId(),Dict,Anim,8.0,8.0,-1,49,5.0,0,0,0)
 	end
 end
-
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- STOPHOTWIRED
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -349,27 +350,53 @@ function Creative.StopHotwired(Vehicle)
 	Hotwired = false
 
 	if LoadAnim(Dict) then
-		StopAnimTask(PlayerPedId(), Dict, Anim, 8.0)
+		StopAnimTask(PlayerPedId(),Dict,Anim,8.0)
 	end
 
 	if Vehicle then
-		SetEntityAsMissionEntity(Vehicle, true, false)
-		SetVehicleHasBeenOwnedByPlayer(Vehicle, true)
-		SetVehicleNeedsToBeHotwired(Vehicle, false)
+		SetEntityAsMissionEntity(Vehicle,true,false)
+		SetVehicleHasBeenOwnedByPlayer(Vehicle,true)
+		SetVehicleNeedsToBeHotwired(Vehicle,false)
 
-		if not DecorExistOn(Vehicle, "PlayerVehicle") then
-			DecorSetInt(Vehicle, "PlayerVehicle", -1)
+		if not DecorExistOn(Vehicle,"PlayerVehicle") then
+			DecorSetInt(Vehicle,"PlayerVehicle",-1)
 		end
 	end
 end
-
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- UPDATEHOTWIRED
 -----------------------------------------------------------------------------------------------------------------------------------------
 function Creative.UpdateHotwired(Status)
 	Hotwired = Status
 end
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- LOOPHOTWIRED
+-----------------------------------------------------------------------------------------------------------------------------------------
+CreateThread(function()
+	while true do
+		local TimeDistance = 999
+		if LocalPlayer["state"]["Route"] == 0 then
+			local Ped = PlayerPedId()
+			if IsPedInAnyVehicle(Ped) then
+				local Vehicle = GetVehiclePedIsUsing(Ped)
+				local Plate = GetVehicleNumberPlateText(Vehicle)
+				if GetPedInVehicleSeat(Vehicle,-1) == Ped and not GlobalState["Plates"][Plate] then
+					SetVehicleEngineOn(Vehicle,false,true,true)
+					DisablePlayerFiring(Ped,true)
+					TimeDistance = 1
+				end
 
+				if Hotwired and Vehicle then
+					DisableControlAction(1,75,true)
+					DisableControlAction(1,20,true)
+					TimeDistance = 1
+				end
+			end
+		end
+
+		Wait(TimeDistance)
+	end
+end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- GARAGES:IMPOUND
 -----------------------------------------------------------------------------------------------------------------------------------------

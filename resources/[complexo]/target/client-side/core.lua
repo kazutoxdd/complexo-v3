@@ -450,18 +450,6 @@ CreateThread(function()
 	})
 
 
-	AddTargetModel({ -1940238623, 2108567945 }, {
-		options = {
-			{
-				event = "inventory:ObjectsVerify",
-				label = "Vasculhar",
-				tunnel = "shop",
-				service = "Parkimeter"
-			}
-		},
-		Distance = 0.75
-	})
-
 	AddTargetModel({ 684586828,577432224,-1587184881,-1426008804,-228596739,1437508529,-1096777189,-468629664,1143474856,-2096124444,-115771139,1329570871,-130812911 },{
 		options = {
 			{

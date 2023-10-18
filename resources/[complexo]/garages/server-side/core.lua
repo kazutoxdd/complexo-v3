@@ -559,42 +559,42 @@ function Creative.Spawn(Name, Number)
 			local Plate = vehicle[1]["plate"]
 
 			if Spawn[Plate] then
-				-- if not Signal[Plate] then
-				if not Searched[Passport] then
-					Searched[Passport] = os.time()
-				end
+				if not Signal[Plate] then
+					if not Searched[Passport] then
+						Searched[Passport] = os.time()
+					end
 
-				if os.time() >= parseInt(Searched[Passport]) then
-					Searched[Passport] = os.time() + 60
+					if os.time() >= parseInt(Searched[Passport]) then
+						Searched[Passport] = os.time() + 60
 
-					local Network = Spawn[Plate][3]
-					local Network = NetworkGetEntityFromNetworkId(Network)
-					if DoesEntityExist(Network) and not IsPedAPlayer(Network) and GetEntityType(Network) == 2 then
-						vCLIENT.SearchBlip(source, GetEntityCoords(Network))
-						TriggerClientEvent("Notify", source, "default",
-							"Rastreador do veículo foi ativado por <b>30</b> segundos, lembrando que se o mesmo estiver em movimento a localização pode ser imprecisa.",
-							false, 10000)
+						local Network = Spawn[Plate][3]
+						local Network = NetworkGetEntityFromNetworkId(Network)
+						if DoesEntityExist(Network) and not IsPedAPlayer(Network) and GetEntityType(Network) == 2 then
+							vCLIENT.SearchBlip(source, GetEntityCoords(Network))
+							TriggerClientEvent("Notify", source, "default",
+								"Rastreador do veículo foi ativado por <b>30</b> segundos, lembrando que se o mesmo estiver em movimento a localização pode ser imprecisa.",
+								false, 10000)
+						else
+							if Spawn[Plate] then
+								Spawn[Plate] = nil
+							end
+
+							if GlobalPlates[Plate] then
+								GlobalPlates[Plate] = nil
+								GlobalState:set("Plates", GlobalPlates, true)
+							end
+
+							TriggerClientEvent("Notify", source, "verde",
+								"A seguradora efetuou o resgate do seu veículo e o mesmo já se encontra disponível para retirada.",
+								"Sucesso", 5000)
+						end
 					else
-						if Spawn[Plate] then
-							Spawn[Plate] = nil
-						end
-
-						if GlobalPlates[Plate] then
-							GlobalPlates[Plate] = nil
-							GlobalState:set("Plates", GlobalPlates, true)
-						end
-
-						TriggerClientEvent("Notify", source, "verde",
-							"A seguradora efetuou o resgate do seu veículo e o mesmo já se encontra disponível para retirada.",
-							"Sucesso", 5000)
+						TriggerClientEvent("Notify", source, "azul",
+							"Rastreador só pode ser ativado a cada <b>60</b> segundos.", "Observação", 5000)
 					end
 				else
-					TriggerClientEvent("Notify", source, "azul",
-						"Rastreador só pode ser ativado a cada <b>60</b> segundos.", "Observação", 5000)
+				TriggerClientEvent("Notify", source, "amarelo", "Rastreador está desativado.", "Atenção", 5000)
 				end
-				-- else
-				-- 	TriggerClientEvent("Notify", source, "amarelo", "Rastreador está desativado.", "Atenção", 5000)
-				-- end
 			else
 				if vehicle[1]["tax"] * 2 <= os.time() then
                     TriggerClientEvent("Notify", source, "amarelo", "Taxa do veículo atrasada.", "Atenção", 5000)

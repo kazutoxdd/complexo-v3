@@ -1644,223 +1644,75 @@ function Creative.PreventWeapons(Item, Ammo)
 		end
 	end
 end
-
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- VERIFYOBJECTS
 -----------------------------------------------------------------------------------------------------------------------------------------
-function Creative.VerifyObjects(Entity, Service)
+function Creative.VerifyObjects(Entity,Service)
 	local source = source
 	local Passport = vRP.Passport(source)
 	if Passport and not Active[Passport] then
-		if Service == "Parkimeter" then
-			local consultNails = vRP.InventoryItemAmount(Passport, "WEAPON_NAIL_AMMO")
-			if consultNails[1] <= 0 then
-				TriggerClientEvent("Notify", source, "vermelho",
-					"Precisa de <b>1x " .. itemName("WEAPON_NAIL_AMMO") .. "</b>.", "Aviso", 5000)
-				return
-			end
-		elseif Service == "Pumpjack" then
-			if not vCLIENT.checkWeapon(source, "WEAPON_CROWBAR") then
-				TriggerClientEvent("Notify", source, "amarelo",
-					"Você precisa colocar o <b>" .. itemName("WEAPON_CROWBAR") .. "</b> em mãos.", "Atenção", 5000)
-				return
-			end
-		end
 		if Entity[1] ~= nil and Entity[2] ~= nil and Entity[4] ~= nil then
 			local Hash = Entity[1]
 			local Model = Entity[2]
 			local Coords = Entity[4]
+
 			if not verifyObjects[Passport] then
 				if not Trashs[Model] then
 					Trashs[Model] = {}
 				end
 
-				if not Pumpjack[Model] then
-					Pumpjack[Model] = {}
-				end
-				for k, v in pairs(Trashs[Model]) do
+				for k,v in pairs(Trashs[Model]) do
 					if #(v["Coords"] - Coords) <= 0.75 and os.time() <= v["timer"] then
-						local Cooldown = MinimalTimers(v["timer"] - os.time())
-						TriggerClientEvent("Notify", source, "azul", "Aguarde <b>" .. Cooldown .. "</b>.", false, 5000)
+						local Cooldown = parseInt(v["timer"] - os.time())
+						TriggerClientEvent("Notify",source,"azul","Aguarde <b>"..Cooldown.."</b> segundos.",5000)
 						return
 					end
 				end
-				for k, v in pairs(Pumpjack[Model]) do
-					if #(v["Coords"] - Coords) <= 0.75 and os.time() <= v["timer"] then
-						local Cooldown = MinimalTimers(v["timer"] - os.time())
-						TriggerClientEvent("Notify", source, "azul", "Aguarde <b>" .. Cooldown .. "</b>.", false, 5000)
-						return
-					end
-				end
-				if Service == "Parkimeter" then
-					vRP.RemoveItem(Passport, "WEAPON_NAIL_AMMO", 1, true)
-				end
-				if Service == "CarWreck" then
-					Active[Passport] = os.time() + 30
-					TriggerClientEvent("Progress", source, "Vasculhando", 30000)
-					vRPC.playAnim(source, false,
-						{ "anim@amb@clubhouse@tutorial@bkr_tut_ig3@", "machinic_loop_mechandplayer" }, true)
-				elseif Service == "Pumpjack" then
-					Active[Passport] = os.time() + 60
-					TriggerClientEvent("vRP:Explosion", source, Coords)
-					TriggerClientEvent("Progress", source, "Roubando", 60000)
-					vRPC.playAnim(source, false,
-						{ "anim@amb@clubhouse@tutorial@bkr_tut_ig3@", "machinic_loop_mechandplayer" }, true)
 
-					local Service = vRP.NumPermission("Policia")
-					for Passports, Sources in pairs(Service) do
-						async(function()
-							TriggerClientEvent("NotifyPush", Sources,
-								{
-									code = 31,
-									title = "Roubo de Petróleo",
-									x = Coords["x"],
-									y = Coords["y"],
-									z = Coords["z"],
-									criminal = "Alarme de segurança",
-									time = "Recebido às " .. os.date("%H:%M"),
-									blipColor = 44
-								})
-						end)
-					end
-				elseif Service == "Bricks" then
-					Active[Passport] = os.time() + 30
-					TriggerClientEvent("Progress", source, "Vasculhando", 30000)
-					vRPC.playAnim(source, false,
-						{ "anim@amb@clubhouse@tutorial@bkr_tut_ig3@", "machinic_loop_mechandplayer" }, true)
-					local Service = vRP.NumPermission("Policia")
-					for Passports, Sources in pairs(Service) do
-						async(function()
-							TriggerClientEvent("NotifyPush", Sources,
-								{
-									code = 31,
-									title = "Roubo de Materiais",
-									x = Coords["x"],
-									y = Coords["y"],
-									z = Coords["z"],
-									criminal = "Alarme de segurança",
-									time = "Recebido às " .. os.date("%H:%M"),
-									blipColor = 44
-								})
-						end)
-					end
-				else
-					Active[Passport] = os.time() + 10
-					TriggerClientEvent("Progress", source, "Vasculhando", 10000)
-					vRPC.playAnim(source, false, { "amb@prop_human_bum_bin@base", "base" }, true)
-				end
+				Active[Passport] = os.time() + 5
+				TriggerClientEvent("Progress",source,"Vasculhando",5000)
+				vRPC.playAnim(source,false,{"amb@prop_human_bum_bin@base","base"},true)
 
-				verifyObjects[Passport] = { Model, Hash }
+				verifyObjects[Passport] = { Model,Hash }
 				Player(source)["state"]["Buttons"] = true
-				TriggerClientEvent("inventory:Close", source)
+				TriggerClientEvent("inventory:Close",source)
+				Trashs[Model][Hash] = { ["Coords"] = Coords, ["timer"] = os.time() + 3600 }
 
-				if Service == "Pumpjack" then
-					Pumpjack[Model][Hash] = { ["Coords"] = Coords, ["timer"] = os.time() + 7200 }
-				else
-					Trashs[Model][Hash] = { ["Coords"] = Coords, ["timer"] = os.time() + 3600 }
-				end
 				repeat
 					if os.time() >= parseInt(Active[Passport]) then
 						Active[Passport] = nil
-						vRPC.stopAnim(source, false)
+						vRPC.stopAnim(source,false)
 						Player(source)["state"]["Buttons"] = false
-						local itemSelect = { "", 1 }
+
+						local itemSelect = { "",1 }
+
 						if Service == "Lixeiro" then
-							if vRPC.LastVehicle(source, "trash") then
-								local randItem = math.random(90)
-								if parseInt(randItem) >= 61 and parseInt(randItem) <= 70 then
-									itemSelect = { "metalcan", math.random(1, 3) }
-								elseif parseInt(randItem) >= 51 and parseInt(randItem) <= 60 then
-									itemSelect = { "battery", math.random(1, 3) }
-								elseif parseInt(randItem) >= 41 and parseInt(randItem) <= 50 then
-									itemSelect = { "elastic", math.random(1, 3) }
-								elseif parseInt(randItem) >= 21 and parseInt(randItem) <= 40 then
-									itemSelect = { "plasticbottle", math.random(1, 3) }
-								elseif parseInt(randItem) <= 20 then
-									itemSelect = { "glassbottle", math.random(1, 3) }
-								end
-							else
-								itemSelect = { "recyclable", math.random(6, 12) }
-							end
-						elseif Service == "Jornaleiro" then
-							itemSelect = { "newspaper", math.random(3) }
-						elseif Service == "Parkimeter" then
-							local randPark = math.random(70)
-							if parseInt(randPark) >= 31 and parseInt(randPark) <= 60 then
-								itemSelect = { "goldcoin", math.random(2, 4) }
-							elseif parseInt(randPark) <= 30 then
-								itemSelect = { "silvercoin", math.random(3, 6) }
-							end
-						elseif Service == "CarWreck" then
-							itemSelect = { "scrap", math.random(6, 12) }
-						elseif Service == "Pumpjack" then
-							local randOil = math.random(15)
-							if parseInt(randOil) >= 0 and parseInt(randOil) <= 10 then
-								TriggerClientEvent("vRP:Explosion", source, Coords)
-								itemSelect = { "oilbarrel", 1 }
-							end
-						elseif Service == "Fruits" then
-							local randFruits = math.random(40)
-							if parseInt(randFruits) >= 31 and parseInt(randFruits) <= 40 then
-								itemSelect = { "banana", math.random(3, 6) }
-							elseif parseInt(randFruits) >= 21 and parseInt(randFruits) <= 30 then
-								itemSelect = { "apple", math.random(3, 6) }
-							elseif parseInt(randFruits) >= 11 and parseInt(randFruits) <= 20 then
-								itemSelect = { "orange", math.random(3, 6) }
-							elseif parseInt(randFruits) <= 10 then
-								itemSelect = { "tange", math.random(3, 6) }
-							end
-						elseif Service == "Bricks" then
-							local randBricks = math.random(15)
-							if parseInt(randBricks) >= 0 and parseInt(randBricks) <= 10 then
-								itemSelect = { "WEAPON_BRICK", math.random(3, 6) }
-							end
+							itemSelect = { "recyclable",math.random(20,35) }
 						end
+
 						if itemSelect[1] == "" then
-							if Service == "Parkimeter" then
-								local Players = vRPC.ClosestPeds(source, 5)
-								for _, v in pairs(Players) do
-									async(function()
-										TriggerClientEvent("Notify", v, "vermelho",
-											"Um parquímetro próximo irá explodir em breve.", "Aviso", 10000)
-									end)
-								end
-								SetTimeout(5000, function()
-									TriggerClientEvent("vRP:Explosion", source, Coords)
-								end)
-							elseif Service == "Pumpjack" then
-								TriggerClientEvent("Notify", source, "vermelho", "Bomba de vareta de sucção vazia.",
-									"Aviso", 5000)
-							else
-								TriggerClientEvent("Notify", source, "vermelho", "Nada encontrado.", "Aviso", 5000)
-							end
-							vRP.UpgradeStress(Passport, 1)
+							TriggerClientEvent("Notify",source,"amarelo","Nada encontrado.",5000)
 						else
 							if (vRP.InventoryWeight(Passport) + itemWeight(itemSelect[1]) * itemSelect[2]) <= vRP.GetWeight(Passport) then
-								if Service == "Pumpjack" then
-									vRP.GenerateItem(Passport, itemSelect[1], itemSelect[2], true)
-									vRP.UpgradeStress(Passport, 5)
-								else
-									vRP.GenerateItem(Passport, itemSelect[1], itemSelect[2], true)
-									vRP.UpgradeStress(Passport, 1)
-								end
+								vRP.GenerateItem(Passport,itemSelect[1],itemSelect[2],true)
+								vRP.UpgradeStress(Passport,1)
 							else
-								TriggerClientEvent("Notify", source, "vermelho", "Mochila cheia.", "Aviso", 5000)
+								TriggerClientEvent("Notify",source,"vermelho","Mochila cheia.",5000)
 								Trashs[Model][Hash] = nil
-								Pumpjack[Model][Hash] = nil
 							end
 						end
+
 						verifyObjects[Passport] = nil
 					end
+
 					Wait(100)
 				until not Active[Passport]
 			end
 		else
-			TriggerClientEvent("Notify", source, "vermelho", "Nada encontrado.", "Aviso", 5000)
+			TriggerClientEvent("Notify",source,"amarelo","Nada encontrado.",5000)
 		end
 	end
 end
-
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- LOOT
 -----------------------------------------------------------------------------------------------------------------------------------------

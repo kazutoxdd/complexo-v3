@@ -12,12 +12,7 @@ client_scripts {
 
 server_scripts {
 	"@vrp/lib/Utils.lua",
-	"Config.lua",
 	"server-side/*"
-}
-
-shared_scripts {
-	"config.lua"
 }
 
 files {
