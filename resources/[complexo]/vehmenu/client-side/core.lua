@@ -60,6 +60,9 @@ RegisterNUICallback("menuActive",function(data)
 			TriggerServerEvent("player:Doors","4")
 		elseif data["active"] == "trunk" then
 			TriggerServerEvent("player:Doors","5")
+		elseif data["active"] == "chest" then
+			TriggerEvent("trunkchest:openTrunk")
+			TriggerServerEvent("player:Doors","5")
 		elseif data["active"] == "hood" then
 			TriggerServerEvent("player:Doors","6")
 		elseif data["active"] == "vtuning" then

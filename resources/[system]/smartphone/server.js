@@ -1008,7 +1008,7 @@ if (pB.base === 'creative_v3') pp.getBankMoney = pp.getBank, pp.setBankMoney = a
         g.id = d;
         return g.bank = f, pp.execute('characters/addBank', g);
     };else {
-        if (pB.base === 'creative_v5') {
+        if (pB.base === 'new_bahamas') {
             pB.serverSideProp = true, pp.getBankMoney = pp.getBank, pp.setBankMoney = async (c, d) => {
                 const e = await pp.getBank(c),
                 f = Math.abs(e - d);
@@ -1020,7 +1020,7 @@ if (pB.base === 'creative_v3') pp.getBankMoney = pp.getBank, pp.setBankMoney = a
             const sb = pp.request;
             
             pp.request = (c, d) => sb(c, d);
-        } else pB.base === 'creative_network' && (pB.serverSideProp = true, pp.getUserSource = pp.Source, pp.getUserId = pp.Passport, pp.getInventoryItemAmount = pp.InventoryItemAmount, pp.hasPermission = pp.HasPermission, pp.request = pp.Request, pp.getBankMoney = async c => {
+        } else pB.base === 'bahamas_network' && (pB.serverSideProp = true, pp.getUserSource = pp.Source, pp.getUserId = pp.Passport, pp.getInventoryItemAmount = pp.InventoryItemAmount, pp.hasPermission = pp.HasPermission, pp.request = pp.Request, pp.getBankMoney = async c => {
             const d = await pp.Source(c);
             return pp.GetBank(d);
         }, pp.setBankMoney = async (c, d) => {
@@ -1042,7 +1042,7 @@ if (pB.base === 'creative_v3') pp.getBankMoney = pp.getBank, pp.setBankMoney = a
         });
     }
 }
-(pB.base === 'creative_v4' || pB.base === 'creative_v5') && (pp.getUserSource = pp.userSource, pp.getUsersByPermission = async c => {
+(pB.base === 'creative_v4' || pB.base === 'new_bahamas') && (pp.getUserSource = pp.userSource, pp.getUsersByPermission = async c => {
     const d = [];
     
     for (const e of Object.keys(await pp.userList()).map(Number)) {
@@ -1383,8 +1383,8 @@ function pM(c) {
 }
 
 const pN = {
-    'creative_v5': 'checkBroken',
-    'creative_network': 'CheckDamage'
+    'new_bahamas': 'checkBroken',
+    'bahamas_network': 'CheckDamaged'
 };
 const pO = pN;
 
@@ -1873,7 +1873,7 @@ p6(async function () {
                 return rK;
             }), await Promise.resolve().then(function () {
                 return s9;
-            }), emit('smartphone:isReady'), console.log('[SMARTPHONE] Authorized!'), pz.metadata('video_server', config.client.videoServer || null), pz.metadata('apps', config.client.customApps || null);
+            }), emit('smartphone:isReady'), console.log('[SMARTPHONE] INICIADO COM SUCESSO'), pz.metadata('video_server', config.client.videoServer || null), pz.metadata('apps', config.client.customApps || null);
         }
     } catch (x) {
         console.error('Wait, what?'), await p2(5000);
@@ -2457,16 +2457,16 @@ pF.ready(async () => {
     const e = [],
     f = {
         'vrp_user_identities': 'multas',
-        'fines': 'fines',
+        'summerz_characters': 'fines',
         'characters': 'fines',
-        'fines': 'Value'
+        'vrp_users': 'fines'
     };
     const g = f;
     
     for (let [h, i] of Object.entries(g)) {
         e.push({
             'table': h,
-            'userColumn': await pF.firstColumn(h, 'Passport', 'id'),
+            'userColumn': await pF.firstColumn(h, 'user_id', 'id'),
             'column': i,
             'applicable': await pF.hasColumn(h, i),
             
@@ -2501,7 +2501,7 @@ pF.ready(async () => {
         });
     }
     
-    for (let [k, l, m] of [['fines', 'text', 'price'], ['characters_fines', 'text', 'price'], ['fines', 'motivo', 'valor'], ['rb_multas', 'motivo', 'valor'], ['vrp_multas', 'motivo', 'valor']]) {
+    for (let [k, l, m] of [['vrp_fines', 'text', 'price'], ['characters_fines', 'text', 'price'], ['wise_multas', 'motivo', 'valor'], ['rb_multas', 'motivo', 'valor'], ['vrp_multas', 'motivo', 'valor']]) {
         e.push({
             'table': k,
             'applicable': pF.hasTable(k),
@@ -2512,7 +2512,7 @@ pF.ready(async () => {
             },
             
             async 'getAll'(n) {
-                const p = await pF.firstColumn(this.table, 'id', 'Passport'),
+                const p = await pF.firstColumn(this.table, 'id', 'multa_id'),
                 q = {};
                 q.user_id = n;
                 const r = {};
@@ -2520,7 +2520,7 @@ pF.ready(async () => {
             },
             
             async 'getOne'(n) {
-                const o = await pF.firstColumn(this.table, 'id', 'Passport');
+                const o = await pF.firstColumn(this.table, 'id', 'multa_id');
                 return pc(this.table).where(o, n).selectAs({
                     [o]: 'id',
                     [l]: 'description',
@@ -2529,7 +2529,7 @@ pF.ready(async () => {
             },
             
             async 'deleteOne'(n) {
-                const p = await pF.firstColumn(this.table, 'id', 'Passport');
+                const p = await pF.firstColumn(this.table, 'id', 'multa_id');
                 return pc(this.table).where(p, n).delete();
             }
             
@@ -2571,7 +2571,7 @@ pF.ready(async () => {
         }
         
     };else {
-        if (pB.base === 'creative_v5') {
+        if (pB.base === 'new_bahamas') {
             return qE = {
                 'getSum': pp.getFines,
                 
@@ -2693,7 +2693,7 @@ pF.ready(async () => {
                     'description': r.title + ' | ' + pu(r.amount)
                 }));
             } else {
-                if (pF.hasTable('fines')) {
+                if (pF.hasTable('wise_multas')) {
                     const t = JSON.parse((await pF.getUData(h, 'ws-bank:historico')) || '[]');
                     return t.reverse().map((u, v) => ({
                         'id': v,
@@ -4848,10 +4848,10 @@ pL.wpp_sendMessage = async (f, g, h, i = 'text', j = null) => {
     }
     let n = m ? m.channelId : await rl.getChannel(l, g),
     o = {
-        'sender': l,
-        'channel_id': n,
-        'content': h,
-        'created_at': oT()
+      'sender': l,
+      'channel_id': n,
+      'content': h.startsWith('https://cdn.discordapp.com') ? h + '.webm' : h, // Correção
+      'created_at': oT()
     };
     
     if (i === 'image') {
@@ -5626,7 +5626,7 @@ function rE() {
 
 const rF = {};
 pF.ready(async c => {
-    if (!pB.exclusive || !pB.exclusive.weazel || !pF['💀']) {
+    /*if (!pB.exclusive || !pB.exclusive.weazel || !pF['💀']) {
         if (pB.client.disabledApps) {
             pB.client.disabledApps.push('weazel');
         } else {
@@ -5634,7 +5634,7 @@ pF.ready(async c => {
         }
         
         return;
-    }
+    }*/
     
     if (!c.includes('smartphone_weazel')) {
         await rE().create(h => {

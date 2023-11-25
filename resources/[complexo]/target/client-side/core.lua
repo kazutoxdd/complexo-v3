@@ -1,14 +1,13 @@
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- VRP
 -----------------------------------------------------------------------------------------------------------------------------------------
-local Tunnel = module("vrp", "lib/Tunnel")
-local Proxy = module("vrp", "lib/Proxy")
+local Tunnel = module("vrp","lib/Tunnel")
+local Proxy = module("vrp","lib/Proxy")
 vRP = Proxy.getInterface("vRP")
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- CONNECTION
 -----------------------------------------------------------------------------------------------------------------------------------------
 vSERVER = Tunnel.getInterface("target")
-vPLAYER = Tunnel.getInterface("player")
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- VARIABLES
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -17,8 +16,7 @@ local Models = {}
 local Selected = {}
 local Sucess = false
 local Dismantleds = 1
-local FreezeDismantle = false
-local firstSupply = true
+LocalPlayer["state"]["Target"] = false
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- ADRENALINE
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -34,22 +32,24 @@ local Tows = {
 	{ -142.24,-1174.19,23.76 }
 }
 -----------------------------------------------------------------------------------------------------------------------------------------
--- DISMANTLE
+-- DISMANTLES
 -----------------------------------------------------------------------------------------------------------------------------------------
-local Dismantle = {
-	vec3(943.23, -1497.87, 30.11),
-	vec3(-1172.57, -2037.65, 13.75),
-	vec3(-524.94, -1680.63, 19.21),
-	vec3(1358.14, -2095.41, 52.0),
-	vec3(602.47, -437.82, 24.75),
-	vec3(-413.86, -2179.29, 10.31),
-	vec3(146.51, 320.62, 112.14),
-	vec3(520.91, 169.14, 99.36),
-	vec3(1137.99, -794.32, 57.59),
-	vec3(-93.07, -2549.6, 6.0),
-	vec3(820.07, -488.43, 30.46),
-	vec3(1078.62, -2325.56, 30.25),
-	vec3(1204.69, -3116.71, 5.50)
+local Dismantles = {
+	{ 943.23,-1497.87,30.11 },
+	{ -1172.57,-2037.65,13.75 },
+	{ -524.94,-1680.63,19.21 },
+	{ 1358.14,-2095.41,52.0 },
+	{ 602.47,-437.82,24.75 },
+	{ -413.86,-2179.29,10.31 },
+	{ 146.51,320.62,112.14 },
+	{ 520.91,169.14,99.36 },
+	{ 1137.99,-794.32,57.59 },
+	{ -93.07,-2549.6,6.0 },
+	{ -1537.85,-577.49,25.71 },
+	{ 820.07,-488.43,30.46 },
+	{ 819.53,-822.27,26.18 },
+	{ 1078.62,-2325.56,30.25 },
+	{ 1204.69,-3116.71,5.54 }
 }
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- TARGET:DISMANTLES
@@ -231,66 +231,169 @@ end)
 -- THREADSTART
 -----------------------------------------------------------------------------------------------------------------------------------------
 CreateThread(function()
-	RegisterCommand("+entityTarget", TargetEnable)
-	RegisterCommand("-entityTarget", TargetDisable)
-	RegisterKeyMapping("+entityTarget", "Interação auricular.", "keyboard", "LMENU")
+	RegisterCommand("+entityTarget",TargetEnable)
+	RegisterCommand("-entityTarget",TargetDisable)
+	RegisterKeyMapping("+entityTarget","Interação auricular.","keyboard","LMENU")
 
-	AddCircleZone("Electricity", vec3(2101.75, 2322.74, 94.53), 0.5, {
-		name = "Electricity",
-		heading = 0.0
-	}, {
+	AddCircleZone("systemHacker",vec3(-1079.34,-244.83,44.01),0.5,{
+		name = "systemHacker",
+		heading = 25.52
+	},{
 		Distance = 0.75,
 		options = {
 			{
-				event = "inventory:Electricity",
-				label = "Sabotar",
+				event = "stockade:initHacker",
+				label = "Hackear Carro Forte",
+				tunnel = "client"
+			}
+		}
+	})
+
+	AddCircleZone("Informations01",vec3(-95.33,-2767.89,6.46),0.5,{
+		name = "Informations01",
+		heading = 3374176
+	},{
+		Distance = 1.0,
+		options = {
+			{
+				event = "player:Informations",
+				label = "Informações",
 				tunnel = "server"
 			}
 		}
 	})
 
-	AddTargetModel({ 858993389, 2913180574 }, {
+	AddBoxZone("WorkBus",vec3(453.47,-602.34,28.59),0.5,0.5,{
+		name = "WorkBus",
+		heading = 266.46,
+		minZ = 28.59 - 0.75,
+		maxZ = 28.59 + 0.75
+	},{
+		Distance = 1.0,
 		options = {
 			{
-				event = "inventory:ObjectsVerify",
-				label = "Roubar Frutas",
-				tunnel = "shop",
-				service = "Fruits"
+				event = "bus:Init",
+				label = "Trabalhar",
+				tunnel = "client"
 			}
-		},
-		Distance = 1.0
-	})
-
-	AddTargetModel({ 1281992692, 1158960338, 1511539537, -78626473, -429560270 }, {
-		options = {
-			{
-				event = "target:Call",
-				label = "Ligar para Delegacia",
-				tunnel = "proserver",
-				service = "Policia"
-			}, {
-			event = "target:Call",
-			label = "Ligar para Hospital",
-			tunnel = "proserver",
-			service = "Paramedico"
 		}
-		},
-		Distance = 1.0
 	})
 
-	AddTargetModel({ -1207886863, 568309711, 200010599, 1888301071, 1677473970, 323971301 }, {
+	AddCircleZone("Dealership01",vec3(-57.23,-1098.31,26.75),0.5,{
+		name = "Dealership01",
+		heading = 3374176
+	},{
+		Distance = 1.0,
 		options = {
 			{
-				event = "inventory:ObjectsVerify",
-				label = "Procurar Petróleo",
-				tunnel = "shop",
-				service = "Pumpjack"
+				event = "pdm:Open",
+				label = "Abrir",
+				tunnel = "shop"
 			}
-		},
-		Distance = 1.0
+		}
 	})
 
-	AddTargetModel({ -2007231801, 1339433404, 1694452750, 1933174915, -462817101, -469694731, -164877493, 486135101 }, {
+	AddCircleZone("Blackout01",vec3(713.12,164.25,80.74),0.5,{
+		name = "Blackout01",
+		heading = 3374176
+	},{
+		Distance = 1.25,
+		options = {
+			{
+				event = "inventory:Blackout",
+				label = "Sabotar",
+				service = "server"
+			}
+		}
+	})
+
+
+	AddBoxZone("CallBurgerShot",vec3(-1187.86,-904.92,13.73),0.25,0.25,{
+		name = "CallBurgerShot",
+		heading = 3374176,
+		minZ = 13.50,
+		maxZ = 14.00
+	},{
+		shop = "BurgerShot",
+		Distance = 1.0,
+		options = {
+			{
+				event = "target:CallWorks",
+				label = "Buscar Entregadores",
+				tunnel = "server"
+			}
+		}
+	})
+
+	AddBoxZone("CallUwuCoffee",vec3(-584.09,-1061.45,22.37),0.25,0.25,{
+		name = "CallUwuCoffee",
+		heading = 3374176,
+		minZ = 22.25,
+		maxZ = 22.50
+	},{
+		shop = "UwU Café",
+		Distance = 1.0,
+		options = {
+			{
+				event = "target:CallWorks",
+				label = "Buscar Entregadores",
+				tunnel = "server"
+			}
+		}
+	})
+
+	AddBoxZone("CallPizzaThis",vec3(811.28,-750.61,26.85),0.25,0.25,{
+		name = "CallPizzaThis",
+		heading = 3374176,
+		minZ = 26.50,
+		maxZ = 27.00
+	},{
+		shop = "Pizza This",
+		Distance = 1.0,
+		options = {
+			{
+				event = "target:CallWorks",
+				label = "Buscar Entregadores",
+				tunnel = "server"
+			}
+		}
+	})
+
+	AddBoxZone("CallBeanMachine",vec3(122.22,-1036.56,29.44),0.25,0.25,{
+		name = "CallBeanMachine",
+		heading = 3374176,
+		minZ = 29.25,
+		maxZ = 29.75
+	},{
+		shop = "Bean Machine",
+		Distance = 1.0,
+		options = {
+			{
+				event = "target:CallWorks",
+				label = "Buscar Entregadores",
+				tunnel = "server"
+			}
+		}
+	})
+
+	AddBoxZone("CallParamedic",vec3(311.83,-593.31,43.08),0.25,0.25,{
+		name = "CallParamedic",
+		heading = 3374176,
+		minZ = 43.00,
+		maxZ = 43.25
+	},{
+		shop = "Paramedic",
+		Distance = 2.0,
+		options = {
+			{
+				event = "target:CallWorks",
+				label = "Buscar Entregadores",
+				tunnel = "server"
+			}
+		}
+	})
+
+	AddTargetModel({ -2007231801,1339433404,1694452750,1933174915,-462817101,-469694731,-164877493,486135101 },{
 		options = {
 			{
 				event = "shops:Fuel",
@@ -301,18 +404,161 @@ CreateThread(function()
 		Distance = 0.75
 	})
 
-	AddTargetModel({ 654385216, 161343630, -430989390, 1096374064, -1519644200, -1932041857, 207578973, -487222358 }, {
+	AddCircleZone("divingStore",vec3(1523.82,3782.56,34.51),0.5,{
+		name = "divingStore",
+		heading = 3374176
+	},{
+		Distance = 1.0,
+		options = {
+			{
+				event = "shops:divingSuit",
+				label = "Comprar Traje",
+				tunnel = "server"
+			},{
+				event = "hud:RechargeOxigen",
+				label = "Reabastecer Oxigênio",
+				tunnel = "client"
+			}
+		}
+	})
+
+	AddCircleZone("Trucker",vec3(1239.87,-3257.2,7.09),0.5,{
+		name = "Trucker",
+		heading = 3374176
+	},{
+		Distance = 1.25,
+		options = {
+			{
+				event = "trucker:initVehicles",
+				label = "Entrega de Veículos",
+				tunnel = "client"
+			},{
+				event = "trucker:initDiesel",
+				label = "Entrega de Diesel",
+				tunnel = "client"
+			},{
+				event = "trucker:initFuel",
+				label = "Entrega de Gasolina",
+				tunnel = "client"
+			},{
+				event = "trucker:initWood",
+				label = "Entrega de Madeira",
+				tunnel = "client"
+			}
+		}
+	})
+
+	AddCircleZone("makePaper",vec3(-533.18,5292.15,74.17),0.5,{
+		name = "makePaper",
+		heading = 3374176
+	},{
+		Distance = 0.75,
+		options = {
+			{
+				event = "inventory:MakeProducts",
+				label = "Produzir",
+				tunnel = "products",
+				service = "paper"
+			}
+		}
+	})
+
+	AddCircleZone("Yoga01",vec3(-492.83,-217.31,35.61),0.5,{
+		name = "Yoga01",
+		heading = 3374176
+	},{
+		Distance = 1.25,
+		options = {
+			{
+				event = "player:Yoga",
+				label = "Yoga",
+				tunnel = "client"
+			}
+		}
+	})
+
+	AddCircleZone("Yoga02",vec3(-492.87,-219.03,36.55),0.5,{
+		name = "Yoga02",
+		heading = 3374176
+	},{
+		Distance = 1.25,
+		options = {
+			{
+				event = "player:Yoga",
+				label = "Yoga",
+				tunnel = "client"
+			}
+		}
+	})
+
+	AddCircleZone("Yoga03",vec3(-492.89,-220.68,36.51),0.5,{
+		name = "Yoga03",
+		heading = 3374176
+	},{
+		Distance = 1.25,
+		options = {
+			{
+				event = "player:Yoga",
+				label = "Yoga",
+				tunnel = "client"
+			}
+		}
+	})
+
+	AddCircleZone("Yoga04",vec3(-490.21,-220.91,36.51),0.5,{
+		name = "Yoga04",
+		heading = 3374176
+	},{
+		Distance = 1.25,
+		options = {
+			{
+				event = "player:Yoga",
+				label = "Yoga",
+				tunnel = "client"
+			}
+		}
+	})
+
+	AddCircleZone("Yoga05",vec3(-490.18,-219.24,36.58),0.5,{
+		name = "Yoga05",
+		heading = 3374176
+	},{
+		Distance = 1.25,
+		options = {
+			{
+				event = "player:Yoga",
+				label = "Yoga",
+				tunnel = "client"
+			}
+		}
+	})
+
+	AddCircleZone("Yoga06",vec3(-490.16,-217.33,36.63),0.5,{
+		name = "Yoga06",
+		heading = 3374176
+	},{
+		Distance = 1.25,
+		options = {
+			{
+				event = "player:Yoga",
+				label = "Yoga",
+				tunnel = "client"
+			}
+		}
+	})
+
+	AddTargetModel({ 654385216,161343630,-430989390,1096374064,-1519644200,-1932041857,207578973,-487222358 },{
 		options = {
 			{
 				event = "slotmachine:Init",
-				label = "Sentar",
+				label = "Caça-Níqueis",
 				tunnel = "client"
 			}
 		},
 		Distance = 0.75
 	})
 
-	AddTargetModel({ -1691644768, -742198632 }, {
+	AddTargetModel({ -1691644768,-742198632 },{
 		options = {
 			{
 				event = "inventory:MakeProducts",
@@ -329,19 +575,26 @@ CreateThread(function()
 		Distance = 0.75
 	})
 
-	AddTargetModel({ 200846641, -97646180, -366155374 }, {
+	AddTargetModel({ -935625561 },{
 		options = {
 			{
-				event = "inventory:MakeProducts",
-				label = "Encher",
-				tunnel = "products",
-				service = "emptybottle"
-			},
+				event = "target:BedDeitar",
+				label = "Deitar",
+				tunnel = "client"
+			},{
+				event = "target:BedPickup",
+				label = "Pegar",
+				tunnel = "client"
+			},{
+				event = "target:BedDestroy",
+				label = "Destruir",
+				tunnel = "client"
+			}
 		},
-		Distance = 0.75
+		Distance = 1.0
 	})
 
-	AddTargetModel({ 690372739 }, {
+	AddTargetModel({ 690372739 },{
 		options = {
 			{
 				event = "shops:Coffee",
@@ -349,10 +602,10 @@ CreateThread(function()
 				tunnel = "client"
 			}
 		},
-		Distance = 1.25
+		Distance = 1.0
 	})
 
-	AddTargetModel({ -654402915, 1421582485 }, {
+	AddTargetModel({ -654402915,1421582485 },{
 		options = {
 			{
 				event = "shops:Donut",
@@ -360,10 +613,10 @@ CreateThread(function()
 				tunnel = "client"
 			}
 		},
-		Distance = 1.25
+		Distance = 1.0
 	})
 
-	AddTargetModel({ 992069095, 1114264700 }, {
+	AddTargetModel({ 992069095,1114264700 },{
 		options = {
 			{
 				event = "shops:Soda",
@@ -371,21 +624,21 @@ CreateThread(function()
 				tunnel = "client"
 			}
 		},
-		Distance = 1.25
+		Distance = 1.0
 	})
 
-	AddTargetModel({ 1129053052 }, {
+	AddTargetModel({ 1129053052 },{
 		options = {
 			{
-				event = "shops:Hamburger",
+				event = "shops:Burger",
 				label = "Comprar",
 				tunnel = "client"
 			}
 		},
-		Distance = 1.25
+		Distance = 1.0
 	})
 
-	AddTargetModel({ -1581502570 }, {
+	AddTargetModel({ -1581502570 },{
 		options = {
 			{
 				event = "shops:Hotdog",
@@ -393,21 +646,10 @@ CreateThread(function()
 				tunnel = "client"
 			}
 		},
-		Distance = 1.25
+		Distance = 1.0
 	})
 
-	AddTargetModel({ 73774428 }, {
-		options = {
-			{
-				event = "shops:Cigarette",
-				label = "Comprar",
-				tunnel = "client"
-			}
-		},
-		Distance = 1.25
-	})
-
-	AddTargetModel({ -272361894 }, {
+	AddTargetModel({ -272361894 },{
 		options = {
 			{
 				event = "shops:Chihuahua",
@@ -418,7 +660,7 @@ CreateThread(function()
 		Distance = 1.0
 	})
 
-	AddTargetModel({ 1099892058 }, {
+	AddTargetModel({ 1099892058 },{
 		options = {
 			{
 				event = "shops:Water",
@@ -428,25 +670,27 @@ CreateThread(function()
 		},
 		Distance = 1.0
 	})
-	AddTargetModel({ GetHashKey("s_m_m_linecook") }, {
+
+	AddTargetModel({ -832573324,-1430839454,1457690978,1682622302,402729631,-664053099,1794449327,307287994,-1323586730,111281960,-541762431,-745300483,-417505688 },{
 		options = {
 			{
-				event = "shops:Orgs",
-				label = "Comprar",
-				tunnel = "client"
+				event = "inventory:Animals",
+				label = "Esfolar",
+				tunnel = "shop"
 			}
 		},
-		Distance = 3.5
+		Distance = 1.0
 	})
-	AddTargetModel({ GetHashKey("s_m_y_barman_01") }, {
+
+	AddTargetModel({ 1281992692,1158960338,1511539537,-78626473,-429560270 },{
 		options = {
 			{
-				event = "shops:Orgs2",
-				label = "Comprar",
+				event = "hup:phoneObject",
+				label = "Ligar",
 				tunnel = "client"
 			}
 		},
-		Distance = 3.5
+		Distance = 1.0
 	})
 
 
@@ -487,10 +731,176 @@ CreateThread(function()
 		Distance = 0.75
 	})
 
-	AddCircleZone("Cemitery", vec3(-1745.57, -205.19, 57.37), 0.5, {
-		name = "Cemitery",
+	AddCircleZone("Electricity", vec3(2101.75, 2322.74, 94.53), 0.5, {
+		name = "Electricity",
 		heading = 0.0
 	}, {
+		Distance = 0.75,
+		options = {
+			{
+				event = "inventory:Electricity",
+				label = "Sabotar",
+				tunnel = "server"
+			}
+		}
+	})
+
+	AddCircleZone("Juice01",vec3(-1843.61,-1198.19,14.72),0.5,{
+		name = "Juice01",
+		heading = 3374176
+	},{
+		Distance = 1.25,
+		options = {
+			{
+				event = "inventory:MakeProducts",
+				label = "Encher Copo",
+				tunnel = "products",
+				service = "Pearls1"
+			}
+		}
+	})
+
+	AddCircleZone("Burger01",vec3(-1844.76,-1196.41,14.33),0.5,{
+		name = "Burger01",
+		heading = 3374176
+	},{
+		Distance = 1.0,
+		options = {
+			{
+				event = "inventory:MakeProducts",
+				label = "Montar Lanche",
+				tunnel = "products",
+				service = "Pearls2"
+			}
+		}
+	})
+
+	AddCircleZone("Box01",vec3(-1846.31,-1193.05,14.24),0.5,{
+		name = "Box01",
+		heading = 3374176
+	},{
+		Distance = 1.25,
+		options = {
+			{
+				event = "inventory:MakeProducts",
+				label = "Montar Combo",
+				tunnel = "products",
+				service = "Pearls3"
+			}
+		}
+	})
+
+	AddCircleZone("tabletVehicles01",vec3(-38.9,-1100.22,27.26),0.5,{
+		name = "tabletVehicles01",
+		heading = 3374176
+	},{
+		shop = "Santos",
+		Distance = 1.0,
+		options = {
+			{
+				event = "tablet:Open",
+				label = "Abrir",
+				tunnel = "shop"
+			}
+		}
+	})
+
+	AddCircleZone("tabletVehicles02",vec3(-40.37,-1094.57,27.26),0.5,{
+		name = "tabletVehicles02",
+		heading = 3374176
+	},{
+		shop = "Santos",
+		Distance = 1.0,
+		options = {
+			{
+				event = "tablet:Open",
+				label = "Abrir",
+				tunnel = "shop"
+			}
+		}
+	})
+
+	AddTargetModel({ 1281992692, 1158960338, 1511539537, -78626473, -429560270 }, {
+		options = {
+			{
+				event = "target:Call",
+				label = "Ligar para Delegacia",
+				tunnel = "proserver",
+				service = "Policia"
+			}, {
+				event = "target:Call",
+				label = "Ligar para Hospital",
+				tunnel = "proserver",
+				service = "Paramedico"
+			}
+		},
+		Distance = 1.0
+	})
+
+	AddCircleZone("tabletVehicles03",vec3(-46.87,-1095.5,27.26),0.5,{
+		name = "tabletVehicles03",
+		heading = 3374176
+	},{
+		shop = "Santos",
+		Distance = 1.0,
+		options = {
+			{
+				event = "tablet:Open",
+				label = "Abrir",
+				tunnel = "shop"
+			}
+		}
+	})
+
+	AddCircleZone("tabletVehicles04",vec3(-51.59,-1094.98,27.26),0.5,{
+		name = "tabletVehicles04",
+		heading = 3374176
+	},{
+		shop = "Santos",
+		Distance = 1.0,
+		options = {
+			{
+				event = "tablet:Open",
+				label = "Abrir",
+				tunnel = "shop"
+			}
+		}
+	})
+
+	AddCircleZone("tabletVehicles05",vec3(-51.15,-1087.13,27.26),0.5,{
+		name = "tabletVehicles05",
+		heading = 3374176
+	},{
+		shop = "Santos",
+		Distance = 1.0,
+		options = {
+			{
+				event = "tablet:Open",
+				label = "Abrir",
+				tunnel = "shop"
+			}
+		}
+	})
+
+	AddCircleZone("tabletVehicles06",vec3(1224.78,2728.01,38.0),0.5,{
+		name = "tabletVehicles06",
+		heading = 3374176
+	},{
+		shop = "Sandy",
+		Distance = 2.0,
+		options = {
+			{
+				event = "tablet:Open",
+				label = "Abrir",
+				tunnel = "shop"
+			}
+		}
+	})
+
+	AddCircleZone("cemiteryMan",vec3(-1745.57,-205.19,57.37),0.5,{
+		name = "cemiteryMan",
+		heading = 3374176
+	},{
 		Distance = 1.0,
 		options = {
 			{
@@ -501,10 +911,10 @@ CreateThread(function()
 		}
 	})
 
-	AddCircleZone("CassinoWheel", vec3(988.37, 43.06, 71.3), 0.5, {
+	AddCircleZone("CassinoWheel",vec3(988.37,43.06,71.3),0.5,{
 		name = "CassinoWheel",
-		heading = 0.0
-	}, {
+		heading = 3374176
+	},{
 		Distance = 1.5,
 		options = {
 			{
@@ -514,29 +924,6 @@ CreateThread(function()
 			}
 		}
 	})
-
-	AddTargetModel({ 1211559620, 1363150739, -1186769817, 261193082, -756152956, -1383056703, 720581693 }, {
-		options = {
-			{
-				event = "inventory:ObjectsVerify",
-				label = "Vasculhar",
-				tunnel = "shop",
-				service = "Jornaleiro"
-			}
-		},
-		Distance = 0.75
-	})
-
-	AddTargetModel({ 1363150739 }, {
-		options = {
-			{
-				event = "inventory:SendLetter",
-				label = "Enviar Carta",
-				tunnel = "server"
-			}
-		},
-		Distance = 0.75
-	})
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- TARGETENABLE
@@ -545,21 +932,23 @@ function TargetEnable()
 	if LocalPlayer["state"]["Active"] and not IsPauseMenuActive() then
 		local Ped = PlayerPedId()
 
-		if LocalPlayer["state"]["Admin"] or LocalPlayer["state"]["Invisible"] or LocalPlayer["state"]["Camera"] or LocalPlayer["state"]["Phone"] or LocalPlayer["state"]["usingPhone"] or LocalPlayer["state"]["Rope"] or not MumbleIsConnected() or LocalPlayer["state"]["Buttons"] or LocalPlayer["state"]["Commands"] or LocalPlayer["state"]["Handcuff"] or Sucess or IsPedArmed(Ped, 6) or IsPedInAnyVehicle(Ped) then
+		if LocalPlayer["state"]["Buttons"] or LocalPlayer["state"]["Commands"] or LocalPlayer["state"]["Handcuff"] or Sucess or IsPedArmed(Ped,6) or IsPedInAnyVehicle(Ped) or LocalPlayer["state"]["Route"] > 900000 then
 			return
 		end
 
 		SendNUIMessage({ Action = "openTarget" })
-		LocalPlayer["state"]:set("Target", true, false)
+		LocalPlayer["state"]["Target"] = true
 
 		while LocalPlayer["state"]["Target"] do
-			local hitZone, entCoords, Entity = RayCastGamePlayCamera()
+			local hitZone,entCoords,Entity = RayCastGamePlayCamera()
+
 			if hitZone == 1 then
 				local Coords = GetEntityCoords(Ped)
 
-				for k, v in pairs(Zones) do
+				for k,v in pairs(Zones) do
 					if Zones[k]:isPointInside(entCoords) then
 						if #(Coords - Zones[k]["center"]) <= v["targetoptions"]["Distance"] then
+
 							if v["targetoptions"]["shop"] ~= nil then
 								Selected = v["targetoptions"]["shop"]
 							end
@@ -570,11 +959,11 @@ function TargetEnable()
 							while Sucess do
 								local Ped = PlayerPedId()
 								local Coords = GetEntityCoords(Ped)
-								local _, entCoords = RayCastGamePlayCamera()
+								local _,entCoords = RayCastGamePlayCamera()
 
-								if (IsControlJustReleased(1, 24) or IsDisabledControlJustReleased(1, 24)) then
-									SetCursorLocation(0.5, 0.5)
-									SetNuiFocus(true, true)
+								if (IsControlJustReleased(1,24) or IsDisabledControlJustReleased(1,24)) then
+									SetCursorLocation(0.5,0.5)
+									SetNuiFocus(true,true)
 								end
 
 								if not Zones[k]:isPointInside(entCoords) or #(Coords - Zones[k]["center"]) > v["targetoptions"]["Distance"] then
@@ -665,64 +1054,35 @@ function TargetEnable()
 										end
 									end
 
-									if LocalPlayer["state"]["Police"] or LocalPlayer["state"]["Civil"] then
-										Menu[#Menu + 1] = {
-											event = "police:Plate",
-											label = "Verificar Placa",
-											tunnel = "police"
-										}
-										Menu[#Menu + 1] = {
-											event = "police:Impound",
-											label = "Registrar Veículo",
-											tunnel = "police"
-										}
+									if LocalPlayer["state"]["Police"] then
+										Menu[#Menu + 1] = { event = "police:Plate", label = "Verificar Placa", tunnel = "police" }
+										Menu[#Menu + 1] = { event = "police:Impound", label = "Registrar Veículo", tunnel = "police" }
 
 										if GlobalState["Plates"][Plate] then
-											Menu[#Menu + 1] = {
-												event = "police:Arrest",
-												label = "Apreender Veículo",
-												tunnel = "police"
-											}
+											Menu[#Menu + 1] = { event = "police:Arrest", label = "Apreender Veículo", tunnel = "police" }
 										end
 									else
-										if Plate == "DISM" .. (1000 + LocalPlayer["state"]["Passport"]) then
-											if #(Coords - Dismantle[Dismantleds]) <= 15 then
-												Menu[#Menu + 1] = {
-													event = "inventory:Dismantle",
-													label = "Desmanchar",
-													tunnel = "client"
-												}
+										for k,v in pairs(Dismantles) do
+										    if Plate == "DISM"..(1000 + LocalPlayer["state"]["Passport"]) then
+											    local Distance = #(Coords - vec3(v[1],v[2],v[3]))
+											    if Distance <= 10 then
+												    Menu[#Menu + 1] = { event = "inventory:Dismantle", label = "Desmanchar", tunnel = "client" }
+												end
 											end
 										end
 
-										if #(Coords - vec3(-142.24, -1174.19, 23.76)) <= 15 then
-											Menu[#Menu + 1] = {
-												event = "towdriver:Tow",
-												label = "Rebocar",
-												tunnel = "client"
-											}
-											Menu[#Menu + 1] = {
-												event = "impound:Check",
-												label = "Impound",
-												tunnel = "police"
-											}
+										for k,v in pairs(Tows) do
+											local Distance = #(Coords - vec3(v[1],v[2],v[3]))
+											if Distance <= 10 then
+												Menu[#Menu + 1] = { event = "towdriver:Tow", label = "Rebocar", tunnel = "client" }
+												Menu[#Menu + 1] = { event = "impound:Check", label = "Impound", tunnel = "police" }
+											end
 										end
 									end
-
-									Menu[#Menu + 1] = { event = "engine:Vehrify", label = "Verificar", tunnel = "client" }
 								end
 							else
 								Selected[5] = false
 								Menu[#Menu + 1] = { event = "engine:Supply", label = "Abastecer", tunnel = "client" }
-
-								if firstSupply then
-									firstSupply = false
-									local SupplyHoverfy = {}
-									SupplyHoverfy[#SupplyHoverfy + 1] = { Coords["x"], Coords["y"], Coords["z"], 2.5,
-										"ALT",
-										"Abastecer", "Pressione para " }
-									TriggerEvent("hoverfy:Insert", SupplyHoverfy)
-								end
 							end
 
 							SendNUIMessage({ Action = "validTarget", data = Menu })
@@ -731,11 +1091,11 @@ function TargetEnable()
 							while Sucess do
 								local Ped = PlayerPedId()
 								local Coords = GetEntityCoords(Ped)
-								local _, entCoords, Entity = RayCastGamePlayCamera()
+								local _,entCoords,Entity = RayCastGamePlayCamera()
 
-								if (IsControlJustReleased(1, 24) or IsDisabledControlJustReleased(1, 24)) then
-									SetCursorLocation(0.5, 0.5)
-									SetNuiFocus(true, true)
+								if (IsControlJustReleased(1,24) or IsDisabledControlJustReleased(1,24)) then
+									SetCursorLocation(0.5,0.5)
+									SetNuiFocus(true,true)
 								end
 
 								if GetEntityType(Entity) == 0 or #(Coords - entCoords) > 1.0 then
@@ -748,107 +1108,41 @@ function TargetEnable()
 							SendNUIMessage({ Action = "leftTarget" })
 						end
 					elseif IsPedAPlayer(Entity) then
-						if #(Coords - entCoords) <= 2.0 then
+						if #(Coords - entCoords) <= 1.0 then
 							local index = NetworkGetPlayerIndexFromPed(Entity)
 							local source = GetPlayerServerId(index)
 							local Menu = {}
 
 							Selected = { source }
-							Menu[#Menu + 1] = {
-								event = "InpesctRegister",
-								label = "Verificar RG",
-								tunnel = "police"
-							}
-							if LocalPlayer["state"]["Police"] or LocalPlayer["state"]["Civil"] then
-								if GetEntityHealth(Entity) >= 101 then
-									Menu[#Menu + 1] = {
-										event = "police:runInspect",
-										label = "Revistar",
-										tunnel = "police"
-									}
+
+							for k,v in pairs(Adrenaline) do
+								local Distance = #(Coords - vec3(v[1],v[2],v[3]))
+								if Distance <= 10 then
+									Menu[#Menu + 1] = { event = "paramedic:Adrenaline", label = "Reviver", tunnel = "paramedic" }
 								end
-								Menu[#Menu + 1] = {
-									event = "police:prisonClothes",
-									label = "Uniforme Presidiário",
-									tunnel = "police"
-								}
+							end
+
+							if LocalPlayer["state"]["Police"] then
+								Menu[#Menu + 1] = { event = "paramedic:Revive", label = "Reanimar", tunnel = "paramedic" }
+								Menu[#Menu + 1] = { event = "police:runInspect", label = "Revistar", tunnel = "police" }
+								Menu[#Menu + 1] = { event = "police:prisonClothes", label = "Uniforme Presidiário", tunnel = "police" }
 							elseif LocalPlayer["state"]["Paramedic"] then
 								if GetEntityHealth(Entity) <= 100 then
-									Menu[#Menu + 1] = {
-										event = "paramedic:Revive",
-										label = "Reanimar",
-										tunnel = "paramedic"
-									}
+									Menu[#Menu + 1] = { event = "paramedic:Revive", label = "Reanimar", tunnel = "paramedic" }
 								else
-									Menu[#Menu + 1] = {
-										event = "paramedic:Treatment",
-										label = "Tratar Paciente",
-										tunnel = "paramedic"
-									}
-									Menu[#Menu + 1] = {
-										event = "paramedic:Reposed",
-										label = "Colocar de Repouso",
-										tunnel = "paramedic"
-									}
-									Menu[#Menu + 1] = {
-										event = "paramedic:Bandage",
-										label = "Passar Ataduras",
-										tunnel = "paramedic"
-									}
-									Menu[#Menu + 1] = {
-										event = "paramedic:presetBurn",
-										label = "Roupa de Queimadura",
-										tunnel = "paramedic"
-									}
-									-- Menu[#Menu + 1] = {
-									-- 	event = "paramedic:presetPlaster",
-									-- 	label = "Colocar Gesso",
-									-- 	tunnel = "paramedic"
-									-- }
-									Menu[#Menu + 1] = {
-										event = "paramedic:extractBlood",
-										label = "Extrair Sangue",
-										tunnel = "paramedic"
-									}
-									Menu[#Menu + 1] = {
-										event = "player:Charge",
-										label = "Cobrança",
-										tunnel = "paramedic"
-									}
+									Menu[#Menu + 1] = { event = "player:Charge", label = "Cobrança", tunnel = "paramedic" }
+									Menu[#Menu + 1] = { event = "paramedic:Treatment", label = "Tratamento", tunnel = "paramedic" }
+									Menu[#Menu + 1] = { event = "paramedic:Reposed", label = "Colocar de Repouso", tunnel = "paramedic" }
+									Menu[#Menu + 1] = { event = "paramedic:Bandage", label = "Passar Ataduras", tunnel = "paramedic" }
+									Menu[#Menu + 1] = { event = "paramedic:presetPlaster", label = "Colocar Gesso", tunnel = "paramedic" }
 								end
-								Menu[#Menu + 1] = {
-									event = "paramedic:Diagnostic",
-									label = "Diagnostico",
-									tunnel = "paramedic"
-								}
-							elseif LocalPlayer["state"]["Bombeiro"] then
-								if GetEntityHealth(Entity) <= 100 then
-									Menu[#Menu + 1] = {
-										event = "paramedic:Revive",
-										label = "Reanimar",
-										tunnel = "paramedic"
-									}
-								end
+
+								Menu[#Menu + 1] = { event = "paramedic:Diagnostic", label = "Informações", tunnel = "paramedic" }
+								Menu[#Menu + 1] = { event = "paramedic:Bed", label = "Deitar Paciente", tunnel = "paramedic" }
 							end
 
-
-							if IsEntityPlayingAnim(Entity, "random@mugging3", "handsup_standing_base", 3) then
-								if GetEntityHealth(Entity) >= 101 then
-									Menu[#Menu + 1] = {
-										event = "police:runInspect",
-										label = "Revistar",
-										tunnel = "police"
-									}
-								end
-								Menu[#Menu + 1] = {
-									event = "player:checkShoes",
-									label = "Roubar Sapatos",
-									tunnel = "paramedic"
-								}
-							end
-
-							if GetEntityHealth(Entity) > 100 then
-								Menu[#Menu + 1] = { event = "player:Charge", label = "Cobrança", tunnel = "paramedic" }
+							if IsEntityPlayingAnim(Entity,"random@mugging3","handsup_standing_base",3) then
+								Menu[#Menu + 1] = { event = "player:checkShoes", label = "Roubar Sapatos", tunnel = "paramedic" }
 							end
 
 							SendNUIMessage({ Action = "validTarget", data = Menu })
@@ -857,11 +1151,11 @@ function TargetEnable()
 							while Sucess do
 								local Ped = PlayerPedId()
 								local Coords = GetEntityCoords(Ped)
-								local _, entCoords, Entity = RayCastGamePlayCamera()
+								local _,entCoords,Entity = RayCastGamePlayCamera()
 
-								if (IsControlJustReleased(1, 24) or IsDisabledControlJustReleased(1, 24)) then
-									SetCursorLocation(0.5, 0.5)
-									SetNuiFocus(true, true)
+								if (IsControlJustReleased(1,24) or IsDisabledControlJustReleased(1,24)) then
+									SetCursorLocation(0.5,0.5)
+									SetNuiFocus(true,true)
 								end
 
 								if GetEntityType(Entity) == 0 or #(Coords - entCoords) > 1.0 then
@@ -874,7 +1168,7 @@ function TargetEnable()
 							SendNUIMessage({ Action = "leftTarget" })
 						end
 					else
-						for k, v in pairs(Models) do
+						for k,v in pairs(Models) do
 							if DoesEntityExist(Entity) then
 								if k == GetEntityModel(Entity) then
 									if #(Coords - entCoords) <= Models[k]["Distance"] then
@@ -883,7 +1177,7 @@ function TargetEnable()
 											objNet = ObjToNet(Entity)
 										end
 
-										Selected = { Entity, k, objNet, GetEntityCoords(Entity) }
+										Selected = { Entity,k,objNet,GetEntityCoords(Entity) }
 
 										SendNUIMessage({ Action = "validTarget", data = Models[k]["options"] })
 
@@ -891,11 +1185,11 @@ function TargetEnable()
 										while Sucess do
 											local Ped = PlayerPedId()
 											local Coords = GetEntityCoords(Ped)
-											local _, entCoords, Entity = RayCastGamePlayCamera()
+											local _,entCoords,Entity = RayCastGamePlayCamera()
 
-											if (IsControlJustReleased(1, 24) or IsDisabledControlJustReleased(1, 24)) then
-												SetCursorLocation(0.5, 0.5)
-												SetNuiFocus(true, true)
+											if (IsControlJustReleased(1,24) or IsDisabledControlJustReleased(1,24)) then
+												SetCursorLocation(0.5,0.5)
+												SetNuiFocus(true,true)
 											end
 
 											if GetEntityType(Entity) == 0 or #(Coords - entCoords) > Models[k]["Distance"] then
@@ -939,34 +1233,33 @@ function TargetDisable()
 	end
 
 	SendNUIMessage({ Action = "closeTarget" })
-	LocalPlayer["state"]:set("Target", false, false)
+	LocalPlayer["state"]["Target"] = false
 end
-
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- SELECT
 -----------------------------------------------------------------------------------------------------------------------------------------
-RegisterNUICallback("selectTarget", function(Data, Callback)
+RegisterNUICallback("selectTarget",function(Data,Callback)
 	Sucess = false
-	SetNuiFocus(false, false)
+	SetNuiFocus(false,false)
 	SendNUIMessage({ Action = "closeTarget" })
-	LocalPlayer["state"]:set("Target", false, false)
+	LocalPlayer["state"]["Target"] = false
 
 	if Data["tunnel"] == "client" then
-		TriggerEvent(Data["event"], Selected)
+		TriggerEvent(Data["event"],Selected)
 	elseif Data["tunnel"] == "shop" then
-		TriggerEvent(Data["event"], Selected, Data["service"])
+		TriggerEvent(Data["event"],Selected,Data["service"])
 	elseif Data["tunnel"] == "entity" then
-		TriggerEvent(Data["event"], Selected[1], Data["service"])
+		TriggerEvent(Data["event"],Selected[1],Data["service"])
 	elseif Data["tunnel"] == "products" then
-		TriggerEvent(Data["event"], Data["service"])
+		TriggerEvent(Data["event"],Data["service"])
 	elseif Data["tunnel"] == "server" then
-		TriggerServerEvent(Data["event"], Selected)
+		TriggerServerEvent(Data["event"],Selected)
 	elseif Data["tunnel"] == "police" then
-		TriggerServerEvent(Data["event"], Selected, Data["service"])
+		TriggerServerEvent(Data["event"],Selected,Data["service"])
 	elseif Data["tunnel"] == "paramedic" then
-		TriggerServerEvent(Data["event"], Selected[1], Data["service"])
+		TriggerServerEvent(Data["event"],Selected[1],Data["service"])
 	elseif Data["tunnel"] == "proserver" then
-		TriggerServerEvent(Data["event"], Data["service"])
+		TriggerServerEvent(Data["event"],Data["service"])
 	end
 
 	Callback("Ok")
@@ -974,11 +1267,11 @@ end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- CLOSE
 -----------------------------------------------------------------------------------------------------------------------------------------
-RegisterNUICallback("closeTarget", function(Data, Callback)
+RegisterNUICallback("closeTarget",function(Data,Callback)
 	Sucess = false
-	SetNuiFocus(false, false)
+	SetNuiFocus(false,false)
 	SendNUIMessage({ Action = "closeTarget" })
-	LocalPlayer["state"]:set("Target", false, false)
+	LocalPlayer["state"]["Target"] = false
 
 	Callback("Ok")
 end)
@@ -986,105 +1279,77 @@ end)
 -- DEBUG
 -----------------------------------------------------------------------------------------------------------------------------------------
 RegisterNetEvent("target:Debug")
-AddEventHandler("target:Debug", function()
+AddEventHandler("target:Debug",function()
 	Sucess = false
-	SetNuiFocus(false, false)
+	SetNuiFocus(false,false)
 	SendNUIMessage({ Action = "closeTarget" })
-	LocalPlayer["state"]:set("Target", false, false)
+	LocalPlayer["state"]["Target"] = false
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- GETCOORDSFROMCAM
 -----------------------------------------------------------------------------------------------------------------------------------------
-function GetCoordsFromCam(Distance, Coords)
+function GetCoordsFromCam(Distance,Coords)
 	local Rotation = GetGameplayCamRot()
-	local Adjuste = vec3((math.pi / 180) * Rotation["x"], (math.pi / 180) * Rotation["y"],
-		(math.pi / 180) * Rotation["z"])
-	local Direction = vec3(-math.sin(Adjuste[3]) * math.abs(math.cos(Adjuste[1])),
-		math.cos(Adjuste[3]) * math.abs(math.cos(Adjuste[1])), math.sin(Adjuste[1]))
+	local Adjuste = vec3((math.pi / 180) * Rotation["x"],(math.pi / 180) * Rotation["y"],(math.pi / 180) * Rotation["z"])
+	local direction = vec3(-math.sin(Adjuste[3]) * math.abs(math.cos(Adjuste[1])),math.cos(Adjuste[3]) * math.abs(math.cos(Adjuste[1])),math.sin(Adjuste[1]))
 
-	return vec3(Coords[1] + Direction[1] * Distance, Coords[2] + Direction[2] * Distance,
-		Coords[3] + Direction[3] * Distance)
+	return vec3(Coords[1] + direction[1] * Distance, Coords[2] + direction[2] * Distance, Coords[3] + direction[3] * Distance)
 end
-
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- RAYCASTGAMEPLAYCAMERA
 -----------------------------------------------------------------------------------------------------------------------------------------
 function RayCastGamePlayCamera()
 	local Ped = PlayerPedId()
 	local Cam = GetGameplayCamCoord()
-	local Cam2 = GetCoordsFromCam(10.0, Cam)
-	local Handle = StartExpensiveSynchronousShapeTestLosProbe(Cam, Cam2, -1, Ped, 4)
-	local _, Hit, Coords, _, Entitys = GetShapeTestResult(Handle)
+	local Cam2 = GetCoordsFromCam(10.0,Cam)
+	local Handle = StartExpensiveSynchronousShapeTestLosProbe(Cam,Cam2,-1,Ped,4)
+	local a,Hit,Coords,b,Entity = GetShapeTestResult(Handle)
 
-	return Hit, Coords, Entitys
+	return Hit,Coords,Entity
 end
-
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- ADDCIRCLEZONE
 -----------------------------------------------------------------------------------------------------------------------------------------
-function AddCircleZone(Name, Center, Radius, Options, Target)
-	Zones[Name] = CircleZone:Create(Center, Radius, Options)
+function AddCircleZone(Name,Center,Radius,Options,Target)
+	Zones[Name] = CircleZone:Create(Center,Radius,Options)
 	Zones[Name]["targetoptions"] = Target
 end
-
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- REMCIRCLEZONE
 -----------------------------------------------------------------------------------------------------------------------------------------
 function RemCircleZone(Name)
 	if Zones[Name] then
-		Zones[Name]:destroy()
 		Zones[Name] = nil
 	end
-
-	if Sucess then
-		Sucess = false
-		SetNuiFocus(false, false)
-		SendNUIMessage({ Action = "closeTarget" })
-		LocalPlayer["state"]:set("Target", false, false)
-	end
 end
-
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- ADDTARGETMODEL
 -----------------------------------------------------------------------------------------------------------------------------------------
-function AddTargetModel(Model, Options)
-	for _, v in pairs(Model) do
+function AddTargetModel(Model,Options)
+	for _,v in pairs(Model) do
 		Models[v] = Options
 	end
 end
-
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- LABELTEXT
 -----------------------------------------------------------------------------------------------------------------------------------------
-function LabelText(Name, Text)
+function LabelText(Name,Text)
 	if Zones[Name] then
 		Zones[Name]["targetoptions"]["options"][1]["label"] = Text
 	end
 end
-
------------------------------------------------------------------------------------------------------------------------------------------
--- LABELOPTIONS
------------------------------------------------------------------------------------------------------------------------------------------
-function LabelOptions(Name, Text)
-	if Zones[Name] then
-		Zones[Name]["targetoptions"]["options"] = Text
-	end
-end
-
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- ADDBOXZONE
 -----------------------------------------------------------------------------------------------------------------------------------------
-function AddBoxZone(Name, Center, Length, Width, Options, Target)
-	Zones[Name] = BoxZone:Create(Center, Length, Width, Options)
-	Zones[Name]["targetoptions"] = Target
+function AddBoxZone(Name,Center,Length,Width,Options,Target)
+    Zones[Name] = BoxZone:Create(Center,Length,Width,Options)
+    Zones[Name]["targetoptions"] = Target
 end
-
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- EXPORTS
 -----------------------------------------------------------------------------------------------------------------------------------------
-exports("LabelText", LabelText)
-exports("AddBoxZone", AddBoxZone)
-exports("LabelOptions", LabelOptions)
-exports("RemCircleZone", RemCircleZone)
-exports("AddCircleZone", AddCircleZone)
-exports("AddTargetModel", AddTargetModel)
+exports("LabelText",LabelText)
+exports("AddBoxZone",AddBoxZone)
+exports("RemCircleZone",RemCircleZone)
+exports("AddCircleZone",AddCircleZone)
+exports("AddTargetModel",AddTargetModel)

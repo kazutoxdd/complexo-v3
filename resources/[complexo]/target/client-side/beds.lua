@@ -9,77 +9,56 @@ local TreatmentTimer = 0
 -----------------------------------------------------------------------------------------------------------------------------------------
 local Beds = {
 	-- Medical Center Sul
-	{ ["Coords"] = vec3(307.72, -581.74, 43.2),    ["Heading"] = 340.16 },
-	{ ["Coords"] = vec3(311.06, -582.96, 43.2),    ["Heading"] = 340.16 },
-	{ ["Coords"] = vec3(314.46, -584.2, 43.2),     ["Heading"] = 340.16 },
-	{ ["Coords"] = vec3(317.68, -585.37, 43.2),    ["Heading"] = 340.16 },
-	{ ["Coords"] = vec3(322.62, -587.16, 43.2),    ["Heading"] = 340.16 },
-	{ ["Coords"] = vec3(324.26, -582.8, 43.2),     ["Heading"] = 158.75 },
-	{ ["Coords"] = vec3(319.42, -581.05, 43.2),    ["Heading"] = 158.75 },
-	{ ["Coords"] = vec3(313.93, -579.04, 43.2),    ["Heading"] = 158.75 },
-	{ ["Coords"] = vec3(309.35, -577.38, 43.2),    ["Heading"] = 158.75 },
-	{ ["Coords"] = vec3(363.8, -589.12, 43.21),    ["Heading"] = 68.04 },
-	{ ["Coords"] = vec3(364.96, -585.94, 43.21),   ["Heading"] = 68.04 },
-	{ ["Coords"] = vec3(366.52, -581.67, 43.21),   ["Heading"] = 68.04 },
-	{ ["Coords"] = vec3(354.44, -600.19, 43.21),   ["Heading"] = 68.04 },
-	{ ["Coords"] = vec3(359.53, -586.23, 43.2),    ["Heading"] = 68.04 },
-	{ ["Coords"] = vec3(361.36, -581.3, 43.2),     ["Heading"] = 68.04 },
+	{ ["Coords"] = vec3(1126.41,-1562.6,34.9), ["Heading"] = 0.0 },
+	{ ["Coords"] = vec3(1123.64,-1562.59,34.9), ["Heading"] = 0.0 },
+	{ ["Coords"] = vec3(1121.0,-1562.59,34.9), ["Heading"] = 0.0 },
+	{ ["Coords"] = vec3(1121.65,-1553.35,34.9), ["Heading"] = 0.0 },
+	{ ["Coords"] = vec3(1124.4,-1553.36,34.9), ["Heading"] = 0.0 },
+	{ ["Coords"] = vec3(1127.33,-1553.35,34.9), ["Heading"] = 0.0 },
+	{ ["Coords"] = vec3(1126.69,-1547.41,34.9), ["Heading"] = 175.75 },
+	{ ["Coords"] = vec3(1123.64,-1547.41,34.9), ["Heading"] = 175.75 },
+	{ ["Coords"] = vec3(1120.52,-1547.41,34.9), ["Heading"] = 175.75 },
+	{ ["Coords"] = vec3(1121.1,-1538.06,34.9), ["Heading"] = 175.75 },
+	{ ["Coords"] = vec3(1124.16,-1538.06,34.9), ["Heading"] = 175.75 },
+	{ ["Coords"] = vec3(1127.16,-1538.07,34.9), ["Heading"] = 175.75 },
 	-- Medical Center Norte
-	{ ["Coords"] = vec3(-252.15, 6323.11, 32.35),  ["Heading"] = 133.23 },
-	{ ["Coords"] = vec3(-250.5, 6321.87, 32.35),   ["Heading"] = 133.23 },
-	{ ["Coords"] = vec3(-246.98, 6317.95, 32.33),  ["Heading"] = 133.23 },
-	{ ["Coords"] = vec3(-245.27, 6316.22, 32.35),  ["Heading"] = 133.23 },
-	{ ["Coords"] = vec3(-251.03, 6310.51, 32.35),  ["Heading"] = 317.49 },
-	{ ["Coords"] = vec3(-252.63, 6312.12, 32.35),  ["Heading"] = 317.49 },
-	{ ["Coords"] = vec3(-254.39, 6313.88, 32.35),  ["Heading"] = 317.49 },
-	{ ["Coords"] = vec3(-256.1, 6315.58, 32.35),   ["Heading"] = 317.49 },
-	{ ["Coords"] = vec3(-258.03, 6317.12, 32.35),  ["Heading"] = 317.49 },
+	{ ["Coords"] = vec3(1824.76,3681.69,34.19), ["Heading"] = 209.77 },
+	{ ["Coords"] = vec3(1827.86,3683.42,34.19), ["Heading"] = 209.77 },
+	{ ["Coords"] = vec3(1830.23,3679.29,34.19), ["Heading"] = 25.52 },
+	{ ["Coords"] = vec3(1827.29,3677.57,34.19), ["Heading"] = 25.52 },
 	-- Boolingbroke
-	{ ["Coords"] = vec3(1761.87, 2591.56, 45.66),  ["Heading"] = 272.13 },
-	{ ["Coords"] = vec3(1761.87, 2594.64, 45.66),  ["Heading"] = 272.13 },
-	{ ["Coords"] = vec3(1761.87, 2597.73, 45.66),  ["Heading"] = 272.13 },
-	{ ["Coords"] = vec3(1771.98, 2597.95, 45.66),  ["Heading"] = 87.88 },
-	{ ["Coords"] = vec3(1771.98, 2594.88, 45.66),  ["Heading"] = 87.88 },
-	{ ["Coords"] = vec3(1771.98, 2591.79, 45.66),  ["Heading"] = 87.88 },
-	-- Ocean
-	{ ["Coords"] = vec3(-1862.59, -334.37, 50.18), ["Heading"] = 323.15 },
-	{ ["Coords"] = vec3(-1865.68, -332.05, 50.2),  ["Heading"] = 323.15 },
-	{ ["Coords"] = vec3(-1868.51, -330.02, 50.18), ["Heading"] = 323.15 },
-	{ ["Coords"] = vec3(-1872.07, -327.04, 50.18), ["Heading"] = 323.15 },
-	{ ["Coords"] = vec3(-1875.12, -324.77, 50.18), ["Heading"] = 323.15 },
-	{ ["Coords"] = vec3(-1878.38, -322.15, 50.18), ["Heading"] = 323.15 },
-	{ ["Coords"] = vec3(-1875.45, -318.11, 50.18), ["Heading"] = 136.88 },
-	{ ["Coords"] = vec3(-1872.09, -320.61, 50.18), ["Heading"] = 136.88 },
-	{ ["Coords"] = vec3(-1868.91, -323.18, 50.18), ["Heading"] = 136.88 },
-	-- Ilha de cayo perico
-	{ ["Coords"] = vec3(5532.31, -5228.04, 14.27), ["Heading"] = 28.35 },
-	{ ["Coords"] = vec3(5533.88, -5227.21, 14.27), ["Heading"] = 28.35 },
-	{ ["Coords"] = vec3(5535.64, -5226.31, 14.27), ["Heading"] = 28.35 },
-	{ ["Coords"] = vec3(5537.36, -5225.34, 14.27), ["Heading"] = 28.35 },
+	{ ["Coords"] = vec3(1761.87,2591.56,45.66), ["Heading"] = 272.13 },
+	{ ["Coords"] = vec3(1761.87,2594.64,45.66), ["Heading"] = 272.13 },
+	{ ["Coords"] = vec3(1761.87,2597.73,45.66), ["Heading"] = 272.13 },
+	{ ["Coords"] = vec3(1771.98,2597.95,45.66), ["Heading"] = 87.88 },
+	{ ["Coords"] = vec3(1771.98,2594.88,45.66), ["Heading"] = 87.88 },
+	{ ["Coords"] = vec3(1771.98,2591.79,45.66), ["Heading"] = 87.88 },
+	-- Clandestine
+	{ ["Coords"] = vec3(-471.87,6287.56,13.63), ["Heading"] = 53.86 }
 }
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- THREADSTART
 -----------------------------------------------------------------------------------------------------------------------------------------
 CreateThread(function()
-	for Number, v in pairs(Beds) do
-		AddBoxZone("Beds:" .. Number, v["Coords"], 2.0, 1.0, {
-			name = "Beds:" .. Number,
+	for Number,v in pairs(Beds) do
+		AddBoxZone("Beds:"..Number,v["Coords"],1.0,1.0,{
+			name = "Beds:"..Number,
 			heading = v["Heading"],
-			-- minZ = v["Coords"]["z"] - 0.10,
-			-- maxZ = v["Coords"]["z"] + 0.50
-		}, {
+			minZ = v["Coords"]["z"] - 0.01,
+			maxZ = v["Coords"]["z"] + 0.01
+		},{
 			shop = Number,
-			Distance = 3.50,
+			Distance = 1.25,
 			options = {
 				{
 					event = "target:PutBed",
 					label = "Deitar",
 					tunnel = "client"
-				}, {
-				event = "target:Treatment",
-				label = "Tratamento",
-				tunnel = "client"
-			}
+				},{
+					event = "target:Treatment",
+					label = "Tratamento",
+					tunnel = "client"
+				}
 			}
 		})
 	end
@@ -88,24 +67,23 @@ end)
 -- TARGET:PUTBED
 -----------------------------------------------------------------------------------------------------------------------------------------
 RegisterNetEvent("target:PutBed")
-AddEventHandler("target:PutBed", function(Number)
+AddEventHandler("target:PutBed",function(Number)
 	if not Previous then
 		local Ped = PlayerPedId()
 		Previous = GetEntityCoords(Ped)
-		SetEntityCoords(Ped, Beds[Number]["Coords"]["x"], Beds[Number]["Coords"]["y"], Beds[Number]["Coords"]["z"] - 1,
-			false, false, false, false)
-		vRP.playAnim(false, { "amb@world_human_sunbathe@female@back@idle_a", "idle_a" }, true)
-		SetEntityHeading(Ped, Beds[Number]["Heading"] - 180.0)
+		SetEntityCoords(Ped,Beds[Number]["Coords"]["x"],Beds[Number]["Coords"]["y"],Beds[Number]["Coords"]["z"] - 1,false,false,false,false)
+		vRP.playAnim(false,{"anim@gangops@morgue@table@","body_search"},true)
+		SetEntityHeading(Ped,Beds[Number]["Heading"])
 	end
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- TARGET:UPBED
 -----------------------------------------------------------------------------------------------------------------------------------------
 RegisterNetEvent("target:UpBed")
-AddEventHandler("target:UpBed", function()
+AddEventHandler("target:UpBed",function()
 	if Previous then
 		local Ped = PlayerPedId()
-		SetEntityCoords(Ped, Previous["x"], Previous["y"], Previous["z"] - 1, false, false, false, false)
+		SetEntityCoords(Ped,Previous["x"],Previous["y"],Previous["z"] - 1,false,false,false,false)
 		Previous = nil
 	end
 end)
@@ -113,39 +91,36 @@ end)
 -- TARGET:TREATMENT
 -----------------------------------------------------------------------------------------------------------------------------------------
 RegisterNetEvent("target:Treatment")
-AddEventHandler("target:Treatment", function(Number)
-	if not Previous and vSERVER.CheckIn() then
-		local Ped = PlayerPedId()
-		Previous = GetEntityCoords(Ped)
-		SetEntityCoords(Ped, Beds[Number]["Coords"]["x"], Beds[Number]["Coords"]["y"], Beds[Number]["Coords"]["z"] - 1,
-			false, false, false, false)
-		vRP.playAnim(false, { "amb@world_human_sunbathe@female@back@idle_a", "idle_a" }, true)
-		SetEntityHeading(Ped, Beds[Number]["Heading"] - 180.0)
+AddEventHandler("target:Treatment",function(Number)
+	if not Previous then
+		if vSERVER.CheckIn() then
+			local Ped = PlayerPedId()
+			Previous = GetEntityCoords(Ped)
+			SetEntityCoords(Ped,Beds[Number]["Coords"]["x"],Beds[Number]["Coords"]["y"],Beds[Number]["Coords"]["z"] - 1,false,false,false,false)
+			vRP.playAnim(false,{"anim@gangops@morgue@table@","body_search"},true)
+			SetEntityHeading(Ped,Beds[Number]["Heading"])
 
-		TriggerEvent("inventory:preventWeapon")
-		LocalPlayer["state"]:set("Commands", true, true)
-		LocalPlayer["state"]:set("Buttons", true, true)
-		LocalPlayer["state"]:set("Cancel", true, true)
-		TriggerEvent("paramedic:Reset")
+			TriggerEvent("inventory:preventWeapon",true)
+			LocalPlayer["state"]["Commands"] = true
+			LocalPlayer["state"]["Cancel"] = true
+			TriggerEvent("paramedic:Reset")
 
-		if GetEntityHealth(Ped) <= 100 then
-			exports["hud"]:Revive(101)
+			if GetEntityHealth(Ped) <= 100 then
+				exports["survival"]:Revive(101)
+			end
+
+			Treatment = true
 		end
-
-		Treatment = true
 	end
 end)
-
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- STARTTREATMENT
 -----------------------------------------------------------------------------------------------------------------------------------------
 RegisterNetEvent("target:StartTreatment")
-AddEventHandler("target:StartTreatment", function()
+AddEventHandler("target:StartTreatment",function()
 	if not Treatment then
-		LocalPlayer["state"]:set("Commands", true, true)
-		LocalPlayer["state"]:set("Buttons", true, true)
-		LocalPlayer["state"]:set("Cancel", true, true)
-		TriggerEvent("paramedic:Reset")
+		LocalPlayer["state"]["Commands"] = true
+		LocalPlayer["state"]["Cancel"] = true
 		Treatment = true
 	end
 end)
@@ -155,8 +130,8 @@ end)
 CreateThread(function()
 	while true do
 		local Ped = PlayerPedId()
-		if Previous and not IsEntityPlayingAnim(Ped, "amb@world_human_sunbathe@female@back@idle_a", "idle_a", 3) then
-			SetEntityCoords(Ped, Previous["x"], Previous["y"], Previous["z"] - 1, false, false, false, false)
+		if Previous and not IsEntityPlayingAnim(Ped,"anim@gangops@morgue@table@","body_search",3) then
+			SetEntityCoords(Ped,Previous["x"],Previous["y"],Previous["z"] - 1,false,false,false,false)
 			Previous = nil
 		end
 
@@ -175,13 +150,12 @@ CreateThread(function()
 				TreatmentTimer = GetGameTimer() + 1000
 
 				if Health < 200 then
-					SetEntityHealth(Ped, Health + 1)
+					SetEntityHealth(Ped,Health + 1)
 				else
 					Treatment = false
-					LocalPlayer["state"]:set("Cancel", false, true)
-					LocalPlayer["state"]:set("Buttons", false, true)
-					LocalPlayer["state"]:set("Commands", false, true)
-					TriggerEvent("Notify", "verde", "Tratamento concluido.", "Sucesso", 5000)
+					LocalPlayer["state"]["Cancel"] = false
+					LocalPlayer["state"]["Commands"] = false
+					TriggerEvent("Notify","amarelo","Tratamento concluido.",5000,"Alerta")
 				end
 			end
 		end

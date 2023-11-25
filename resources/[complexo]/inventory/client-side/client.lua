@@ -494,7 +494,6 @@ AddEventHandler("trunkchest:Open", function()
     vRP.playAnim(false, { "amb@prop_human_bum_bin@base", "base" }, true)
 end)
 
-
 function openTrunkChest(myInventory, myBackpack, vehInventory, vehWeight)
     -- if not IsNuiFocused() then
     trunking = true

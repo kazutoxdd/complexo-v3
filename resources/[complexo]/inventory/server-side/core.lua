@@ -1475,9 +1475,9 @@ function Creative.Cancel()
 	if Passport then
 		if Active[Passport] ~= nil then
 			Active[Passport] = nil
-			vGARAGE.UpdateHotwired(source, false)
+			vGARAGE.UpdateHotwired(source,false)
 			Player(source)["state"]["Buttons"] = false
-			TriggerClientEvent("Progress", source, "Cancelando", 1000)
+			TriggerClientEvent("Progress",source,"Cancelando",1000)
 
 			if verifyObjects[Passport] then
 				local Model = verifyObjects[Passport][1]
@@ -1486,12 +1486,6 @@ function Creative.Cancel()
 				if Trashs[Model] then
 					if Trashs[Model][Hash] then
 						Trashs[Model][Hash] = nil
-					end
-				end
-
-				if Pumpjack[Model] then
-					if Pumpjack[Model][Hash] then
-						Pumpjack[Model][Hash] = nil
 					end
 				end
 
@@ -1510,46 +1504,28 @@ function Creative.Cancel()
 					end
 				end
 			end
-
-			if Loots[Passport] then
-				local myLoots = Loots[Passport]
-
-				if Boxes[myLoots] then
-					if Boxes[myLoots][Passport] then
-						Boxes[myLoots][Passport] = nil
-					end
-				end
-
-				Loots[Passport] = nil
-			end
 		end
 
 		if Carry[Passport] then
-			if vRP.Passport(Carry[Passport]) then
-				TriggerClientEvent("inventory:Carry", Carry[Passport], nil, "Detach")
-				Player(Carry[Passport])["state"]["Carry"] = false
-				vRPC.removeObjects(Carry[Passport])
-			end
-
+			TriggerClientEvent("player:ropeCarry",Carry[Passport],source)
+			TriggerClientEvent("player:Commands",Carry[Passport],false)
+			vRPC.removeObjects(Carry[Passport])
 			Carry[Passport] = nil
 		end
 
 		if Scanners[Passport] then
-			TriggerClientEvent("inventory:updateScanner", source, false)
-			TriggerClientEvent("inventory:ScannerBlips", source)
+			TriggerClientEvent("inventory:updateScanner",source,false)
 			Player(source)["state"]["Buttons"] = false
-			Player(source)["state"]["Scanner"] = false
 			Scanners[Passport] = nil
 		end
 
 		vRPC.removeObjects(source)
 
 		if GetPlayerRoutingBucket(source) > 900000 then
-			TriggerEvent("arena:Cancel", source, Passport)
+			TriggerEvent("arena:Cancel",source,Passport)
 		end
 	end
 end
-
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- CHECKINVENTORY
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -2907,7 +2883,7 @@ end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- DISCONNECT
 -----------------------------------------------------------------------------------------------------------------------------------------
-AddEventHandler("Disconnect", function(Passport)
+AddEventHandler("Disconnect",function(Passport)
 	if Ammos[Passport] and Attachs[Passport] then
 		if Temporary[Passport] then
 			Ammos[Passport] = Temporary[Passport]["Ammos"]
@@ -2915,9 +2891,9 @@ AddEventHandler("Disconnect", function(Passport)
 			Temporary[Passport] = nil
 		end
 
-		vRP.Query("playerdata/SetData",
-			{ Passport = Passport, dkey = "Attachs", dvalue = json.encode(Attachs[Passport]) })
-		vRP.Query("playerdata/SetData", { Passport = Passport, dkey = "Ammos", dvalue = json.encode(Ammos[Passport]) })
+		vRP.Query("playerdata/SetData",{ Passport = Passport, dkey = "Attachs", dvalue = json.encode(Attachs[Passport]) })
+		vRP.Query("playerdata/SetData",{ Passport = Passport, dkey = "Ammos", dvalue = json.encode(Ammos[Passport]) })
+
 		Attachs[Passport] = nil
 		Ammos[Passport] = nil
 	end
@@ -2934,10 +2910,6 @@ AddEventHandler("Disconnect", function(Passport)
 		verifyAnimals[Passport] = nil
 	end
 
-	if Loots[Passport] then
-		Loots[Passport] = nil
-	end
-
 	if Healths[Passport] then
 		Healths[Passport] = nil
 	end
@@ -2946,24 +2918,24 @@ AddEventHandler("Disconnect", function(Passport)
 		Armors[Passport] = nil
 	end
 
+	if Heroin[Passport] then
+		Heroin[Passport] = nil
+	end
+
 	if Scanners[Passport] then
 		Scanners[Passport] = nil
 	end
 
 	if Carry[Passport] then
-		if vRP.Passport(Carry[Passport]) then
-			TriggerClientEvent("inventory:Carry", Carry[Passport], nil, "Detach")
-			Player(Carry[Passport])["state"]["Carry"] = false
-			vRPC.removeObjects(Carry[Passport])
-		end
-
+		TriggerClientEvent("player:Commands",Carry[Passport],false)
+		vRPC.removeObjects(Carry[Passport])
 		Carry[Passport] = nil
 	end
+
 	if Drugs[Passport] then
 		Drugs[Passport] = nil
 	end
 end)
-
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- RESET DROP
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -2986,8 +2958,8 @@ end) ]]
 -- CONNECT
 -----------------------------------------------------------------------------------------------------------------------------------------
 AddEventHandler("Connect", function(Passport, source)
-	Ammos[Passport] = vRP.UserData(Passport, "Ammos")
-	Attachs[Passport] = vRP.UserData(Passport, "Attachs")
+	Ammos[Passport] = vRP.UserData(Passport,"Ammos")
+	Attachs[Passport] = vRP.UserData(Passport,"Attachs")
 
 	TriggerClientEvent("objects:Table", source, Objects)
 	TriggerClientEvent("drops:Table", source, Drops)
@@ -3406,194 +3378,114 @@ function Creative.openStackChest(chestOpen, Mode)
 		return Chest, Open[Passport]["Weight"]
 	end
 end
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- CHEST:PERMISSIONS
+-----------------------------------------------------------------------------------------------------------------------------------------
+function Creative.Permissions(Name, Mode)
+    local source = source
+    local Passport = vRP.Passport(source)
+    if Passport and not exports["hud"]:Wanted(Passport) then
+        if Mode == "Personal" then
+            Open[Passport] = { ["Name"] = Passport, ["Weight"] = 50, ["Logs"] = false, ["Save"] = true }
+            return true
+        elseif Mode == "Evidences" and vRP.HasGroup(Passport, "Police") then
+            local Keyboard = vKEYBOARD.keySingle(source, "Passaporte:")
+            if Keyboard then
+                Open[Passport] = { ["Name"] = "Evidences:" .. Keyboard[1], ["Weight"] = 50, ["Logs"] = false, ["Save"] = true }
+                return true
+            end
+        elseif Mode == "Custom" then
+            if SplitOne(Name, ":") == "Helicrash" and Cooldown[Name] and Cooldown[Name] > os.time() then
+                TriggerClientEvent("Notify", source, "amarelo", "Aguarde até que esfrie o compartimento.", "Atenção", 10000)
+                vRPC.DowngradeHealth(source, 50)
+                return false
+            end
+        elseif Mode == "Manager" then
+            if vRP.HasGroup(Passport, Name, 2) then
+                Open[Passport] = { ["Name"] = "Manager:" .. Name, ["Weight"] = 1000, ["Logs"] = true, ["Save"] = true }
+                return true
+            end
+        elseif Mode == "Tray" then
+            Open[Passport] = { ["Name"] = Name, ["Weight"] = 15, ["Logs"] = false, ["Save"] = true }
+            return true
+        else
+            local Consult = vRP.Query("chests/GetChests", { name = Name })
+            if Consult[1] and vRP.HasGroup(Passport, Consult[1]["perm"]) then
+                Open[Passport] = { ["Name"] = Name, ["Weight"] = Consult[1]["weight"], ["Logs"] = Consult[1]["logs"], ["Save"] = true }
+                return true
+            end
+        end
+    end
 
-function Creative.ChestPermissions(Name, Mode)
-	local source = source
-	local Passport = vRP.Passport(source)
-	if Passport then
-		if Mode == "Personal" then
-			Open[Passport] = {
-				["Name"] = "Personal:" .. Passport,
-				["Weight"] = 50,
-				["Logs"] = false,
-				["Save"] = true,
-				["Slots"] = 50
-			}
-
-			return true
-		elseif Mode == "Tray" then
-			Open[Passport] = {
-				["Name"] = Name,
-				["Weight"] = 25,
-				["Logs"] = false,
-				["Save"] = false,
-				["Slots"] = 20
-			}
-			return true
-		elseif Mode == "Custom" or Mode == "Trash" then
-			if SplitOne(Name, ":") == "Helicrash" and Cooldown[Name] and Cooldown[Name] > os.time() then
-				TriggerClientEvent("Notify", source, "amarelo", "Aguarde até que esfrie o compartimento.", "Atenção",
-					10000)
-				vRPC.DowngradeHealth(source, 50)
-
-				return false
-			end
-
-			if Mode == "Trash" then
-				Name = "Trash:" .. Name
-			end
-
-			Open[Passport] = {
-				["Name"] = Name,
-				["Weight"] = 50,
-				["Logs"] = false,
-				["Save"] = false,
-				["Slots"] = 20
-			}
-			return true
-		elseif Mode == "Lider" or Mode == '4' then
-			Name = 'Lider' .. Name
-			local Consult = vRP.Query("chests/GetChests", { name = Name })
-			if Consult[1] and vRP.HasGroup(Passport, Consult[1]["Permission"], 2) then
-				local Slots = Consult[1]["Slots"]
-				local Weight = Consult[1]["Weight"]
-				Open[Passport] = {
-					["Slots"] = Slots,
-					["Weight"] = Weight,
-					["NameLogs"] = Name,
-					["Name"] = "Chest:" .. Name,
-					["Logs"] = Consult[1]["Logs"],
-					["Permission"] = Consult[1]["Permission"],
-					["Save"] = true
-				}
-				return true
-			end
-			return false
-		elseif Mode == "Home" then
-			local Consult = vRP.Query("chests/GetChests", { name = Name })
-			if Consult[1] and vRP.HasGroup(Passport, Consult[1]["Permission"], 2) then
-				local Slots = Consult[1]["Slots"]
-				local Weight = Consult[1]["Weight"]
-				Open[Passport] = {
-					["Slots"] = Slots,
-					["Weight"] = Weight,
-					["NameLogs"] = Name,
-					["Name"] = "Chest:" .. Name,
-					["Logs"] = Consult[1]["Logs"],
-					["Permission"] = Consult[1]["Permission"],
-					["Save"] = true
-				}
-				return true
-			end
-			return false
-		else
-			local Consult = vRP.Query("chests/GetChests", { name = Name })
-			local hasPerm = false
-			if Consult[1] then
-				if vRP.GroupType(Consult[1]["Permission"]) == "Org" then
-					hasPerm = vRP.HasPermission(Passport, Consult[1]["Permission"], 4)
-				else
-					hasPerm = vRP.HasGroup(Passport, Consult[1]["Permission"])
-				end
-				if hasPerm then
-					local Slots = Consult[1]["Slots"]
-					local Weight = Consult[1]["Weight"]
-
-					Open[Passport] = {
-						["Slots"] = Slots,
-						["Weight"] = Weight,
-						["NameLogs"] = Name,
-						["Name"] = "Chest:" .. Name,
-						["Logs"] = Consult[1]["Logs"],
-						["Permission"] = Consult[1]["Permission"],
-						["Save"] = true
-					}
-
-					return true
-				end
-			end
-		end
-	end
-
-	return false
+    return false
 end
-
-function Creative.storeChestItem(Item, Slot, Amount, Target)
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- CHEST:STORE
+-----------------------------------------------------------------------------------------------------------------------------------------
+function Creative.Store(Item,Slot,Amount,Target)
 	local source = source
-	local Amount = parseInt(Amount, true)
+	local Amount = parseInt(Amount)
 	local Passport = vRP.Passport(source)
 	if Passport and Open[Passport] then
-		TriggerClientEvent("chest:Update", source, "Refresh")
+		if Amount <= 0 then Amount = 1 end
 
-		if Item == "diagram" and Open[Passport]["NameLogs"] then
-			if vRP.TakeItem(Passport, Item, Amount, false) then
-				Open[Passport]["Weight"] = Open[Passport]["Weight"] + (10 * Amount)
+		if itemBlock(Item) then
+			TriggerClientEvent("chest:Update",source,"Refresh")
 
-				local Result = vRP.GetSrvData(Open[Passport]["Name"])
-				vRP.Query("chests/UpdateChests", { name = Open[Passport]["NameLogs"] })
-				TriggerClientEvent("chest:Update", source, "Update", vRP.InventoryWeight(Passport),
-					vRP.GetWeight(Passport), vRP.ChestWeight(Result), Open[Passport]["Weight"])
-				TriggerClientEvent("chest:Update", source, "Refresh")
-			end
-		else
-			local Item = SplitOne(Item)
-			local Unique = Open[Passport]["Unique"]
+			return true
+		end
 
-			if Unique and ChestItens[Unique] and ((ChestItens[Item] and ChestItens[Item]["Block"]) or (ChestItens[Unique]["Itens"] and not ChestItens[Unique]["Itens"][Item])) then
-				TriggerClientEvent("chest:Update", source, "Refresh")
-				return false
-			end
-
-			if vRP.StoreChest(Passport, Open[Passport]["Name"], Amount, Open[Passport]["Weight"], Slot, Target) then
-				TriggerClientEvent("chest:Update", source, "Refresh")
-			else
-				local Result = vRP.GetSrvData(Open[Passport]["Name"])
-				TriggerClientEvent("chest:Update", source, "Update", vRP.InventoryWeight(Passport),
-					vRP.GetWeight(Passport), vRP.ChestWeight(Result), Open[Passport]["Weight"])
-				if Open[Passport]["Logs"] then
-					--[[ exports['logs']:chestLog(source, Passport, itemName(Item), Amount, 5, (itemWeight(Item) * Amount),
-						vRP.ChestWeight(Result), Open[Passport]["Weight"], 'Guardado', 'Baú', Open[Passport]["Name"],
-						5763719) ]]
+		if OpenItens[Item] and OpenItens[Item]["Open"] == Open[Passport]["Name"] then
+			if vRP.TakeItem(Passport,Item,1) then
+				for _,v in pairs(OpenItens[Item]["Table"]) do
+					vRP.GenerateItem(Passport,v["Item"],v["Amount"])
 				end
+			end
+
+			TriggerClientEvent("chest:Update",source,"Refresh")
+
+			return true
+		end
+
+		if vRP.StoreChest(Passport,"Chest:"..Open[Passport]["Name"],Amount,Open[Passport]["Weight"],Slot,Target) then
+			TriggerClientEvent("chest:Update",source,"Refresh")
+		else
+			local Result = vRP.GetSrvData("Chest:"..Open[Passport]["Name"],Open[Passport]["Save"])
+			TriggerClientEvent("chest:Update",source,"Update",vRP.InventoryWeight(Passport),vRP.GetWeight(Passport),vRP.ChestWeight(Result),Open[Passport]["Weight"])
+
+			if Open[Passport]["Logs"] then
+				TriggerEvent("Discord",Open[Passport]["Name"],"**Passaporte:** "..Passport.."\n**Guardou:** "..Amount.."x "..itemName(Item),3042892)
 			end
 		end
 	end
 end
-
-function Creative.takeChestItem(Item, Slot, Amount, Target)
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- CHEST:TAKE
+-----------------------------------------------------------------------------------------------------------------------------------------
+function Creative.Take(Item,Slot,Amount,Target)
 	local source = source
-	local Amount = parseInt(Amount, true)
+	local Amount = parseInt(Amount)
 	local Passport = vRP.Passport(source)
-
 	if Passport and Open[Passport] then
-		if vRP.TakeChest(Passport, Open[Passport]["Name"], Amount, Slot, Target) then
-			TriggerClientEvent("chest:Update", source, "Refresh")
-		else
-			local Result = vRP.GetSrvData(Open[Passport]["Name"])
-			TriggerClientEvent("chest:Update", source, "Update", vRP.InventoryWeight(Passport), vRP.GetWeight(Passport),
-				vRP.ChestWeight(Result), Open[Passport]["Weight"])
+		if Amount <= 0 then Amount = 1 end
 
-			if string.sub(Open[Passport]["Name"], 1, 9) == "Helicrash" and json.encode(Result) == "[]" then
-				TriggerClientEvent("chest:Close", source)
+		if vRP.TakeChest(Passport,"Chest:"..Open[Passport]["Name"],Amount,Slot,Target) then
+			TriggerClientEvent("chest:Update",source,"Refresh")
+		else
+			local Result = vRP.GetSrvData("Chest:"..Open[Passport]["Name"],Open[Passport]["Save"])
+			TriggerClientEvent("chest:Update",source,"Update",vRP.InventoryWeight(Passport),vRP.GetWeight(Passport),vRP.ChestWeight(Result),Open[Passport]["Weight"])
+
+			if string.sub(Open[Passport]["Name"],1,9) == "Helicrash" and vRP.ChestWeight(Result) <= 0 then
+				TriggerClientEvent("chest:Close",source)
 				exports["helicrash"]:Box()
 			end
 
-			if Open[Passport]["Item"] and json.encode(Result) == "[]" then
-				vRP.RemoveItem(Passport, Open[Passport]["Item"], 1, false)
-				TriggerClientEvent("chest:Update", source, "Refresh")
-			end
-			if (vRP.InventoryWeight(Passport) + itemWeight(Item) * Amount) <= vRP.GetWeight(Passport) then
-				if Open[Passport]["Logs"] then
-					--[[ exports['logs']:chestLog(source, Passport, itemName(Item), Amount, 5, (itemWeight(Item) * Amount),
-						vRP.ChestWeight(Result),
-						Open[Passport]["Weight"],
-						'Retirado', 'Baú', Open[Passport]["Name"], 15548997) ]]
-				end
+			if Open[Passport]["Logs"] then
+				TriggerEvent("Discord",Open[Passport]["Name"],"**Passaporte:** "..Passport.."\n**Retirou:** "..Amount.."x "..itemName(Item),9317187)
 			end
 		end
 	end
 end
-
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- VARIABLES
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -3603,16 +3495,17 @@ local openSource = {}
 -- POLICE:RUNINSPECT
 -----------------------------------------------------------------------------------------------------------------------------------------
 RegisterServerEvent("police:runInspect")
-AddEventHandler("police:runInspect", function(Entity)
+AddEventHandler("police:runInspect",function(Entity)
 	local source = source
 	local Passport = vRP.Passport(source)
 	if Passport and vRP.GetHealth(source) > 100 then
 		openSource[Passport] = Entity[1]
 		openPlayer[Passport] = vRP.Passport(Entity[1])
 
-		TriggerClientEvent("player:Carry", Entity[1], source, "handcuff")
-		TriggerClientEvent("player:Commands", Entity[1], true)
-		TriggerClientEvent("inventory:Close", Entity[1])
+		TriggerClientEvent("player:playerCarry",Entity[1],source,"handcuff")
+		TriggerClientEvent("player:Commands",Entity[1],true)
+		TriggerClientEvent("inventory:Close",Entity[1])
+		TriggerClientEvent("inspect:Open",source)
 
 		local myInventory = {}
 		local inventory = vRP.Inventory(Passport)
@@ -3694,8 +3587,8 @@ function Creative.resetInspect()
 	local Passport = vRP.Passport(source)
 	if Passport then
 		if openSource[Passport] then
-			TriggerClientEvent("player:Commands", openSource[Passport], false)
-			TriggerClientEvent("player:Carry", openSource[Passport], source)
+			TriggerClientEvent("player:Commands",openSource[Passport],false)
+			TriggerClientEvent("player:playerCarry",openSource[Passport],source)
 			openSource[Passport] = nil
 		end
 
@@ -3705,46 +3598,52 @@ function Creative.resetInspect()
 	end
 end
 
-function Creative.storeInspectItem(Item, Slot, Amount, Target)
+function Creative.storeItem(Item,Slot,Amount,Target)
 	local source = source
 	local Passport = vRP.Passport(source)
 	if Passport then
 		if openSource[Passport] then
 			local Ped = GetPlayerPed(openSource[Passport])
 			if DoesEntityExist(Ped) then
-				if vRP.MaxItens(openPlayer[Passport], Item, Amount) then
-					TriggerClientEvent("Notify", source, "vermelho", "Limite atingido.", "Aviso", 5000)
-					TriggerClientEvent("inspect:Update", source, "Request")
+				if vRP.MaxItens(openPlayer[Passport],Item,Amount) then
+					TriggerClientEvent("Notify",source,"amarelo","Limite atingido.",3000)
+					TriggerClientEvent("inspect:Update",source,"requestChest")
 					return
 				end
 
 				if (vRP.InventoryWeight(openPlayer[Passport]) + (itemWeight(Item) * Amount)) <= vRP.GetWeight(openPlayer[Passport]) then
-					if vRP.TakeItem(Passport, Item, Amount, true) then
-						vRP.GiveItem(openPlayer[Passport], Item, Amount, true, Target)
+					if vRP.TakeItem(Passport,Item,Amount,false,Slot) then
+						vRP.GiveItem(openPlayer[Passport],Item,Amount,true,Target)
 					end
 				else
-					TriggerClientEvent("Notify", source, "vermelho", "Mochila cheia.", "Aviso", 5000)
-					TriggerClientEvent("inspect:Update", source, "Request")
+					TriggerClientEvent("Notify",source,"vermelho","Mochila cheia.",5000)
+					TriggerClientEvent("inspect:Update",source,"requestChest")
 				end
 			end
 		end
 	end
 end
 
-function Creative.takeInspectItem(Item, Slot, Amount, Target)
+function Creative.takeItem(Item,Slot,Target,Amount)
 	local source = source
 	local Passport = vRP.Passport(source)
 	if Passport then
 		if openSource[Passport] then
 			if DoesEntityExist(GetPlayerPed(openSource[Passport])) then
+				if vRP.MaxItens(Passport,Item,Amount) then
+					TriggerClientEvent("Notify",source,"amarelo","Limite atingido.",3000)
+					TriggerClientEvent("inspect:Update",source,"requestChest")
+					return
+				end
+
 				if (vRP.InventoryWeight(Passport) + (itemWeight(Item) * Amount)) <= vRP.GetWeight(Passport) then
-					if vRP.TakeItem(openPlayer[Passport], Item, Amount, true) then
-						vRP.GiveItem(Passport, Item, Amount, true, Target)
-						TriggerClientEvent("inspect:Update", source, "Request")
+					if vRP.TakeItem(openPlayer[Passport],Item,Amount,true,Slot) then
+						vRP.GiveItem(Passport,Item,Amount,false,Target)
+						TriggerClientEvent("inspect:Update",source,"requestChest")
 					end
 				else
-					TriggerClientEvent("Notify", source, "vermelho", "Mochila cheia.", "Aviso", 5000)
-					TriggerClientEvent("inspect:Update", source, "Request")
+					TriggerClientEvent("Notify",source,"vermelho","Mochila cheia.",5000)
+					TriggerClientEvent("inspect:Update",source,"requestChest")
 				end
 			end
 		end
