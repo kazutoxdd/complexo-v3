@@ -1,0 +1,18 @@
+{
+  "Sound": {
+    "ClientId": "EpomGudlzbh75FjLDDEq5fc8o62tr23S",
+    "MaxResults": "25"
+  },
+
+  "Server": {
+    "Host": "131.196.197.2",
+    "Port": "3000"
+  },
+
+  "Database": {
+    "Host": "127.0.0.1",
+    "User": "root",
+    "Password": "",
+    "Database": "stormfy"
+  }
+}

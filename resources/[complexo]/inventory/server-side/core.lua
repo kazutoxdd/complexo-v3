@@ -816,6 +816,7 @@ function Creative.requestInventory()
 		end
 		local Identity = vRP.Identity(Passport)
 		local isPremium = vRP.UserPremium(Passport)
+		local weight = vRP.InventoryWeight(Passport)
 		local vipDuration = Identity["premium"] > os.time()
 		local vipType = "platinum","silver"
 		
@@ -832,6 +833,7 @@ function Creative.requestInventory()
 		end
 		
 		local slots
+		
 		if isPremium then 
 			slots = 48
 		else
@@ -844,7 +846,7 @@ function Creative.requestInventory()
 			gems = vRP.Account(vRP.Identities(source)).gems,
 			isVip = isPremium,
 			vipType = vipType
-		}			
+		}		
 	end
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -2385,7 +2387,6 @@ function Creative.Dismantle(Entity)
 		until not Active[Passport]
 	end
 end
-
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- REMOVETYRES
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -2916,10 +2917,6 @@ AddEventHandler("Disconnect",function(Passport)
 
 	if Armors[Passport] then
 		Armors[Passport] = nil
-	end
-
-	if Heroin[Passport] then
-		Heroin[Passport] = nil
 	end
 
 	if Scanners[Passport] then

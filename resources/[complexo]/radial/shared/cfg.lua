@@ -1,7 +1,7 @@
 MenuOptions = {
     {
         id = "outfit",
-        title = "Roupas",
+        title = "Armário",
         icon = "icon linear slider-horizontal-1",
         items = {
             {
@@ -9,7 +9,7 @@ MenuOptions = {
                 title = "Aplicar",
                 icon = "icon linear save-2",
                 server = true,
-                trigger = "player:outfitFunctions",
+                trigger = "player:Outfit",
                 triggerArgs = { "aplicar" }
             },
             {
@@ -17,7 +17,7 @@ MenuOptions = {
                 title = "Salvar",
                 icon = "icon linear add",
                 server = true,
-                trigger = "player:outfitFunctions",
+                trigger = "player:Outfit",
                 triggerArgs = { "salvar" }
             },
             {
@@ -25,12 +25,12 @@ MenuOptions = {
                 title = "Remover",
                 icon = "icon linear save-remove",
                 server = true,
-                trigger = "player:outfitFunctions",
+                trigger = "player:Outfit",
                 triggerArgs = { "remover" }
             }
         },
     },
-    {
+--[[     {
         id = "premiumfit",
         title = "Roupas Premium",
         icon = "icon linear slider-horizontal",
@@ -84,8 +84,8 @@ MenuOptions = {
                 triggerArgs = { "presalvar3" }
             }
         }
-    },
-    {
+    }, ]]
+--[[     {
         id = "animal",
         title = "Domésticos",
         icon = "icon linear pet",
@@ -118,8 +118,8 @@ MenuOptions = {
                 triggerArgs = { "remover" }
             }
         }
-    },
-    {
+    }, ]]
+--[[     {
         id = "propertys",
         title = "Propriedades",
         icon = "icon linear home",
@@ -209,7 +209,7 @@ MenuOptions = {
                 end
             }
         }
-    },
+    }, ]]
     {
         id = "vehicle",
         title = "Veículo",
@@ -502,109 +502,7 @@ MenuOptions = {
                         triggerArgs = { "5" }
                     },
                 }
-            },
-            {
-                id = "police-radio",
-                title = "Frequências",
-                icon = "icon linear radar-1",
-                items = {
-                    {
-                        id = "police-radio-pm",
-                        title = "PM",
-                        icon = "icon linear shield-security",
-                        items = {
-                            {
-                                id = "police-radio-pm-1",
-                                title = "BCRF",
-                                icon = "icon linear microphone-2",
-                                server = false,
-                                trigger = "radio:changeFrequency",
-                                triggerArgs = { 911 }
-                            },
-                            {
-                                id = "police-radio-pm-2",
-                                title = "BCE",
-                                icon = "icon linear microphone-2",
-                                server = false,
-                                trigger = "radio:changeFrequency",
-                                triggerArgs = { 912 }
-                            },
-                            {
-                                id = "police-radio-pm-3",
-                                title = "QG",
-                                icon = "icon linear microphone-2",
-                                server = false,
-                                trigger = "radio:changeFrequency",
-                                triggerArgs = { 914 }
-                            },
-                            {
-                                id = "police-radio-pm-4",
-                                title = "GAR",
-                                icon = "icon linear microphone-2",
-                                server = false,
-                                trigger = "radio:changeFrequency",
-                                triggerArgs = { 915 }
-                            },
-                            {
-                                id = "police-radio-pm-5",
-                                title = "GAEP",
-                                icon = "icon linear microphone-2",
-                                server = false,
-                                trigger = "radio:changeFrequency",
-                                triggerArgs = { 916 }
-                            },
-                            {
-                                id = "police-radio-pm-6",
-                                title = "BOPE",
-                                icon = "icon linear microphone-2",
-                                server = false,
-                                trigger = "radio:changeFrequency",
-                                triggerArgs = { 917 }
-                            },
-                        },
-                    },
-                    {
-                        id = "police-radio-pc",
-                        title = "PC",
-                        icon = "icon linear security",
-                        items = {
-                            {
-                                id = "police-radio-pc-1",
-                                title = "DGC",
-                                icon = "icon linear microphone-2",
-                                server = false,
-                                trigger = "radio:changeFrequency",
-                                triggerArgs = { 921 }
-                            },
-                            {
-                                id = "police-radio-pc-2",
-                                title = "DRE",
-                                icon = "icon linear microphone-2",
-                                server = false,
-                                trigger = "radio:changeFrequency",
-                                triggerArgs = { 922 }
-                            },
-                            {
-                                id = "police-radio-pc-3",
-                                title = "DRF",
-                                icon = "icon linear microphone-2",
-                                server = false,
-                                trigger = "radio:changeFrequency",
-                                triggerArgs = { 923 }
-                            },
-                        },
-                    },
-                    {
-                        id = "police-radio-penal",
-                        title = "PENAL",
-                        icon = "icon linear microphone-2",
-                        server = false,
-                        trigger = "radio:changeFrequency",
-                        triggerArgs = { 910 }
-                    },
-                }
-            },
-            
+            } 
         }
     },
 }
