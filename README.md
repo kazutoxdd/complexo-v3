@@ -1,10 +1,10 @@
-# Storm Network - Base Complexo - Ato 2
+# Rise Studios - Base Complexo - Ato 2
 
-👋 Bem-vindo(a) à Base Complexo - Ato 2 da Storm Network!
+👋 Bem-vindo(a) à Base Complexo - Ato 2 da Rise Studios!
 
 ## Descrição
 
-Esta é uma base criativa para servidores FiveM, desenvolvida pela Storm Network. Nossa base foi projetada para oferecer uma experiência única e personalizável aos jogadores e proprietários de servidores que desejam criar um ambiente divertido e criativo em FiveM.
+Esta é uma base criativa para servidores FiveM, desenvolvida pela Rise Studios. Nossa base foi projetada para oferecer uma experiência única e personalizável aos jogadores e proprietários de servidores que desejam criar um ambiente divertido e criativo em FiveM.
 
 ## Recursos Principais
 
@@ -16,7 +16,7 @@ Esta é uma base criativa para servidores FiveM, desenvolvida pela Storm Network
 
 - **Segurança Avançada:** Valorizamos a segurança do servidor, por isso implementamos medidas avançadas para proteger seu servidor contra trapaças e abusos.
 
-- **Suporte da Comunidade:** A Storm Network tem uma comunidade ativa que oferece suporte e atualizações regulares para a base. Fique à vontade para se juntar a nós em nosso fórum ou Discord para obter assistência e colaborar com outros membros da comunidade.
+- **Suporte da Comunidade:** A Rise Studios tem uma comunidade ativa que oferece suporte e atualizações regulares para a base. Fique à vontade para se juntar a nós em nosso fórum ou Discord para obter assistência e colaborar com outros membros da comunidade.
 
 ## Instalação
 
@@ -24,6 +24,6 @@ Para instalar nossa Base Complexo - Ato 2, siga as instruções no arquivo de in
 
 ## Suporte
 
-Se você precisar de suporte ou tiver alguma dúvida sobre a Base Complexo - Ato 2, entre em contato conosco através de nosso Discord (https://discord.gg/YcGY9fQX3V). Estamos aqui para ajudar!
+Se você precisar de suporte ou tiver alguma dúvida sobre a Base Complexo - Ato 2, entre em contato conosco através de nosso Discord (https://discord.gg/jsumCFCSvD). Estamos aqui para ajudar!
 
-Agradecemos por escolher a Base Complexo - Ato 2 da Storm Network para o seu servidor. Esperamos que você e seus jogadores aproveitem ao máximo esta base criativa. Divirta-se!
+Agradecemos por escolher a Base Complexo - Ato 2 da Rise Studios para o seu servidor. Esperamos que você e seus jogadores aproveitem ao máximo esta base criativa. Divirta-se!
